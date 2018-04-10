@@ -21,8 +21,13 @@ const store = new Vuex.Store({
 	mutations: {
 		changeAddress(state, address){
 			state.address = address;
+			localStorage.address = JSON.stringify(address);
 		}
 	}
+});
+router.beforeEach( (to, from, next ) => {
+	window.document.title = to.meta.title;
+	next();
 });
 
 new Vue({
@@ -30,5 +35,8 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  mounted(){
+  	store.state.address = JSON.parse(localStorage.address);
+  }
 })

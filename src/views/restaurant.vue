@@ -1,10 +1,27 @@
 <template>
 	<div class="main">
+		<div class="header-container">
+		  <header>
+		    <div class="header">
+		      <a class="topbar-item">首页</a>
+		      <a class="topbar-item">我的订单</a>
+		      <a class="topbar-item">加盟合作</a>
+		      <a class="topbar-item">我的客服</a>
+		      <nav class="topbar-nav">
+		        <a class="topbar-nav-item">规则中心</a>
+		        <a class="topbar-nav-item">手机应用</a>
+		        <a class="topbar-nav-item">登录/注册</a>
+		      </nav>
+		    </div>
+		  </header>
+		</div>
 		<div class="info-bar">
 			<div class="location">
 				<span class="location-desc">当前位置：</span>
-				<span class="location-current">岭南世家华景园</span>
-				<span class="location-change">[切换地址]</span>
+				<span class="location-current">{{this.address.name}}</span>
+				<span
+					class="location-change"
+					@click="handleChangeAddress">[切换地址]</span>
 			</div>
 			<div class="search">
 				<Input
@@ -18,25 +35,92 @@
 			<span class="category-desc">商家分类：</span>
 			<div class="category-item-container">
 				<a class="category-item-all">全部商家</a>
-				<a class="category-item">商家A</a>
+				<a
+					v-for="restaurant in restaurantCategoryList"
+					class="category-item">
+						{{ restaurant.name }}
+				</a>
+				<div class="sub-category">
+					<a
+						v-for="item in restaurant.sub_categories"
+						class="category-item">
+							{{ item.name }}
+					</a>
+				</div>
 			</div>
 		</div>
-		<button @click="handleClick">获取数据</button>
+    	<div class="sidebar"></div>
 	</div>
 </template>
 <script type="text/javascript">
-	import {getCaptchas} from '../service/getData.js';
+	import {
+		getRestaurants,
+		getFoodCategory,
+		getRestaurantCategory
+	} from '../service/getData.js';
+
 	export default{
-		methods: {
-			handleClick(){
-				getCaptchas().then(res => {
-					console.log(res.data);
-				})
+		data(){
+			return {
+				restaurantList: [], //餐馆列表
+				restaurantCategoryList: [], //餐馆分类列表
 			}
+		},
+		methods: {
+			handleChangeAddress(){
+				this.$router.push('home');
+			}
+		},
+		computed: {
+			address(){
+				return this.$store.state.address;
+			}
+		},
+		created(){
+			getRestaurants(this.address.latitude, this.address.longitude).then( res => {
+				this.restaurantList = res;
+				console.log('restaurantList ', res);
+			});
+			getRestaurantCategory().then( res => {
+				this.restaurantCategoryList = res;
+			});
 		}
 	}
 </script>
 <style type="text/css" scoped>
+	.header-container{
+	  width: 100%;
+	  height: 60px;
+	  font-size: 14px;
+	  background: #1e89e0;
+	}
+	header{
+	  line-height: 60px;
+	}
+	.header{
+	  width: 1180px;
+	  margin: 0 auto;
+	  line-height: 60px;
+	  font-size: 14px;
+	}
+	.header a{
+	  color: #fff;
+	}
+	.topbar-item{
+	  width: 10%;
+	  float: left;
+	  font-size: 16px;
+	  text-align: center;
+	}
+	.topbar-nav{
+	  width: 30%;
+	  float: right;
+	}
+	.topbar-nav-item{
+	  display: inline-block;
+	  width: 30%;
+	  text-align: center;
+	}
 	.info-bar{
 		width: 1180px;
 		margin: 0 auto;
@@ -61,7 +145,6 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		word-break: keep-all;
-		cursor: pointer;
 	}
 	.location-change{
 		color: #2d8cf0;
@@ -96,4 +179,14 @@
 		color: #666;
 		font-size: 16px;
 	}
+	.sidebar{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: -295px;
+    width: 330px;
+    background: #504d53;
+    color: #cccccc;
+    z-index: 7;
+  }
 </style>

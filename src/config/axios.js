@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { baseUrl } from './env.js';
+
 export default async(url = '', data = {}, type = 'get') => {
 	let ajax = axios.create({
-		baseURL: 'http://cangdu.org:8001',
+		baseURL: 'http://127.0.0.1:8080/',
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
