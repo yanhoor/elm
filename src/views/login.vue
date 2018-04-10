@@ -1,7 +1,7 @@
 <template>
 	<div class="login">
 		<div class="login-container">
-			<form>
+			<form method="post">
 				<section class="account-section">
 					<input type="text" placeholder="手机/邮箱/用户名" v-model="username">
 				</section>

@@ -367,7 +367,7 @@
   .citylist-item-container{
     display: inline-block;
     width: 630px;
-    padding-left: 20px;
+    padding-left: 50px;
   }
   .citylist-item-container>span{
     display: inline-block;
