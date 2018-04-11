@@ -42,11 +42,42 @@
 				</div>
 			</div>
 		</div>
-		<div class="rest-container">
-			<Rest
+		<div class="rest-display">
+			<div
+				@mouseover.prevent="showRestInfo = !showRestInfo"
+				@mouseout.prevent="showRestInfo = !showRestInfo"
 				v-for="item in restaurantSortedList"
-				:restaurant="item"
-				:key="item.id"></Rest>
+				class="rest-container">
+					<div class="rest-item">
+						<Rest
+							:restaurant="item"
+							:key="item.id">
+						</Rest>
+						<div
+							v-if="showRestInfo"
+							class="rest-info-container">
+							<div class="rest-info-top">
+								<span class="rest-info-title">{{ item.name }}</span>
+								<span class="rest-info-cate">{{ item.category }}</span>
+							</div>
+							<div class="rest-info-bottom">
+								<div
+									v-for="sup in item.supports"
+									class="rest-info-support-container">
+										<span class="rest-info-support-icon">{{ sup.icon_name }}</span>
+										<span class="rest-info-support-desc">{{ sup.description }}</span>
+								</div>
+								<div class="rest-info-cost-container">
+									<span class="rest-info-cost">{{ item.piecewise_agent_fee.tips }}</span>
+									<span>平均{{ item.order_lead_time }}送达</span>
+								</div>
+								<div class="rest-info-desc-container">
+									<span>{{ item.promotion_info }}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
 		</div>
     	<div class="sidebar"></div>
 	</div>
@@ -74,6 +105,7 @@
 				mainCate: {}, //选中的餐馆主类
 				subCate: {}, //选中的餐馆子类
 				cateSelected: '', //主类与子类name组成的字符串
+				showRestInfo: false, //是否显示餐馆信息
 			}
 		},
 		methods: {
@@ -119,7 +151,7 @@
 					default:
 				}
 				this.restaurantSortedList = list;
-			}
+			},
 		},
 		computed: {
 			address(){
@@ -224,20 +256,93 @@
 		color: #fff;
 		background: #0089dc;
 	}
-	.rest-container{
+	.rest-display{
 		width: 1196px;
 		margin: 0 auto;
 		line-height: 30px;
 		margin-top: 30px;
+		overflow: auto;
+	}
+	.rest-container{
+		position: relative;
+		float: left;
+		width: 25%;
+	}
+	.rest-item{
+		margin: 8px;
+		background: #fff;
+		padding: 8px;
+		border-radius: 5px;
+		border: 1px solid #dddee1;
+	}
+	.rest-item:hover{
+		background: #f5f5f5;
+	}
+	.rest-info-container{
+		position: absolute;
+		width: 100%;
+		left: 100%;
+		top: 0;
+		z-index: 1000;
+		padding: 10px 10px;
+		border-radius: 6px;
+		border: 1px solid #dddee1;
+		background: #fff;
+	}
+	.rest-info-container>div{
+		color: #000;
+	}
+	.rest-info-top{
+		border-bottom: 1px solid #dddee1;
+	}
+	.rest-info-title{
+		display: block;
+		color: #000;
+		font-size: 16px;
+		font-weight: bold;
+	}
+	.rest-info-support-container{
+		margin: 10px 0;
+		line-height: normal;
+	}
+	.rest-info-support-icon{
+		float: left;
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		border: 1px solid #333;
+		line-height: normal;
+		text-align: center;
+		font-weight: bold;
+	}
+	.rest-info-support-desc{
+		position: relative;
+		display: inline-block;
+		margin-left: 10px;
+		height: 20px;
+		top: 0;
+		max-width: 205px;
+	}
+	.rest-info-cost-container{
+		border-radius: 3px;
+		text-align: center;
+		background: #f6f6f6;
+	}
+	.rest-info-cost{
+		display: inline-block;
+		padding-right: 15px;
+	}
+	.rest-info-desc-container{
+		margin-top: 15px;
 	}
 	.sidebar{
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: -295px;
-    width: 330px;
-    background: #504d53;
-    color: #cccccc;
-    z-index: 7;
-  }
+	    position: fixed;
+	    top: 0;
+	    bottom: 0;
+	    right: -295px;
+	    width: 330px;
+	    background: #504d53;
+	    color: #cccccc;
+	    z-index: 7;
+  	}
 </style>

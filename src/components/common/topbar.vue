@@ -26,10 +26,14 @@
 	  background: #1e89e0;
 	}
 	header{
+	  width: 1180px;
+	  margin: 0 auto;
 	  line-height: 60px;
+	  overflow: auto;
 	}
 	.header{
 	  width: 1180px;
+	  overflow: auto;
 	  margin: 0 auto;
 	  line-height: 60px;
 	  font-size: 14px;
@@ -41,15 +45,17 @@
 	  width: 10%;
 	  float: left;
 	  font-size: 16px;
-	  text-align: center;
+	  text-align: left;
 	}
 	.topbar-nav{
 	  width: 30%;
 	  float: right;
+	  display: flex;
 	}
 	.topbar-nav-item{
+	  flex: 1;
 	  display: inline-block;
 	  width: 30%;
-	  text-align: center;
+	  text-align: right;
 	}
 </style>

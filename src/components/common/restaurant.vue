@@ -47,21 +47,12 @@
 
 <style type="text/css" scoped>
 	.rest{
-		width: 25%;
+		width: 100%;
 		line-height: 30px;
-		float: left;
-	}
-	.rest-main:hover{
-		background: #f5f5f5;
 	}
 	.rest-main{
 		color: #333;
 		display: flex;
-		margin: 8px;
-		padding: 8px;
-		border: 1px solid #dddee1;
-		border-radius: 5px;
-		overflow: hidden;
 		background: #fff;
 		text-align: center;
 		position: relative;
@@ -112,5 +103,6 @@
 		line-height: normal;
 		text-align: center;
 		margin-right: 3px;
+		font-weight: bold;
 	}
 </style>
