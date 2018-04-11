@@ -21,7 +21,9 @@
 						<span
 							v-for="icon in restaurant.supports"
 							class="support-icon"
-							:style="{color: '#' + icon.icon_color}">{{ icon.icon_name }}</span>
+							:style="{color: '#' + icon.icon_color}">
+								{{ icon.icon_name }}
+						</span>
 					</div>
 				</div>
 		</router-link>
