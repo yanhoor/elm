@@ -28,6 +28,13 @@ export default new Router({
       component: (resolve) => require(['../views/login.vue'], resolve)
     },
     {
+      path: '/test',
+      meta: {
+        title: 'test'
+      },
+      component: (resolve) => require(['../views/test.vue'], resolve)
+    },
+    {
     	path: '*',
     	redirect: '/home'
     }

@@ -10,7 +10,7 @@
 		      <nav class="topbar-nav">
 		        <a class="topbar-nav-item">规则中心</a>
 		        <a class="topbar-nav-item">手机应用</a>
-		        <a class="topbar-nav-item">登录/注册</a>
+		        <router-link to="/login" class="topbar-nav-item">登录/注册</router-link>
 		      </nav>
 		    </div>
 		  </header>
@@ -56,6 +56,12 @@
 				</div>
 			</div>
 		</div>
+		<div class="rest-container">
+			<Rest
+				v-for="item in restaurantSortedList"
+				:restaurant="item"
+				:key="item.id"></Rest>
+		</div>
     	<div class="sidebar"></div>
 	</div>
 </template>
@@ -65,7 +71,7 @@
 		getFoodCategory,
 		getRestaurantCategory
 	} from '../service/getData.js';
-	import Rest from '../components/restaurant.vue';
+	import Rest from '../components/common/restaurant.vue';
 
 	export default{
 		components: {
@@ -111,11 +117,14 @@
 			handleSortRestaurant(type){
 				let list = [...this.restaurantList];
 				switch(type) {
+					//全部商家
 					case 'main_all':
 						break;
+					//主类
 					case 'only_main':
 						list = list.filter( item => item.category.includes(this.mainCate.name));
 						break;
+					//子类
 					case 'sub_cate':
 						list = list.filter( item => item.category.includes(this.cateSelected));
 						break;
@@ -127,7 +136,7 @@
 		computed: {
 			address(){
 				return this.$store.state.address;
-			}
+			},
 		},
 		created(){
 			getRestaurants(this.address.latitude, this.address.longitude).then( res => {
@@ -216,10 +225,10 @@
 	.category{
 		width: 1180px;
 		padding: 10px;
-		margin: 0 auto;
+		margin: 30px auto 0;
 		background: #fff;
-		border-radius: 6px;
-		box-shadow: 2px 2px 1px rgba(0,0,0,.2);
+		border-radius: 5px;
+		border: 1px solid #dddee1;
 	}
 	.category-desc{
 		float: left;
@@ -259,6 +268,12 @@
 	a.on{
 		color: #fff;
 		background: #0089dc;
+	}
+	.rest-container{
+		width: 1196px;
+		margin: 0 auto;
+		line-height: 30px;
+		margin-top: 30px;
 	}
 	.sidebar{
     position: fixed;
