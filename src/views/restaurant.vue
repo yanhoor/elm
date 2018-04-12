@@ -43,37 +43,38 @@
 			</div>
 		</div>
 		<div class="rest-display">
-			<div
-				@mouseover.prevent="showRestInfo = !showRestInfo"
-				@mouseout.prevent="showRestInfo = !showRestInfo"
-				v-for="item in restaurantSortedList"
-				class="rest-container">
-					<div class="rest-item">
-						<Rest
-							:restaurant="item"
-							:key="item.id">
-						</Rest>
-						<div
-							v-if="showRestInfo"
-							class="rest-info-container">
-							<div class="rest-info-top">
-								<span class="rest-info-title">{{ item.name }}</span>
-								<span class="rest-info-cate">{{ item.category }}</span>
+			<div class="rest-container">
+					<div
+						@mouseenter.self="handleMouseEvent(item, index, $event)"
+						@mouseleave.self="handleMouseEvent('leave', index, $event)"
+						v-for="( item, index ) in restaurantSortedList"
+						class="rest-item">
+							<Rest
+								:restaurant="item"
+								:key="item.id">
+							</Rest>
+					</div>
+					<div
+						v-if="showRestInfo"
+						class="rest-info-container"
+						:style="floatXY">
+						<div class="rest-info-top">
+							<span class="rest-info-title">{{ info.name }}</span>
+							<span class="rest-info-cate">{{ info.category }}</span>
+						</div>
+						<div class="rest-info-bottom">
+							<div
+								v-for="icon in info.supports"
+								class="rest-info-support-container">
+									<span class="rest-info-support-icon">{{ icon.icon_name  }}</span>
+									<span class="rest-info-support-desc">{{ icon.description  }}</span>
 							</div>
-							<div class="rest-info-bottom">
-								<div
-									v-for="sup in item.supports"
-									class="rest-info-support-container">
-										<span class="rest-info-support-icon">{{ sup.icon_name }}</span>
-										<span class="rest-info-support-desc">{{ sup.description }}</span>
-								</div>
-								<div class="rest-info-cost-container">
-									<span class="rest-info-cost">{{ item.piecewise_agent_fee.tips }}</span>
-									<span>平均{{ item.order_lead_time }}送达</span>
-								</div>
-								<div class="rest-info-desc-container">
-									<span>{{ item.promotion_info }}</span>
-								</div>
+							<div class="rest-info-cost-container">
+								<span class="rest-info-cost">{{ info.piecewise_agent_fee.tips }}</span>
+								<span>平均{{ info.order_lead_time }}送达</span>
+							</div>
+							<div class="rest-info-desc-container">
+								<span>{{ info.description }}</span>
 							</div>
 						</div>
 					</div>
@@ -106,6 +107,8 @@
 				subCate: {}, //选中的餐馆子类
 				cateSelected: '', //主类与子类name组成的字符串
 				showRestInfo: false, //是否显示餐馆信息
+				info: '', //鼠标停留处的餐馆对象
+				floatXY: {}, //浮动元素的坐标对象
 			}
 		},
 		methods: {
@@ -151,6 +154,33 @@
 					default:
 				}
 				this.restaurantSortedList = list;
+			},
+			handleMouseEvent(item, index, event){
+				let floatOnLeft = (index + 1) % 4 === 0;
+				//X，Y是绝对坐标
+				let x,y = 0;
+				x = event.target.getBoundingClientRect().left + document.documentElement.scrollLeft;
+				y = event.target.getBoundingClientRect().top + document.documentElement.scrollTop;
+
+				let floatX, floatY = 0;
+				if (floatOnLeft) {
+					floatX = x - 250 + 'px';
+				}else{
+					floatX = x + 300 + 'px';
+				}
+				floatY = y + 'px';
+
+				if (typeof item === 'object') {
+					this.showRestInfo = true;
+					this.info = item;
+					this.floatXY = {
+						left: floatX,
+						top: floatY
+					};
+				}else{
+					this.showRestInfo = false;
+				}
+				//console.log('mouse event', x + ' , ' + y + item.name);
 			},
 		},
 		computed: {
@@ -264,30 +294,23 @@
 		overflow: auto;
 	}
 	.rest-container{
-		position: relative;
-		float: left;
-		width: 25%;
+		width: 100%;
+		overflow: hidden;
 	}
 	.rest-item{
-		margin: 8px;
-		background: #fff;
-		padding: 8px;
-		border-radius: 5px;
-		border: 1px solid #dddee1;
-	}
-	.rest-item:hover{
-		background: #f5f5f5;
+		width: 25%;
+		float: left;
+		background: #f7f7f7;
 	}
 	.rest-info-container{
 		position: absolute;
-		width: 100%;
-		left: 100%;
 		top: 0;
 		z-index: 1000;
 		padding: 10px 10px;
 		border-radius: 6px;
 		border: 1px solid #dddee1;
-		background: #fff;
+		box-shadow: 0 0 10px #000;
+		background: #f7fcf6;
 	}
 	.rest-info-container>div{
 		color: #000;

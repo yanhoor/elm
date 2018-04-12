@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VueBus from './config/vue-bus.js'
 import Vuex from 'vuex'
 import iView from 'iView'
 import 'iview/dist/styles/iview.css'
@@ -13,6 +14,7 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 Vue.use(iView);
 Vue.use(Vuex);
+Vue.use(VueBus);
 
 const store = new Vuex.Store({
 	state: {

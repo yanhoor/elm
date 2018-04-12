@@ -47,13 +47,19 @@
 
 <style type="text/css" scoped>
 	.rest{
-		width: 100%;
 		line-height: 30px;
+		margin: 8px;
+		padding: 8px;
+		border-radius: 5px;
+		background: #fff;
+		border: 1px solid #dddee1;
+	}
+	.rest:hover{
+		background: #dddee1;
 	}
 	.rest-main{
 		color: #333;
 		display: flex;
-		background: #fff;
 		text-align: center;
 		position: relative;
 	}
