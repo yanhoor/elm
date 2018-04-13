@@ -1,6 +1,6 @@
 <template>
 	<div class="rest">
-		<router-link to="#"
+		<router-link :to="'/restaurant/' + restaurant.id"
 			class="rest-main">
 				<div class="left-container">
 					<img :src="getImgPath(restaurant.image_path)">

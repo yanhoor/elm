@@ -14,7 +14,7 @@
 			</svg>
 		</div>
 		<div class="api-test">
-			<img src="#">
+			<img src="#" ref="img">
 		</div>
 		<div class="rating_container">
 			<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="grey_fill">
@@ -23,10 +23,19 @@
 			   <polygon points="0,0 100,30 50,80"/>
 			</svg>
 	    </div>
+	    <div class="big-box" ref="bigBox"></div>
+	    <button @click.prevent="handleClickToImg">返回上面图像位置</button>
 	</div>
 </template>
 <script type="text/javascript">
-	export default {}
+	export default {
+		methods: {
+			handleClickToImg(){
+				let imgY = this.$refs.img.getBoundingClientRect().top + document.documentElement.scrollTop;
+				window.scrollTo(0, imgY);
+			}
+		}
+	}
 </script>
 <style type="text/css" scoped>
 	.test{
@@ -55,5 +64,10 @@
 		width: 52px;
 		height: 11px;
 		border: 1px solid #333;
+	}
+	.big-box{
+		width: 100%;
+		height: 1200px;
+		background: #999999;
 	}
 </style>

@@ -39,6 +39,7 @@
                     <ul class="dialog-search-city-list" v-if="cityFiltedList.length">
                       <li
                         v-for="item in cityFiltedList"
+                        :key="item.id"
                         @click=handleSelectCity(item)
                         class="dialog-search-city-list-item">
                           <span class="name-span">{{item.name}}</span>
@@ -78,6 +79,7 @@
             <ul class="address-detail-list" v-if="detailAddressList.length">
               <li
                 v-for="item in detailAddressList"
+                :key="item.id"
                 @click="handleSelectAddress(item)">
                   <p class="address-detail-list-name">{{item.name}}</p>
                   <p class="address-detail-list-address">{{item.address}}</p>
@@ -137,8 +139,9 @@
         });
       },
       handleSelectAddress(address){
+        console.log('select address');
         this.$store.commit('changeAddress', address);
-        this.$router.push('/restaurant');
+        this.$router.push('/list');
       }
     },
     created(){
@@ -242,13 +245,13 @@
     background-color: #fff;
     box-shadow: 0 20px 20px 0 rgba(0,0,0,.085);
   }
-  .city-dialog::before{
+  .city-dialog---::before{
     position: absolute;
     content: '';
     top: 0;
     left: 50px;
-    margin-top: -20px;
-    border: 10px solid transparent;
+    margin-top: -30px;
+    border: 60px solid transparent;
     border-bottom-color: #fff;
   }
   .dialog-container{

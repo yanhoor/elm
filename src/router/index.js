@@ -14,9 +14,16 @@ export default new Router({
       component: (resolve) => require(['../views/home.vue'], resolve)
     },
     {
-      path: '/restaurant',
+      path: '/list',
       meta: {
-      	title: 'restaurant'
+      	title: 'list'
+      },
+      component: (resolve) => require(['../views/list.vue'], resolve)
+    },
+    {
+      path: '/restaurant/:id',
+      meta: {
+        title: 'restaurant'
       },
       component: (resolve) => require(['../views/restaurant.vue'], resolve)
     },
