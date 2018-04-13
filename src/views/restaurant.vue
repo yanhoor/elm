@@ -85,12 +85,55 @@
 				</Input>
 			</div>
 		</div>
+		<div class="content-container">
+			<div ref="content" class="content-main">
+				<div :class="{'food-cate-left': showOnLeft, 'food-cate': !showOnLeft}">
+					<a
+						v-for="( cate, key ) in foodCate"
+						:class="{active: cate === selectedCate}"
+						@click="handleClickFoodCate(key)">{{ cate }}</a>
+				</div>
+				<div class="food-item-container">
+					<div
+						:ref="'foodItem' + key"
+						v-for="( item, key ) in menu"
+						class="food-item">
+						<h2 class="food-item-title">
+							{{ item.name }}
+							<span>{{ item.description }}</span>
+						</h2>
+						<div
+							v-for="food in item.foods"
+							class="food">
+								<img :src="'/img/' + food.image_path">
+								<div class="food-detail-container">
+									<h3>{{ food.name }}</h3>
+									<star-rating
+										:rating="food.rating"
+										:increment="0.1"
+										:read-only="true"
+										:star-size="15"
+										:show-rating="false"></star-rating>
+									<span>({{ food.rating_count }})</span>
+									<span>月售{{ food.month_sales }}份</span>
+									<div class="food-min-price-container">
+										<span class="food-min-price">￥{{ food.specfoods[0].price}}</span>
+										<span>起</span>
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="announcement-container">公告区域</div>
+		</div>
 		<footer-comp></footer-comp>
 	</div>
 </template>
 <script type="text/javascript">
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
+	import StarRating from 'vue-star-rating';
 	import {
 		getRestaurantInfo,
 		getMenu,
@@ -103,24 +146,61 @@
 	export default{
 		components: {
 			TopBar,
-			FooterComp
+			FooterComp,
+			StarRating
 		},
 		data(){
 			return {
 				restaurant: {}, //餐馆对象
 				menu: [], //食品列表
+				foodCate: [], //食品分类
 				ratings: [], //客户评价信息
 				ratingScore: {}, //餐馆评分
 				ratingTags: [], //客户评价标签
+				selectedCate: '', //选中的食品类别
+				showOnLeft: false, //控制菜品分类位置
 			};
+		},
+		methods: {
+			handleClickFoodCate(key){
+				this.selectedCate = this.foodCate[key];
+				let y = this.$refs['foodItem' + key][0].getBoundingClientRect().top + document.documentElement.scrollTop;
+				window.scrollTo(0, y);
+				console.log('ref content is ', this.$refs.content.getBoundingClientRect().top);
+			}
 		},
 		created(){
 			let id = this.$route.params.id;
 			getRestaurantInfo(id).then( res => this.restaurant = res);
-			getMenu(id).then( res => this.menu = res);
+			getMenu(id).then( res => {
+				this.menu = res;
+				for( let item of res){
+					this.foodCate.push(item.name);
+				}
+				this.selectedCate = this.foodCate[0];
+			});
 			getRestaurantRatings(id).then(res => this.ratings = res);
 			getRestaurantRatingScores(id).then( res => this.ratingScore = res);
 			getRestaurantRatingTags(id).then( res => this.ratingTags = res);
+		},
+		mounted(){
+			let _this = this;
+			function mouseMoveHandler (e) {
+				if (_this.$refs.content.getBoundingClientRect().top < 0) {
+					console.log(_this.$refs.content.getBoundingClientRect().top);
+					_this.showOnLeft = true;
+					console.log('showOnLeft is ', _this.showOnLeft);
+				}else{
+					_this.showOnLeft = false;
+					console.log('showOnLeft is ', _this.showOnLeft);
+				}
+			}
+			window.mouseHandler = mouseMoveHandler;
+			document.addEventListener('mousewheel', window.mouseHandler);
+			console.log('mousemove');
+		},
+		beforeDestroy(){
+			document.removeEventListener('mousewheel', window.mouseHandler);
 		}
 	}
 </script>
@@ -168,6 +248,7 @@
 		top: 142px;
 		width: 100%;
 		border-radius: 6px;
+		box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
 		max-height: 900px;
 		background: #fff;
 		color: #333;
@@ -255,6 +336,8 @@
 		width: 1180px;
 		margin: 0 auto;
 		overflow: hidden;
+		border-radius: 6px;
+		background: #fff;
 	}
 	.pane-control{
 		float: left;
@@ -290,6 +373,144 @@
 	.search-pane{
 		width: 25%;
 		float: right;
-		padding-left: 10px;
+		padding: 0 10px;
+	}
+	.content-container{
+		width: 1180px;
+		margin: 0 auto;
+		overflow: hidden;
+		padding-top: 20px;
+	}
+	.content-main{
+		display: inline-block;
+		float: left;
+		width: 75%;
+	}
+	.food-cate{
+		width: 100%;
+		padding: 10px 15px 5px;
+		border: 1px solid #eee;
+		background: #fff;
+	}
+	.food-cate>a{
+		display: inline-block;
+		margin: 5px;
+		padding: 3px 10px;
+		width: 18%;
+		border-radius: 2px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		color: #333;
+		font-size: 14px;
+	}
+	.food-cate>a.active{
+		background-color: #0089dc;
+		color: #fff;
+	}
+	.food-cate-left{
+		position: fixed;
+		top: 0;
+		margin-left: -150px;
+		width: 130px;
+		border: none;
+		border-right: 1px solid #ddd;
+		background-color: transparent;
+		padding-right: 10px;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+	.food-cate-left>a{
+		position: relative;
+		display: block;
+		padding: 15px 15px 15px 0;
+		width: auto;
+		text-align: right;
+		overflow: visible;
+		font-size: 12px;
+		color: #333;
+	}
+	.food-cate-left>a.active{
+		color: #0089dc;
+	}
+	.food-cate-left>a:after{
+		content: '';
+		position: absolute;
+		top: 50%;
+		right: -4px;
+		margin-top: -6px;
+		width: 12px;
+		height: 12px;
+		background-color: #ddd;
+		border: 2px solid #f7f7f7;
+		border-radius: 50%;
+	}
+	.food-cate-left>a.active:after{
+		background-color: #0089dc;
+	}
+	.food-item-container{
+		width: 100%;
+	}
+	.food-item{
+		width: 102%;
+		overflow: hidden;
+	}
+	.food-item-title{
+		padding: 20px 0 10px 15px;
+		font-size: 20px;
+		font-weight: 400;
+		color: #333;
+	}
+	.food-item-title span{
+		font-size: 12px;
+		color: #999;
+	}
+	.food{
+		display: flex;
+		float: left;
+		margin-right: 2%;
+		margin-bottom: 15px;
+		padding-right: 10px;
+		border: 1px solid #eee;
+		background: #fff;
+		width: 48%;
+	}
+	.food>img{
+		flex-grow: 0;
+		width: 100px;
+		height: 100px;
+		margin-right: 14px;
+	}
+	.food-detail-container{
+		position: relative;
+		flex-grow: 1;
+		display: inline-block;
+	}
+	.food-detail-container>h3{
+		font-size: 16px;
+		font-weight: 700;
+		margin-top: 10px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		word-break: keep-all;
+	}
+	.food-detail-container>div{
+		max-width: 200px;
+		display: inline-block;
+	}
+	.food-min-price-container{
+		position: absolute;
+		bottom: 10px;
+		left: 0;
+	}
+	.food-min-price{
+		font-size: 14px;
+		font-weight: 700;
+		color: #f74342;
+	}
+	.announcement-container{
+		display: inline-block;
+		width: 25%;
 	}
 </style>
