@@ -96,6 +96,7 @@
 				<div class="food-item-container">
 					<div
 						:ref="'foodItem' + key"
+						:id="'foodItem' + key"
 						v-for="( item, key ) in menu"
 						class="food-item">
 						<h2 class="food-item-title">
@@ -157,9 +158,56 @@
 				ratings: [], //客户评价信息
 				ratingScore: {}, //餐馆评分
 				ratingTags: [], //客户评价标签
-				selectedCate: '', //选中的食品类别
+				//itemList: [],
+				selectedCate: '',
 				showOnLeft: false, //控制菜品分类位置
+				scrollTop: 0, //滚动条滚动距离
 			};
+		},
+		computed: {
+			//食品详细分类元素对象列表
+			itemList(){
+				let list = [];
+				for( let item of this.menu){
+					let index = this.menu.indexOf(item);
+					let ele = document.getElementById('foodItem' + index);
+					if(ele){
+						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop;
+						list.push({
+							key: index,
+							foodCate: item.name,
+							ele: ele,
+							offsetTop: offsetTop,
+						});
+					}
+				}
+				return list;
+			},
+			/*//选中的食品类别
+			selectedCate(){
+				let current = '';
+				if(this.itemList.length){
+					console.log('itemList', this.itemList);
+					for( let i of this.itemList){
+						if (this.scrollTop >= i.offsetTop - 150) {
+							current = i.foodCate;
+						}
+					}
+				}
+				return current;
+			}*/
+		},
+		watch: {
+			scrollTop(){
+				let current = '';
+				for( let i of this.itemList){
+					if (this.scrollTop >= i.offsetTop-250) {
+						current = i.foodCate;
+						console.log('current', current);
+					}
+				}
+				this.selectedCate = current;
+			}
 		},
 		methods: {
 			handleClickFoodCate(key){
@@ -167,6 +215,31 @@
 				let y = this.$refs['foodItem' + key][0].getBoundingClientRect().top + document.documentElement.scrollTop;
 				window.scrollTo(0, y);
 				console.log('ref content is ', this.$refs.content.getBoundingClientRect().top);
+			},
+			mouseMoveHandler (e) {
+				if (this.$refs.content.getBoundingClientRect().top < 0) {
+					console.log(this.$refs.content.getBoundingClientRect().top);
+					this.showOnLeft = true;
+					//console.log('showOnLeft is ', this.showOnLeft);
+				}else{
+					this.showOnLeft = false;
+					//console.log('showOnLeft is ', this.showOnLeft);
+				}
+			},
+			scroll(e){
+				console.log('scrolling');
+				this.scrollTop = document.documentElement.scrollTop + document.body.scrollTop;
+				console.log('documentElement ', document.documentElement.scrollTop);
+				console.log('body ', document.body.scrollTop);
+				console.log('scrollTop ', this.scrollTop);
+			},
+			bindEvent(){
+				document.addEventListener('scroll', this.scroll, false);
+				document.addEventListener('mousewheel', this.mouseMoveHandler,false);
+			},
+			unbindEvent(){
+				document.removeEventListener('scroll', this.scroll, false);
+				document.removeEventListener('mousewheel', this.mouseMoveHandler,false);
 			}
 		},
 		created(){
@@ -177,30 +250,17 @@
 				for( let item of res){
 					this.foodCate.push(item.name);
 				}
-				this.selectedCate = this.foodCate[0];
+				//this.selectedCate = this.foodCate[0];
 			});
 			getRestaurantRatings(id).then(res => this.ratings = res);
 			getRestaurantRatingScores(id).then( res => this.ratingScore = res);
 			getRestaurantRatingTags(id).then( res => this.ratingTags = res);
 		},
 		mounted(){
-			let _this = this;
-			function mouseMoveHandler (e) {
-				if (_this.$refs.content.getBoundingClientRect().top < 0) {
-					console.log(_this.$refs.content.getBoundingClientRect().top);
-					_this.showOnLeft = true;
-					console.log('showOnLeft is ', _this.showOnLeft);
-				}else{
-					_this.showOnLeft = false;
-					console.log('showOnLeft is ', _this.showOnLeft);
-				}
-			}
-			window.mouseHandler = mouseMoveHandler;
-			document.addEventListener('mousewheel', window.mouseHandler);
-			console.log('mousemove');
+			this.bindEvent();
 		},
 		beforeDestroy(){
-			document.removeEventListener('mousewheel', window.mouseHandler);
+			this.unbindEvent();
 		}
 	}
 </script>
