@@ -276,7 +276,7 @@
 	}
 	.category-item-container{
 		display: inline-block;
-		max-width: 1080px;
+		max-width: 1000px;
 	}
 	.category-item-container a{
 		display: inline-block;

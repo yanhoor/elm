@@ -35,6 +35,7 @@
 	.footer-container{
 		width: 1180px;
 		margin: 0 auto;
+		overflow: hidden;
 	}
 	.footer-link{
 		width: 15%;

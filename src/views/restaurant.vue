@@ -15,23 +15,23 @@
 					<ul>
 						<li class="rating-detail">
 							<div class="rating-amount-info">
-								<h2>{{ ratingScore.overall_score }}</h2>
+								<h2>{{ getFormatNum(ratingScore.overall_score, 'score') }}</h2>
 								<p>
 									综合评价<br>
 									<span class="compare-rating-desc">高于周边商家</span>
-									<span class="compare-rating">{{ ratingScore.compare_rating}}</span>
+									<span class="compare-rating">{{ getFormatNum(ratingScore.compare_rating)}}</span>
 								</p>
 							</div>
 							<div class="rating-service-container">
 								<p>
 									服务态度
 									<Rate :value="ratingScore.service_score" disabled></Rate>
-									<span class="rating-service-score">{{ ratingScore.service_score }}</span>
+									<span class="rating-service-score">{{ getFormatNum(ratingScore.service_score, 'score') }}</span>
 								</p>
 								<p>
 									菜品评价
 									<Rate :value="ratingScore.food_score" disabled></Rate>
-									<span class="rating-service-score">{{ ratingScore.food_score }}</span>
+									<span class="rating-service-score">{{ getFormatNum(ratingScore.food_score, 'score') }}</span>
 								</p>
 							</div>
 						</li>
@@ -87,15 +87,16 @@
 		</div>
 		<div class="content-container">
 			<div ref="content" class="content-main">
-				<div :class="{'food-cate-left': showOnLeft, 'food-cate': !showOnLeft}">
+				<div
+					id="foodCate"
+					:class="{'food-cate-left': showOnLeft, 'food-cate': !showOnLeft}">
 					<a
 						v-for="( cate, key ) in foodCate"
 						:class="{active: cate === selectedCate}"
 						@click="handleClickFoodCate(key)">{{ cate }}</a>
 				</div>
-				<div class="food-item-container">
+				<div id="foodItemContainer" class="food-item-container">
 					<div
-						:ref="'foodItem' + key"
 						:id="'foodItem' + key"
 						v-for="( item, key ) in menu"
 						class="food-item">
@@ -158,8 +159,7 @@
 				ratings: [], //客户评价信息
 				ratingScore: {}, //餐馆评分
 				ratingTags: [], //客户评价标签
-				//itemList: [],
-				selectedCate: '',
+				selectedCate: '', //选中的食品类别
 				showOnLeft: false, //控制菜品分类位置
 				scrollTop: 0, //滚动条滚动距离
 			};
@@ -183,63 +183,50 @@
 				}
 				return list;
 			},
-			/*//选中的食品类别
-			selectedCate(){
-				let current = '';
-				if(this.itemList.length){
-					console.log('itemList', this.itemList);
-					for( let i of this.itemList){
-						if (this.scrollTop >= i.offsetTop - 150) {
-							current = i.foodCate;
-						}
-					}
-				}
-				return current;
-			}*/
 		},
 		watch: {
 			scrollTop(){
 				let current = '';
 				for( let i of this.itemList){
-					if (this.scrollTop >= i.offsetTop-250) {
+					if (this.scrollTop >= i.offsetTop-350) {
 						current = i.foodCate;
 						console.log('current', current);
 					}
 				}
 				this.selectedCate = current;
-			}
+			},
 		},
 		methods: {
 			handleClickFoodCate(key){
+				let offset = 0;
+				if (!this.showOnLeft) offset = 183;
+				this.showOnLeft = true;
 				this.selectedCate = this.foodCate[key];
-				let y = this.$refs['foodItem' + key][0].getBoundingClientRect().top + document.documentElement.scrollTop;
+				let y = this.itemList[key].ele.getBoundingClientRect().top + document.documentElement.scrollTop - offset;
 				window.scrollTo(0, y);
-				console.log('ref content is ', this.$refs.content.getBoundingClientRect().top);
 			},
-			mouseMoveHandler (e) {
+			scroll(e){
 				if (this.$refs.content.getBoundingClientRect().top < 0) {
 					console.log(this.$refs.content.getBoundingClientRect().top);
 					this.showOnLeft = true;
-					//console.log('showOnLeft is ', this.showOnLeft);
 				}else{
 					this.showOnLeft = false;
-					//console.log('showOnLeft is ', this.showOnLeft);
 				}
-			},
-			scroll(e){
-				console.log('scrolling');
 				this.scrollTop = document.documentElement.scrollTop + document.body.scrollTop;
-				console.log('documentElement ', document.documentElement.scrollTop);
-				console.log('body ', document.body.scrollTop);
-				console.log('scrollTop ', this.scrollTop);
+			},
+			getFormatNum(num, type){
+				if (type === 'score') {
+					return parseInt(num).toFixed(1);
+				}else{
+					console.log('num ', Number(num));
+					return (Number(num)*100).toFixed(1) + '%';
+				}
 			},
 			bindEvent(){
 				document.addEventListener('scroll', this.scroll, false);
-				document.addEventListener('mousewheel', this.mouseMoveHandler,false);
 			},
 			unbindEvent(){
 				document.removeEventListener('scroll', this.scroll, false);
-				document.removeEventListener('mousewheel', this.mouseMoveHandler,false);
 			}
 		},
 		created(){
@@ -250,7 +237,6 @@
 				for( let item of res){
 					this.foodCate.push(item.name);
 				}
-				//this.selectedCate = this.foodCate[0];
 			});
 			getRestaurantRatings(id).then(res => this.ratings = res);
 			getRestaurantRatingScores(id).then( res => this.ratingScore = res);
@@ -473,6 +459,7 @@
 		top: 0;
 		margin-left: -150px;
 		width: 130px;
+		max-height: 700px;
 		border: none;
 		border-right: 1px solid #ddd;
 		background-color: transparent;
@@ -480,7 +467,13 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
+	.food-cate-left::-webkit-scrollbar{
+		background: #b7b7b7;
+		width: 4px;
+		height: 4px;
+	}
 	.food-cate-left>a{
+		transition: color .3s;
 		position: relative;
 		display: block;
 		padding: 15px 15px 15px 0;
@@ -492,6 +485,7 @@
 	}
 	.food-cate-left>a.active{
 		color: #0089dc;
+		font-size: 14px;
 	}
 	.food-cate-left>a:after{
 		content: '';
