@@ -171,6 +171,55 @@
 						</li>
 					</ul>
 				</template>
+				<template v-if="panel === 'quality'">
+					<div class="quality-container">
+						<span>营业资质</span>
+						<div class="quality-detail-container">
+							<span>食品安全监督公示</span>
+							<div class="quality-result-container">
+								<img >
+								<span>检查结果:</span>
+								<span
+									v-if="restaurant.status === 1"
+									:class="{ 'good-quality': restaurant.status === 1}">
+										良好
+								</span>
+								<span v-else :class="{ 'bad-quality': restaurant.status !== 1}">差</span>
+							</div>
+							<ul class="quality-info-container">
+								<li>
+									<span>单位名称：</span>
+									<span>{{ restaurant.identification.company_name }}</span>
+								</li>
+								<li>
+									<span>经营地址：</span>
+									<span>{{ restaurant.identification.registered_address }}</span>
+								</li>
+								<li>
+									<span>法定代表人：</span>
+									<span>{{ restaurant.identification.legal_person }}</span>
+								</li>
+								<li>
+									<span>许可证号：</span>
+									<span>{{ restaurant.identification.licenses_number }}</span>
+								</li>
+								<li>
+									<span>经营范围：</span>
+									<span>{{ restaurant.identification.operation_period }}</span>
+								</li>
+								<li>
+									<span>有效期：</span>
+									<span>{{ restaurant.identification.licenses_date }}</span>
+								</li>
+							</ul>
+						</div>
+						<div class="quality-img">
+							<span>商家从业资质</span>
+							<img :src="'/img/' + restaurant.license.business_license_image">
+							<img :src="'/img/' + restaurant.catering_service_license_image">
+						</div>
+					</div>
+				</template>
 			</div>
 			<div class="announcement-container">
 				<div class="announcement-detail">
@@ -678,6 +727,80 @@
 		width: 100%;
 		padding: 10px;
 		display: block;
+	}
+	.quality-container>span{
+		display: block;
+		padding: 10px 15px;
+		background: #0089dc;
+		color: #fff;
+		font-size: 36px;
+		font-weight: 700;
+		text-align: center;
+	}
+	.quality-detail-container{
+		padding: 0 15px;
+		background: #fff;
+		color: #000;
+	}
+	.quality-detail-container>span{
+		display: block;
+		padding: 10px 0;
+		font-size: 30px;
+		font-weight: 700;
+		text-align: left;
+	}
+	.quality-result-container{
+		padding: 36px 0 36px 24px;
+	}
+	.quality-result-container>img{
+		display: inline-block;
+		float: left;
+		width: 100px;
+		height: 100px;
+		margin-right: 50px;
+		border-radius: 50%;
+		background: green;
+	}
+	.quality-result-container>span{
+		display: inline-block;
+		height: 100px;
+		font-size: 24px;
+		line-height: 100px;
+	}
+	.good-quality{
+		margin-left: 15px;
+		color: #7ed321;
+	}
+	.bad-quality{
+		margin-left: 15px;
+		color: #red;
+	}
+	.quality-info-container li{
+		padding: 15px 0;
+		border-top: 1px solid #eeeeee;
+	}
+	.quality-info-container span{
+		line-height: 60px;
+		font-size: 24px;
+	}
+	.quality-img{
+		padding: 0 15px;
+		margin-top: 15px;
+		background: #fff;
+	}
+	.quality-img>span{
+		display: block;
+		padding: 15px 0;
+		font-size: 30px;
+		font-weight: 700;
+		color: #000;
+		border-bottom: 1px solid #eeeeee;
+	}
+	.quality-img>img{
+		display: inline-block;
+		width: 40%;
+		margin: 35px;
+		border: 1px solid #eee;
 	}
 	.announcement-container{
 		display: inline-block;
