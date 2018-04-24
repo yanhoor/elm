@@ -1,4 +1,4 @@
-import axios from '../config/axios.js';
+import {axios1 as axios, fetch} from '../config/axios.js';
 
 //1. 获取城市列表
 export const guessCity = () => axios('/v1/cities', {type: 'guess'});
@@ -98,6 +98,8 @@ export const getUserInfo = () => axios('/v1/user');
 export const login = (username, password, captcha_code) => axios('/v2/login', {
 	username, password, captcha_code
 }, 'post');
+/*export const login = (username, password, captcha_code) =>
+	fetch('/v2/login', {username, password, captcha_code}, 'POST');*/
 //26. 退出
 export const signout = () => axios('/v2/signout');
 //27. 修改密码

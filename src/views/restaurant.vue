@@ -62,14 +62,14 @@
 		</div>
 		<div class="food-filter-container">
 			<div class="pane-control">
-				<a class="pane-control-item" @click="handleSwitchPanel('food')">所有商品</a>
-				<a class="pane-control-item" @click="handleSwitchPanel('rating')">评价</a>
-				<a class="pane-control-item" @click="handleSwitchPanel('quality')">商家资质</a>
+				<a :class="{'pane-control-item': true, 'active': panel === 'food'}" @click="handleSwitchPanel('food')">所有商品</a>
+ 				<a :class="{'pane-control-item': true, 'active': panel === 'rating'}" @click="handleSwitchPanel('rating')">评价</a>
+ 				<a :class="{'pane-control-item': true, 'active': panel === 'quality'}" @click="handleSwitchPanel('quality')">商家资质</a>
 				<span class="food-filter">
-					<a>默认排序</a>
-					<a>评分</a>
-					<a>销量</a>
-					<a>价格</a>
+					<a @click="handleClickSort('default')" :class="{'food-filter-type': true, 'active': sortType === 'default'}">默认排序</a>
+					<a @click="handleClickSort('score')" :class="{'food-filter-type': true, 'active': sortType === 'score'}">评分 ⬇</a>
+					<a @click="handleClickSort('sale')" :class="{'food-filter-type': true, 'active': sortType === 'sale'}">销量 ⬇</a>
+					<a @click="handleClickSort('price')" :class="{'food-filter-type': true, 'active': sortType === 'price'}">价格 ⬇</a>
 					<span class="pane-switch">
 						<Icon type="grid" size="24"></Icon>
 						<Icon type="ios-list-outline" size="24"></Icon>
@@ -100,6 +100,7 @@
 					</div>
 					<div id="foodItemContainer" class="food-item-container">
 						<div
+							v-if="sortType === 'default'"
 							:id="'foodItem' + key"
 							v-for="( item, key ) in menu"
 							:key="key"
@@ -271,6 +272,7 @@
 				ratingTags: [], //客户评价标签
 				selectedCate: '热销榜', //选中的食品类别
 				selectedRatingCate: '全部', //选中的评价分类
+				sortType: 'default', //排序方式
 				showOnLeft: false, //控制菜品分类位置
 				scrollTop: 0, //滚动条滚动距离
 				panel: 'food', //控制显示食品或评价或商家资质
@@ -321,6 +323,9 @@
 			},
 			handleSwitchPanel(type){
 				this.panel = type;
+			},
+			handleClickSort(type){
+				this.sortType = type;
 			},
 			scroll(e){
 				if (this.$refs.content.getBoundingClientRect().top < 0) {
@@ -510,18 +515,26 @@
 		text-align: center;
 		color: #333;
 		font-size: 16px;
+		transition: all .3s ease-in-out;
+	}
+	.pane-control-item.active{
+		color: #0089dc;
+		border-bottom: 3px solid #0089dc;
 	}
 	.food-filter{
 		float: right;
 		display: inline-block;
 		line-height: 60px;
 	}
-	.food-filter>a{
+	.food-filter-type{
 		color: #333;
 		display: inline-block;
 		padding: 0 15px;
 		font-size: 14px;
 		line-height: 1;
+	}
+	.food-filter-type.active{
+		color: #0089dc;
 	}
 	.pane-switch{
 		display: inline-block;
