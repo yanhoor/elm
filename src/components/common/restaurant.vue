@@ -3,7 +3,7 @@
 		<router-link :to="'/restaurant/' + restaurant.id"
 			class="rest-main">
 				<div class="left-container">
-					<img :src="getImgPath(restaurant.image_path)">
+					<img :src="'img/' + restaurant.image_path">
 					<span>{{restaurant.order_lead_time}}</span>
 				</div>
 				<div class="right-container">

@@ -62,9 +62,9 @@
 		</div>
 		<div class="food-filter-container">
 			<div class="pane-control">
-				<a class="pane-control-item">所有商品</a>
-				<a class="pane-control-item">评价</a>
-				<a class="pane-control-item">商家资质</a>
+				<a class="pane-control-item" @click="handleSwitchPanel('food')">所有商品</a>
+				<a class="pane-control-item" @click="handleSwitchPanel('rating')">评价</a>
+				<a class="pane-control-item" @click="handleSwitchPanel('quality')">商家资质</a>
 				<span class="food-filter">
 					<a>默认排序</a>
 					<a>评分</a>
@@ -87,47 +87,107 @@
 		</div>
 		<div class="content-container">
 			<div ref="content" class="content-main">
-				<div
-					id="foodCate"
-					:class="{'food-cate-left': showOnLeft, 'food-cate': !showOnLeft}">
-					<a
-						v-for="( cate, key ) in foodCate"
-						:class="{active: cate === selectedCate}"
-						@click="handleClickFoodCate(key)">{{ cate }}</a>
-				</div>
-				<div id="foodItemContainer" class="food-item-container">
+				<template v-if="panel === 'food'">
 					<div
-						:id="'foodItem' + key"
-						v-for="( item, key ) in menu"
-						class="food-item">
-						<h2 class="food-item-title">
-							{{ item.name }}
-							<span>{{ item.description }}</span>
-						</h2>
+						id="foodCate"
+						:class="{'food-cate-left': showOnLeft, 'food-cate': !showOnLeft}">
+						<a
+							v-for="( cate, key ) in foodCate"
+							:class="{active: cate === selectedCate}"
+							@click="handleClickFoodCate(key)">
+								{{ cate }}
+						</a>
+					</div>
+					<div id="foodItemContainer" class="food-item-container">
 						<div
-							v-for="food in item.foods"
-							class="food">
-								<img :src="'/img/' + food.image_path">
-								<div class="food-detail-container">
-									<h3>{{ food.name }}</h3>
-									<star-rating
-										:rating="food.rating"
-										:increment="0.1"
-										:read-only="true"
-										:star-size="15"
-										:show-rating="false"></star-rating>
-									<span>({{ food.rating_count }})</span>
-									<span>月售{{ food.month_sales }}份</span>
-									<div class="food-min-price-container">
-										<span class="food-min-price">￥{{ food.specfoods[0].price}}</span>
-										<span>起</span>
+							:id="'foodItem' + key"
+							v-for="( item, key ) in menu"
+							:key="key"
+							class="food-item">
+							<h2 class="food-item-title">
+								{{ item.name }}
+								<span>{{ item.description }}</span>
+							</h2>
+							<div
+								v-for="food in item.foods"
+								class="food">
+									<img :src="'/img/' + food.image_path">
+									<div class="food-detail-container">
+										<h3>{{ food.name }}</h3>
+										<star-rating
+											:rating="food.rating"
+											:increment="0.1"
+											:read-only="true"
+											:star-size="15"
+											:show-rating="false"></star-rating>
+										<span>({{ food.rating_count }})</span>
+										<span>月售{{ food.month_sales }}份</span>
+										<div class="food-min-price-container">
+											<span class="food-min-price">￥{{ food.specfoods[0].price}}</span>
+											<span>起</span>
+										</div>
+									</div>
+							</div>
+						</div>
+					</div>
+				</template>
+				<template v-if="panel === 'rating'">
+					<div class="rating-cate">
+						<a
+							:class="{active: item.name === selectedRatingCate}"
+							@click="handleClickRatingCate(index)"
+							v-for="(item, index) of ratingTags">
+								{{ item.name + '(' + item.count + ')' }}
+						</a>
+					</div>
+					<ul class="rating-item-container">
+						<li v-for="item of ratings">
+							<img :src="getImgPath(item.avatar)" :alt="item.username" class="rating-item-user-avatar">
+							<div class="rating-item-detail-container">
+								<div class="rating-item-top">
+									<div class="rating-item-user">
+										<span>{{ item.username }}</span>
+										<span>{{ item.rated_at }}</span>
+									</div>
+									<div class="rating-item-score">
+										<star-rating
+											:rating="item.rating_star"
+											:increment="0.1"
+											:read-only="true"
+											:star-size="15"
+											:show-rating="false"></star-rating>
+											<span>{{ item.time_spent_desc }}</span>
 									</div>
 								</div>
-						</div>
+								<div class="rating-item-bottom">
+									<div
+										v-for="food of item.item_ratings"
+										class="rating-item-food">
+											<img :src="getImgPath(food.image_hash)" :title="food.food_name">
+											<span :title="food.food_name">{{ food.food_name }}</span>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</template>
+			</div>
+			<div class="announcement-container">
+				<div class="announcement-detail">
+					<span>商家公告</span>
+					<span>{{ restaurant.promotion_info }}</span>
+				</div>
+				<div class="delivery-desc">
+					<span>配送说明：</span>
+					<span>配送费￥{{ restaurant.float_delivery_fee }}</span>
+				</div>
+				<div class="support-item-container">
+					<div v-for="support of restaurant.supports" class="support-item">
+						<span>{{ support.icon_name }}</span>
+						<span>{{ support.description }}</span>
 					</div>
 				</div>
 			</div>
-			<div class="announcement-container">公告区域</div>
 		</div>
 		<footer-comp></footer-comp>
 	</div>
@@ -135,6 +195,7 @@
 <script type="text/javascript">
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
+	import { getImgPath } from '../components/common/mixin.js';
 	import StarRating from 'vue-star-rating';
 	import {
 		getRestaurantInfo,
@@ -159,11 +220,14 @@
 				ratings: [], //客户评价信息
 				ratingScore: {}, //餐馆评分
 				ratingTags: [], //客户评价标签
-				selectedCate: '', //选中的食品类别
+				selectedCate: '热销榜', //选中的食品类别
+				selectedRatingCate: '全部', //选中的评价分类
 				showOnLeft: false, //控制菜品分类位置
 				scrollTop: 0, //滚动条滚动距离
+				panel: 'food', //控制显示食品或评价或商家资质
 			};
 		},
+		mixins: [getImgPath],
 		computed: {
 			//食品详细分类元素对象列表
 			itemList(){
@@ -172,7 +236,7 @@
 					let index = this.menu.indexOf(item);
 					let ele = document.getElementById('foodItem' + index);
 					if(ele){
-						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop;
+						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop - 183; //183是食品分类在顶部时的高度， 点击选择有一个偏移量
 						list.push({
 							key: index,
 							foodCate: item.name,
@@ -188,9 +252,8 @@
 			scrollTop(){
 				let current = '';
 				for( let i of this.itemList){
-					if (this.scrollTop >= i.offsetTop-350) {
+					if (this.scrollTop >= i.offsetTop-150) {
 						current = i.foodCate;
-						console.log('current', current);
 					}
 				}
 				this.selectedCate = current;
@@ -198,16 +261,20 @@
 		},
 		methods: {
 			handleClickFoodCate(key){
-				let offset = 0;
-				if (!this.showOnLeft) offset = 183;
+				//debugger
 				this.showOnLeft = true;
 				this.selectedCate = this.foodCate[key];
-				let y = this.itemList[key].ele.getBoundingClientRect().top + document.documentElement.scrollTop - offset;
+				let y = this.itemList[key].offsetTop;
 				window.scrollTo(0, y);
+			},
+			handleClickRatingCate(index){
+				this.selectedRatingCate = this.ratingTags[index].name;
+			},
+			handleSwitchPanel(type){
+				this.panel = type;
 			},
 			scroll(e){
 				if (this.$refs.content.getBoundingClientRect().top < 0) {
-					console.log(this.$refs.content.getBoundingClientRect().top);
 					this.showOnLeft = true;
 				}else{
 					this.showOnLeft = false;
@@ -218,7 +285,6 @@
 				if (type === 'score') {
 					return parseInt(num).toFixed(1);
 				}else{
-					console.log('num ', Number(num));
 					return (Number(num)*100).toFixed(1) + '%';
 				}
 			},
@@ -432,13 +498,15 @@
 		float: left;
 		width: 75%;
 	}
-	.food-cate{
+	.food-cate,
+	.rating-cate{
 		width: 100%;
 		padding: 10px 15px 5px;
 		border: 1px solid #eee;
 		background: #fff;
 	}
-	.food-cate>a{
+	.food-cate>a,
+	.rating-cate>a{
 		display: inline-block;
 		margin: 5px;
 		padding: 3px 10px;
@@ -450,7 +518,8 @@
 		color: #333;
 		font-size: 14px;
 	}
-	.food-cate>a.active{
+	.food-cate>a.active,
+	.rating-cate>a.active{
 		background-color: #0089dc;
 		color: #fff;
 	}
@@ -563,8 +632,107 @@
 		font-weight: 700;
 		color: #f74342;
 	}
+	.rating-item-container{
+		width: 100%;
+	}
+	.rating-item-container>li{
+		display: flex;
+		background: #fff;
+		color: #000;
+		margin-top: 20px;
+		border-radius: 10px;
+		padding: 20px;
+	}
+	.rating-item-user-avatar{
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+	}
+	.rating-item-detail-container{
+		display: inline-block;
+		flex-grow: 1;
+		padding-left: 20px;
+	}
+	.rating-item-user span:first-child{
+		font-size: 18px;
+	}
+	.rating-item-user span:last-child{
+		float: right;
+		font-size: 16px;
+		color: #c5c5c5;
+	}
+	.rating-item-score{
+		vertical-align: middle;
+		font-size: 14px;
+	}
+	.rating-item-score>:first-child{
+		display: inline-block;
+	}
+	.rating-item-food{
+		display: inline-block;
+		width: 50%;
+		text-align: center;
+		font-size: 16px;
+	}
+	.rating-item-food>img{
+		width: 100%;
+		padding: 10px;
+		display: block;
+	}
 	.announcement-container{
 		display: inline-block;
 		width: 25%;
+		padding: 0 15px;
+	}
+	.announcement-detail span:first-child{
+		display: block;
+		padding: 0 15px;
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 50px;
+		background: #0089dc;
+		color: #fff;
+	}
+	.announcement-detail span:last-child{
+		display: block;
+		padding: 10px 15px;
+		font-size: 14px;
+		background: #fff;
+	}
+	.delivery-desc{
+		padding: 10px 15px;
+		background: #f5f5f5;
+	}
+	.delivery-desc span{
+		display: block;
+		font-size: 14px;
+	}
+	.delivery-desc span:first-child{
+		font-weight: 700;
+	}
+	.support-item-container{
+		padding: 0 15px;
+		background: #fff;
+	}
+	.support-item{
+		padding: 10px 0;
+	}
+	.support-item span:first-child{
+		display: inline-block;
+		float: left;
+		width: 22px;
+		height: 22px;
+		text-align: center;
+		border-radius: 50%;
+		background: #999999;
+		color: #fff;
+		font-size: 12px;
+		line-height: 22px;
+	}
+	.support-item span:last-child{
+		display: inline-block;
+		max-width: 200px;
+		font-size: 14px;
+		margin-left: 5px;
 	}
 </style>
