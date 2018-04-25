@@ -82,9 +82,10 @@
 			</div>
 			<div class="search-pane">
 				<Input
+					@on-enter="handleSearch"
+					v-model="keyWord"
 					class="search-input"
 					placeholder="搜索商家,美食..."
-					icon="ios-search-strong"
 					size="large">
 				</Input>
 			</div>
@@ -116,6 +117,11 @@
 								<GridFood :foodList="item.foods" v-if="listWay === 'grid'"></GridFood>
 								<LineFood v-else :foodList="item.foods"></LineFood>
 							</div>
+						</template>
+						<template v-else-if="sortType === 'search'">
+							<span class="sort-msg">{{ sortMsg }}</span>
+							<GridFood :foodList="foodSearchResult" v-if="listWay === 'grid'"></GridFood>
+							<LineFood v-else :foodList="foodSearchResult"></LineFood>
 						</template>
 						<template v-else>
 							<span class="sort-msg">{{ sortMsg }}</span>
@@ -273,6 +279,8 @@
 				showOnLeft: false, //控制菜品分类位置
 				scrollTop: 0, //滚动条滚动距离
 				panel: 'food', //控制显示食品或评价或商家资质
+				keyWord: '', //搜索关键字
+				foodSearchResult: [],
 			};
 		},
 		mixins: [getImgPath],
@@ -331,7 +339,7 @@
 					let index = this.menu.indexOf(item);
 					let ele = document.getElementById('foodItem' + index);
 					if(ele){
-						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop - 183; //183是食品分类在顶部时的高度， 点击选择有一个偏移量
+						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop - 160; //160是食品分类在顶部时的高度， 点击选择有一个偏移量
 						list.push({
 							key: index,
 							foodCate: item.name,
@@ -344,7 +352,10 @@
 			},
 			handleClickFoodCate(key){
 				//debugger
-				if (this.sortType !== 'default') this.sortType = 'default';
+				if (this.sortType !== 'default') {
+					this.sortType = 'default';
+					this.bindEvent();
+				}
 				this.showOnLeft = true;
 				this.selectedCate = this.foodCate[key];
 				let y = this.itemList[key].offsetTop;
@@ -355,9 +366,15 @@
 			},
 			handleSwitchPanel(type){
 				this.panel = type;
+				if (type !== 'food') this.unbindEvent();
+				this.bindEvent();
 			},
 			handleClickSort(type){
-				if (type !== 'default') this.showOnLeft = false;
+				this.bindEvent();
+				if (type !== 'default') {
+					this.showOnLeft = false;
+					this.unbindEvent(); //选择其他类别时不监听滚动事件
+				}
 				this.sortType = type;
 			},
 			handleClickSortByPrice(){
@@ -372,6 +389,15 @@
 				this.$nextTick( () => {
 					if (this.sortType === 'default') this.updateData();
 				});
+			},
+			handleSearch(){
+				this.sortType = 'search';
+				let list = [];
+				if (this.keyWord) {
+					list = this.foodList.filter( item => item.name.indexOf( this.keyWord ) !== -1 );
+				}
+				this.sortMsg = `搜索【${this.keyWord}】的结果`;
+				this.foodSearchResult = list;
 			},
 			scroll(e){
 				if (this.$refs.content.getBoundingClientRect().top < 0) {
@@ -414,7 +440,6 @@
 		},
 		mounted(){
 			this.bindEvent();
-			let ele = document.getElementById('foodItem' + index);
 		},
 		beforeDestroy(){
 			this.unbindEvent();
@@ -834,7 +859,7 @@
 	.announcement-container{
 		display: inline-block;
 		width: 25%;
-		padding: 0 15px;
+		padding-left: 15px;
 	}
 	.announcement-detail span:first-child{
 		display: block;

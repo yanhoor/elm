@@ -12,9 +12,10 @@
 				</div>
 				<div class="food-min-price-container">
 					<span class="food-min-price">￥{{ food.specfoods[0].price}}</span>
-					<span>起</span>
+					<span v-if="food.specfoods.length > 1">起</span>
 				</div>
-				<span class="food-add-to-cart">加入购物车</span>
+				<span v-if="food.specfoods.length === 1" class="food-add-to-cart">加入购物车</span>
+				<span v-else class="food-add-to-cart">选规格</span>
 		</div>
 	</div>
 </template>

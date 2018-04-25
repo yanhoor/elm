@@ -11,9 +11,11 @@
 					<span>月售{{ food.month_sales }}份</span>
 					<div class="food-min-price-container">
 						<span class="food-min-price">￥{{ food.specfoods[0].price}}</span>
-						<span>起</span>
+						<span v-if="food.specfoods.length > 1">起</span>
 					</div>
 				</div>
+				<span v-if="food.specfoods.length === 1">加入购物车</span>
+				<span v-else>选规格</span>
 		</div>
 	</div>
 </template>
@@ -45,6 +47,18 @@
 		height: 100px;
 		margin-right: 14px;
 	}
+	.food>span{
+		align-self: flex-end;
+		display: inline-block;
+		cursor: pointer;
+		height: 30px;
+		padding: 5px;
+		margin-bottom: 10px;
+		background: #0089dc;
+		color: #fff;
+		font-size: 14px;
+		border-radius: 6px;
+	}
 	.food-detail-container{
 		position: relative;
 		flex-grow: 1;
@@ -53,7 +67,7 @@
 	.food-detail-container>h3{
 		font-size: 16px;
 		font-weight: 700;
-		margin: 10px 0  5px 0;
+		margin-top: 15px;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;

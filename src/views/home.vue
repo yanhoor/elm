@@ -323,6 +323,8 @@
   .dialog-search-city-list{
     position: absolute;
     width: 200px;
+    max-height: 300px;
+    overflow: auto;
     background-color: #fff;
     z-index: 1100;
     line-height: 30px;
