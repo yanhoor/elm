@@ -6,12 +6,7 @@
 				<img :src="'/img/' + food.image_path">
 				<div class="food-detail-container">
 					<h3>{{ food.name }}</h3>
-					<star-rating
-						:rating="food.rating"
-						:increment="0.1"
-						:read-only="true"
-						:star-size="15"
-						:show-rating="false"></star-rating>
+					<Rate :value="food.rating" disabled allow-half></Rate>
 					<span>({{ food.rating_count }})</span>
 					<span>月售{{ food.month_sales }}份</span>
 				</div>
@@ -24,14 +19,10 @@
 	</div>
 </template>
 <script type="text/javascript">
-	import StarRating from 'vue-star-rating';
 
 	export default{
 		props: {
 			foodList: Array,
-		},
-		components: {
-			StarRating,
 		},
 	}
 </script>

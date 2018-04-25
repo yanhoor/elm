@@ -9,12 +9,7 @@
 				<div class="right-container">
 					<span class="rest-title">{{restaurant.name}}</span>
 					<div class="rating-star-container">
-						<star-rating
-							:rating="restaurant.rating"
-							:increment="0.1"
-							:read-only="true"
-							:star-size="15"
-							:show-rating="false"></star-rating>
+						<Rate :value="restaurant.rating" disabled allow-half></Rate>
 					</div>
 					<span class="deliver-cost">{{ restaurant.piecewise_agent_fee.tips }}</span>
 					<div class="support-container">
@@ -35,9 +30,6 @@
 	import StarRating from 'vue-star-rating';
 
 	export default{
-		components: {
-			StarRating,
-		},
 		props: {
 			restaurant: Object
 		},
@@ -90,6 +82,13 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		word-break: keep-all;
+	}
+	.rating-star-container{
+		overflow: hidden;
+	}
+	.rating-star-container>div{
+		font-size: 12px;
+		float: left;
 	}
 	.deliver-cost{
 		display: block;

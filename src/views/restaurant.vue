@@ -264,6 +264,7 @@
 				ratings: [], //客户评价信息
 				ratingScore: {}, //餐馆评分
 				ratingTags: [], //客户评价标签
+				itemList: [], //食品详细分类元素对象列表
 				selectedCate: '热销榜', //选中的食品类别
 				selectedRatingCate: '全部', //选中的评价分类
 				sortType: 'default', //排序方式
@@ -276,25 +277,7 @@
 		},
 		mixins: [getImgPath],
 		computed: {
-			//食品详细分类元素对象列表
-			itemList(){
-				let list = [];
-				for( let item of this.menu){
-					let index = this.menu.indexOf(item);
-					let ele = document.getElementById('foodItem' + index);
-					if(ele){
-						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop - 183; //183是食品分类在顶部时的高度， 点击选择有一个偏移量
-						list.push({
-							key: index,
-							foodCate: item.name,
-							ele: ele,
-							offsetTop: offsetTop,
-						});
-					}
-				}
-				return list;
-			},
-			////menu内所有食品
+			//menu内所有食品
 			foodList(){
 				let list = [];
 				for(let item of this.menu){
@@ -342,6 +325,23 @@
 			},
 		},
 		methods: {
+			updateData(){
+				let list = [];
+				for( let item of this.menu){
+					let index = this.menu.indexOf(item);
+					let ele = document.getElementById('foodItem' + index);
+					if(ele){
+						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop - 183; //183是食品分类在顶部时的高度， 点击选择有一个偏移量
+						list.push({
+							key: index,
+							foodCate: item.name,
+							ele: ele,
+							offsetTop: offsetTop,
+						});
+					}
+				}
+				this.itemList = list;
+			},
 			handleClickFoodCate(key){
 				//debugger
 				if (this.sortType !== 'default') this.sortType = 'default';
@@ -369,6 +369,9 @@
 			},
 			handleSwitchListWay(type){
 				this.listWay = type;
+				this.$nextTick( () => {
+					if (this.sortType === 'default') this.updateData();
+				});
 			},
 			scroll(e){
 				if (this.$refs.content.getBoundingClientRect().top < 0) {
@@ -398,6 +401,9 @@
 			getRestaurantInfo(id).then( res => this.restaurant = res);
 			getMenu(id).then( res => {
 				this.menu = res;
+				this.$nextTick( () => {
+					if (this.sortType === 'default') this.updateData();
+				});
 				for( let item of res){
 					this.foodCate.push(item.name);
 				}
@@ -408,6 +414,7 @@
 		},
 		mounted(){
 			this.bindEvent();
+			let ele = document.getElementById('foodItem' + index);
 		},
 		beforeDestroy(){
 			this.unbindEvent();
