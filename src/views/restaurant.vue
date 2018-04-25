@@ -69,10 +69,14 @@
 					<a @click="handleClickSort('default')" :class="{'food-filter-type': true, 'active': sortType === 'default'}">默认排序</a>
 					<a @click="handleClickSort('score')" :class="{'food-filter-type': true, 'active': sortType === 'score'}">评分 ⬇</a>
 					<a @click="handleClickSort('sale')" :class="{'food-filter-type': true, 'active': sortType === 'sale'}">销量 ⬇</a>
-					<a @click="handleClickSort('price')" :class="{'food-filter-type': true, 'active': sortType === 'price'}">价格 ⬇</a>
+					<a @click="handleClickSortByPrice" :class="{'food-filter-type': true, 'active': sortType === 'priceDesc' || sortType === 'priceAsc'}">
+							价格
+							<template v-if="sortType === 'priceDesc'">⬇</template>
+							<template v-if="sortType === 'priceAsc'">⬆</template>
+					</a>
 					<span class="pane-switch">
-						<Icon type="grid" size="24"></Icon>
-						<Icon type="ios-list-outline" size="24"></Icon>
+						<Icon @click.native="handleSwitchListWay('grid')" :class="{ active: listWay === 'grid'}" type="grid" size="24"></Icon>
+						<Icon @click.native="handleSwitchListWay('line')" :class="{ active: listWay === 'line'}" type="ios-list-outline" size="24"></Icon>
 					</span>
 				</span>
 			</div>
@@ -99,37 +103,25 @@
 						</a>
 					</div>
 					<div id="foodItemContainer" class="food-item-container">
-						<div
-							v-if="sortType === 'default'"
-							:id="'foodItem' + key"
-							v-for="( item, key ) in menu"
-							:key="key"
-							class="food-item">
-							<h2 class="food-item-title">
-								{{ item.name }}
-								<span>{{ item.description }}</span>
-							</h2>
+						<template v-if="sortType === 'default'">
 							<div
-								v-for="food in item.foods"
-								class="food">
-									<img :src="'/img/' + food.image_path">
-									<div class="food-detail-container">
-										<h3>{{ food.name }}</h3>
-										<star-rating
-											:rating="food.rating"
-											:increment="0.1"
-											:read-only="true"
-											:star-size="15"
-											:show-rating="false"></star-rating>
-										<span>({{ food.rating_count }})</span>
-										<span>月售{{ food.month_sales }}份</span>
-										<div class="food-min-price-container">
-											<span class="food-min-price">￥{{ food.specfoods[0].price}}</span>
-											<span>起</span>
-										</div>
-									</div>
+								:id="'foodItem' + key"
+								v-for="( item, key ) in menu"
+								:key="key"
+								class="food-item">
+								<h2 class="food-item-title">
+									{{ item.name }}
+									<span>{{ item.description }}</span>
+								</h2>
+								<GridFood :foodList="item.foods" v-if="listWay === 'grid'"></GridFood>
+								<LineFood v-else :foodList="item.foods"></LineFood>
 							</div>
-						</div>
+						</template>
+						<template v-else>
+							<span class="sort-msg">{{ sortMsg }}</span>
+							<GridFood :foodList="sortedFoodList" v-if="listWay === 'grid'"></GridFood>
+							<LineFood v-else :foodList="sortedFoodList"></LineFood>
+						</template>
 					</div>
 				</template>
 				<template v-if="panel === 'rating'">
@@ -246,7 +238,8 @@
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
 	import { getImgPath } from '../components/common/mixin.js';
-	import StarRating from 'vue-star-rating';
+	import GridFood from '../components/common/gridFood.vue';
+	import LineFood from '../components/common/lineFood.vue';
 	import {
 		getRestaurantInfo,
 		getMenu,
@@ -260,12 +253,13 @@
 		components: {
 			TopBar,
 			FooterComp,
-			StarRating
+			GridFood,
+			LineFood,
 		},
 		data(){
 			return {
 				restaurant: {}, //餐馆对象
-				menu: [], //食品列表
+				menu: [], //食品列表(含分类描述等)
 				foodCate: [], //食品分类
 				ratings: [], //客户评价信息
 				ratingScore: {}, //餐馆评分
@@ -273,6 +267,8 @@
 				selectedCate: '热销榜', //选中的食品类别
 				selectedRatingCate: '全部', //选中的评价分类
 				sortType: 'default', //排序方式
+				sortMsg: '', //排序时顶部显示的信息
+				listWay: 'grid', //食品展示方式
 				showOnLeft: false, //控制菜品分类位置
 				scrollTop: 0, //滚动条滚动距离
 				panel: 'food', //控制显示食品或评价或商家资质
@@ -298,6 +294,41 @@
 				}
 				return list;
 			},
+			////menu内所有食品
+			foodList(){
+				let list = [];
+				for(let item of this.menu){
+					for(let i of item.foods){
+						list.push(i);
+					}
+				}
+				return list;
+			},
+			//已排序的食品列表
+			sortedFoodList(){
+				let list = [...this.foodList];
+				switch(this.sortType){
+					case 'default':
+						break;
+					case 'score':
+						this.sortMsg = '评分从高到低排序';
+						list.sort( (a, b) => b.rating - a.rating );
+						break;
+					case 'sale':
+						this.sortMsg = '销量从高到低排序';
+						list.sort( (a, b) => b.month_sales - a.month_sales );
+						break;
+					case 'priceDesc':
+						this.sortMsg = '价格从高到低排序';
+						list.sort( (a, b) => b.specfoods[0].price - a.specfoods[0].price );
+						break;
+					case 'priceAsc':
+						this.sortMsg = '价格从低到高排序';
+						list.sort( (a, b) => a.specfoods[0].price - b.specfoods[0].price );
+						break;
+				}
+				return list;
+			},
 		},
 		watch: {
 			scrollTop(){
@@ -313,6 +344,7 @@
 		methods: {
 			handleClickFoodCate(key){
 				//debugger
+				if (this.sortType !== 'default') this.sortType = 'default';
 				this.showOnLeft = true;
 				this.selectedCate = this.foodCate[key];
 				let y = this.itemList[key].offsetTop;
@@ -325,7 +357,18 @@
 				this.panel = type;
 			},
 			handleClickSort(type){
+				if (type !== 'default') this.showOnLeft = false;
 				this.sortType = type;
+			},
+			handleClickSortByPrice(){
+				if (this.sortType === 'priceDesc') {
+					this.sortType = 'priceAsc';
+				}else{
+					this.sortType = 'priceDesc';
+				}
+			},
+			handleSwitchListWay(type){
+				this.listWay = type;
 			},
 			scroll(e){
 				if (this.$refs.content.getBoundingClientRect().top < 0) {
@@ -333,6 +376,7 @@
 				}else{
 					this.showOnLeft = false;
 				}
+				if (this.sortType !== 'default') this.showOnLeft = false;
 				this.scrollTop = document.documentElement.scrollTop + document.body.scrollTop;
 			},
 			getFormatNum(num, type){
@@ -541,8 +585,12 @@
 		line-height: 60px;
 	}
 	.pane-switch>i{
+		cursor: pointer;
 		vertical-align: middle;
 		margin: 0 10px;
+	}
+	.pane-switch>i.active{
+		color: #0089dc;
 	}
 	.search-pane{
 		width: 25%;
@@ -649,50 +697,6 @@
 	.food-item-title span{
 		font-size: 12px;
 		color: #999;
-	}
-	.food{
-		display: flex;
-		float: left;
-		margin-right: 2%;
-		margin-bottom: 15px;
-		padding-right: 10px;
-		border: 1px solid #eee;
-		background: #fff;
-		width: 48%;
-	}
-	.food>img{
-		flex-grow: 0;
-		width: 100px;
-		height: 100px;
-		margin-right: 14px;
-	}
-	.food-detail-container{
-		position: relative;
-		flex-grow: 1;
-		display: inline-block;
-	}
-	.food-detail-container>h3{
-		font-size: 16px;
-		font-weight: 700;
-		margin-top: 10px;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		word-break: keep-all;
-	}
-	.food-detail-container>div{
-		max-width: 200px;
-		display: inline-block;
-	}
-	.food-min-price-container{
-		position: absolute;
-		bottom: 10px;
-		left: 0;
-	}
-	.food-min-price{
-		font-size: 14px;
-		font-weight: 700;
-		color: #f74342;
 	}
 	.rating-item-container{
 		width: 100%;
@@ -814,6 +818,11 @@
 		width: 40%;
 		margin: 35px;
 		border: 1px solid #eee;
+	}
+	.sort-msg{
+		display: block;
+		padding: 20px 0 10px 0;
+		font-size: 20px;
 	}
 	.announcement-container{
 		display: inline-block;
