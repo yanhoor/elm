@@ -20,14 +20,14 @@
 	</div>
 </template>
 <script type="text/javascript">
-
 	export default{
 		props: {
 			foodList: Array,
 		},
 	}
 </script>
-<style type="text/css" scoped>
+<style lang="scss" type="text/css" scoped>
+	@import '../../style/mixin';
 	.food-container{
 		overflow: hidden;
 	}
@@ -40,46 +40,40 @@
 		border: 1px solid #eee;
 		background: #fff;
 		width: 98%;
-	}
-	.food>img{
-		width: 13%;
+		>img{
+			width: 13%;
+		}
 	}
 	.food-detail-container{
 		padding-left: 20px;
 		text-align: left;
 		flex-grow: 1;
-	}
-	.food-detail-container>h3{
-		font-size: 20px;
-		font-weight: 700;
-		margin: 10px 0;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		word-break: keep-all;
-	}
-	.food-detail-container>div{
-		max-width: 200px;
-		display: inline-block;
+		>h3{
+			@include fontscw(20px, #000, 700);
+			margin: 10px 0;
+			@include ellipsis;
+		}
+		>div{
+			max-width: 200px;
+			display: inline-block;
+		}
 	}
 	.food-min-price-container{
 		text-align: left;
 		width: 15%;
-	}
-	.food-min-price-container>span{
-		font-size: 18px;
+		>span{
+			font-size: 18px;
+		}
 	}
 	.food-min-price{
-		font-weight: 700;
-		color: #f74342;
+		@include fontscw(normal, #f74342, 700);
 	}
 	.food-add-to-cart{
 		width: 17%;
 		cursor: pointer;
 		display: inline-block;
 		background: #0089dc;
-		color: #fff;
+		@include fontscw(18px, #fff);
 		border-radius: 20px;
-		font-size: 18px;
 	}
 </style>

@@ -149,13 +149,8 @@
 										<span>{{ item.rated_at }}</span>
 									</div>
 									<div class="rating-item-score">
-										<star-rating
-											:rating="item.rating_star"
-											:increment="0.1"
-											:read-only="true"
-											:star-size="15"
-											:show-rating="false"></star-rating>
-											<span>{{ item.time_spent_desc }}</span>
+										<Rate :value="item.rating_star" disabled allow-half></Rate>
+										<span>{{ item.time_spent_desc }}</span>
 									</div>
 								</div>
 								<div class="rating-item-bottom">
@@ -446,29 +441,28 @@
 		}
 	}
 </script>
-<style type="text/css" scoped>
+<style lang="scss" type="text/css" scoped>
+	@import '../style/mixin';
 	.restaurant{
 		width: 100%;
-	}
-	.restaurant-container{
-		width: 1180px;
-		position: relative;
-		display: table;
-		height: 142px;
-		margin: 0 auto;
+		&-container{
+			@include wh(1180px, 142px);
+			position: relative;
+			display: table;
+			margin: 0 auto;
+		}
 	}
 	.shop-info-container{
 		position: relative;
 		display: table-cell;
 		vertical-align: middle;
 		z-index: 1;
-	}
-	.shop-info-container>img{
-		vertical-align: middle;
-		width: 95px;
-		height: 95px;
-		border-radius: 50%;
-		margin-right: 10px;
+		>img{
+			vertical-align: middle;
+			@include wh(95px);
+			border-radius: 50%;
+			margin-right: 10px;
+		}
 	}
 	.shop-title-container{
 		display: inline-block;
@@ -495,42 +489,39 @@
 		background: #fff;
 		color: #333;
 		z-index: 1;
-	}
-	.shop-extra-info>ul{
-		list-style: none;
-		padding: 0 20px;
-	}
-	.shop-extra-info>ul>li{
-		padding: 15px 0;
-		border-bottom: 1px dashed #eee;
-		color: #333;
+		>ul{
+			list-style: none;
+			padding: 0 20px;
+			>li{
+				padding: 15px 0;
+				border-bottom: 1px dashed #eee;
+				color: #333;
+			}
+		}
 	}
 	.rating-detail{
 		display: table;
 		width: 100%;
 		padding: 15px 0;
-	}
-	.rating-detail>div{
-		position: relative;
-		display: table-cell;
-		vertical-align: middle;
-		text-align: center;
+		>div{
+			position: relative;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
 	}
 	.rating-amount-info{
 		border-right: 1px solid #eee;
-	}
-	.rating-amount-info>h2{
-		font-size: 28px;
-		color: #f74342;
-	}
-	.rating-amount-info>p{
-		text-align: center;
-		font-size: 12px;
-		color: #333;
+		>h2{
+			@include fontscw(28px, #f74342);
+		}
+		>p{
+			text-align: center;
+			@include fontscw(12px, #333);
+		}
 	}
 	.compare-rating-desc{
-		font-size: 12px;
-		color: #999;
+		@include fontscw(12px, #999);
 	}
 	.compare-rating{
 		color: #f74342;
@@ -539,20 +530,20 @@
 		display: table-cell;
 		vertical-align: middle;
 		text-align: right;
-	}
-	.service-container:first-child{
-		margin-left: 0;
-	}
-	.service-container>span{
-		vertical-align: top;
-		text-align: center;
-		display: inline-block;
-		margin-left: 80px;
-	}
-	.service-container em{
-		display: block;
-		font-style: normal;
-		font-weight: 400;
+		&:first-child{
+			margin-left: 0;
+		}
+		>span{
+			vertical-align: top;
+			text-align: center;
+			display: inline-block;
+			margin-left: 80px;
+		}
+		em{
+			display: block;
+			font-style: normal;
+			font-weight: 400;
+		}
 	}
 	.service-title{
 		font-size: 14px;
@@ -566,9 +557,9 @@
 	}
 	.shop-contact{
 		font-size: 14px;
-	}
-	.shop-contact p:first-child{
-		margin-bottom: 5px;
+		p:first-child{
+				margin-bottom: 5px;
+		}
 	}
 	.delivery-mode{
 		font-size: 14px;
@@ -584,45 +575,44 @@
 	.pane-control{
 		float: left;
 		width: 75%;
-	}
-	.pane-control-item{
-		display: inline-block;
-		width: 112px;
-		text-align: center;
-		color: #333;
-		font-size: 16px;
-		transition: all .3s ease-in-out;
-	}
-	.pane-control-item.active{
-		color: #0089dc;
-		border-bottom: 3px solid #0089dc;
+		&-item{
+			display: inline-block;
+			width: 112px;
+			text-align: center;
+			@include fontscw(16px, #333);
+			transition: all .3s ease-in-out;
+			&.active{
+				color: #0089dc;
+				border-bottom: 3px solid #0089dc;
+			}
+		}
 	}
 	.food-filter{
 		float: right;
 		display: inline-block;
 		line-height: 60px;
-	}
-	.food-filter-type{
-		color: #333;
-		display: inline-block;
-		padding: 0 15px;
-		font-size: 14px;
-		line-height: 1;
-	}
-	.food-filter-type.active{
-		color: #0089dc;
+		&-type{
+			color: #333;
+			display: inline-block;
+			padding: 0 15px;
+			font-size: 14px;
+			line-height: 1;
+		}
+		&-type.active{
+			color: #0089dc;
+		}
 	}
 	.pane-switch{
 		display: inline-block;
 		line-height: 60px;
-	}
-	.pane-switch>i{
-		cursor: pointer;
-		vertical-align: middle;
-		margin: 0 10px;
-	}
-	.pane-switch>i.active{
-		color: #0089dc;
+		>i{
+			cursor: pointer;
+			vertical-align: middle;
+			margin: 0 10px;
+		}
+		>i.active{
+			color: #0089dc;
+		}
 	}
 	.search-pane{
 		width: 25%;
@@ -646,24 +636,21 @@
 		padding: 10px 15px 5px;
 		border: 1px solid #eee;
 		background: #fff;
-	}
-	.food-cate>a,
-	.rating-cate>a{
-		display: inline-block;
-		margin: 5px;
-		padding: 3px 10px;
-		width: 18%;
-		border-radius: 2px;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		color: #333;
-		font-size: 14px;
-	}
-	.food-cate>a.active,
-	.rating-cate>a.active{
-		background-color: #0089dc;
-		color: #fff;
+		>a{
+			display: inline-block;
+			margin: 5px;
+			padding: 3px 10px;
+			width: 18%;
+			border-radius: 2px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			@include fontscw(14px, #333);
+		}
+		>a.active{
+			background-color: #0089dc;
+			color: #fff;
+		}
 	}
 	.food-cate-left{
 		position: fixed;
@@ -677,41 +664,37 @@
 		padding-right: 10px;
 		overflow-x: hidden;
 		overflow-y: auto;
-	}
-	.food-cate-left::-webkit-scrollbar{
-		background: #b7b7b7;
-		width: 4px;
-		height: 4px;
-	}
-	.food-cate-left>a{
-		transition: color .3s;
-		position: relative;
-		display: block;
-		padding: 15px 15px 15px 0;
-		width: auto;
-		text-align: right;
-		overflow: visible;
-		font-size: 12px;
-		color: #333;
-	}
-	.food-cate-left>a.active{
-		color: #0089dc;
-		font-size: 14px;
-	}
-	.food-cate-left>a:after{
-		content: '';
-		position: absolute;
-		top: 50%;
-		right: -4px;
-		margin-top: -6px;
-		width: 12px;
-		height: 12px;
-		background-color: #ddd;
-		border: 2px solid #f7f7f7;
-		border-radius: 50%;
-	}
-	.food-cate-left>a.active:after{
-		background-color: #0089dc;
+		&::-webkit-scrollbar{
+			background: #b7b7b7;
+			@include wh(4px);
+		}
+		>a{
+			transition: color .3s;
+			position: relative;
+			display: block;
+			padding: 15px 15px 15px 0;
+			width: auto;
+			text-align: right;
+			overflow: visible;
+			@include fontscw(12px, #333);
+		}
+		>a.active{
+			@include fontscw(14px, #0089dc);
+		}
+		>a:after{
+			content: '';
+			position: absolute;
+			top: 50%;
+			right: -4px;
+			margin-top: -6px;
+			@include wh(12px);
+			background-color: #ddd;
+			border: 2px solid #f7f7f7;
+			border-radius: 50%;
+		}
+		>a.active:after{
+			background-color: #0089dc;
+		}
 	}
 	.food-item-container{
 		width: 100%;
@@ -722,28 +705,24 @@
 	}
 	.food-item-title{
 		padding: 20px 0 10px 15px;
-		font-size: 20px;
-		font-weight: 400;
-		color: #333;
-	}
-	.food-item-title span{
-		font-size: 12px;
-		color: #999;
+		@include fontscw(20px, #333, 400);
+		span{
+			@include fontscw(12px, #999);
+		}
 	}
 	.rating-item-container{
 		width: 100%;
-	}
-	.rating-item-container>li{
-		display: flex;
-		background: #fff;
-		color: #000;
-		margin-top: 20px;
-		border-radius: 10px;
-		padding: 20px;
+		>li{
+			display: flex;
+			background: #fff;
+			color: #000;
+			margin-top: 20px;
+			border-radius: 10px;
+			padding: 20px;
+		}
 	}
 	.rating-item-user-avatar{
-		width: 80px;
-		height: 80px;
+		@include wh(80px);
 		border-radius: 50%;
 	}
 	.rating-item-detail-container{
@@ -751,70 +730,72 @@
 		flex-grow: 1;
 		padding-left: 20px;
 	}
-	.rating-item-user span:first-child{
-		font-size: 18px;
-	}
-	.rating-item-user span:last-child{
-		float: right;
-		font-size: 16px;
-		color: #c5c5c5;
+	.rating-item-user{
+		span:first-child{
+			font-size: 18px;
+		}
+		span:last-child{
+			float: right;
+			@include fontscw(16px, #c5c5c5);
+		}
 	}
 	.rating-item-score{
 		vertical-align: middle;
 		font-size: 14px;
-	}
-	.rating-item-score>:first-child{
-		display: inline-block;
+		>:first-child{
+			display: inline-block;
+		}
 	}
 	.rating-item-food{
 		display: inline-block;
 		width: 50%;
 		text-align: center;
 		font-size: 16px;
+		>img{
+			width: 100%;
+			padding: 10px;
+			display: block;
+		}
+		>span{
+			display: block;
+		}
 	}
-	.rating-item-food>img{
-		width: 100%;
-		padding: 10px;
-		display: block;
-	}
-	.quality-container>span{
-		display: block;
-		padding: 10px 15px;
-		background: #0089dc;
-		color: #fff;
-		font-size: 36px;
-		font-weight: 700;
-		text-align: center;
+	.quality-container{
+		>span{
+			display: block;
+			padding: 10px 15px;
+			background: #0089dc;
+			@include fontscw(36px, #fff, 700);
+			text-align: center;
+		}
 	}
 	.quality-detail-container{
 		padding: 0 15px;
 		background: #fff;
 		color: #000;
-	}
-	.quality-detail-container>span{
-		display: block;
-		padding: 10px 0;
-		font-size: 30px;
-		font-weight: 700;
-		text-align: left;
+		>span{
+			display: block;
+			padding: 10px 0;
+			@include fontscw($size: 30px, $weight: 700);
+			text-align: left;
+		}
 	}
 	.quality-result-container{
 		padding: 36px 0 36px 24px;
-	}
-	.quality-result-container>img{
-		display: inline-block;
-		float: left;
-		width: 100px;
-		height: 100px;
-		margin-right: 50px;
-		border-radius: 50%;
-		background: green;
-	}
-	.quality-result-container>span{
-		display: inline-block;
-		height: 100px;
-		font-size: 24px;
-		line-height: 100px;
+		>img{
+			display: inline-block;
+			float: left;
+			@include wh(100px, 100px);
+			margin-right: 50px;
+			border-radius: 50%;
+			background: green;
+		}
+		>span{
+			display: inline-block;
+			height: 100px;
+			font-size: 24px;
+			line-height: 100px;
+		}
 	}
 	.good-quality{
 		margin-left: 15px;
@@ -824,32 +805,32 @@
 		margin-left: 15px;
 		color: #red;
 	}
-	.quality-info-container li{
-		padding: 15px 0;
-		border-top: 1px solid #eeeeee;
-	}
-	.quality-info-container span{
-		line-height: 60px;
-		font-size: 24px;
+	.quality-info-container{
+		li{
+			padding: 15px 0;
+			border-top: 1px solid #eeeeee;
+		}
+		span{
+			line-height: 60px;
+			font-size: 24px;
+		}
 	}
 	.quality-img{
 		padding: 0 15px;
 		margin-top: 15px;
 		background: #fff;
-	}
-	.quality-img>span{
-		display: block;
-		padding: 15px 0;
-		font-size: 30px;
-		font-weight: 700;
-		color: #000;
-		border-bottom: 1px solid #eeeeee;
-	}
-	.quality-img>img{
-		display: inline-block;
-		width: 40%;
-		margin: 35px;
-		border: 1px solid #eee;
+		>span{
+			display: block;
+			padding: 15px 0;
+			@include fontscw(30px, #000, 700);
+			border-bottom: 1px solid #eeeeee;
+		}
+		>img{
+			display: inline-block;
+			width: 40%;
+			margin: 35px;
+			border: 1px solid #eee;
+		}
 	}
 	.sort-msg{
 		display: block;
@@ -861,31 +842,31 @@
 		width: 25%;
 		padding-left: 15px;
 	}
-	.announcement-detail span:first-child{
-		display: block;
-		padding: 0 15px;
-		font-size: 16px;
-		font-weight: 400;
-		line-height: 50px;
-		background: #0089dc;
-		color: #fff;
-	}
-	.announcement-detail span:last-child{
-		display: block;
-		padding: 10px 15px;
-		font-size: 14px;
-		background: #fff;
+	.announcement-detail{
+		span:first-child{
+			display: block;
+			padding: 0 15px;
+			line-height: 50px;
+			background: #0089dc;
+			@include fontscw(14px, #fff, 400);
+		}
+		span:last-child{
+			display: block;
+			padding: 10px 15px;
+			font-size: 14px;
+			background: #fff;
+		}
 	}
 	.delivery-desc{
 		padding: 10px 15px;
 		background: #f5f5f5;
-	}
-	.delivery-desc span{
-		display: block;
-		font-size: 14px;
-	}
-	.delivery-desc span:first-child{
-		font-weight: 700;
+		span{
+			display: block;
+			font-size: 14px;
+		}
+		span:first-child{
+			font-weight: 700;
+		}
 	}
 	.support-item-container{
 		padding: 0 15px;
@@ -893,23 +874,21 @@
 	}
 	.support-item{
 		padding: 10px 0;
-	}
-	.support-item span:first-child{
-		display: inline-block;
-		float: left;
-		width: 22px;
-		height: 22px;
-		text-align: center;
-		border-radius: 50%;
-		background: #999999;
-		color: #fff;
-		font-size: 12px;
-		line-height: 22px;
-	}
-	.support-item span:last-child{
-		display: inline-block;
-		max-width: 200px;
-		font-size: 14px;
-		margin-left: 5px;
+		span:first-child{
+			display: inline-block;
+			float: left;
+			@include wh(22px);
+			text-align: center;
+			border-radius: 50%;
+			background: #999999;
+			@include fontscw(12px, #fff);
+			line-height: 22px;
+		}
+		span:last-child{
+			display: inline-block;
+			max-width: 200px;
+			font-size: 14px;
+			margin-left: 5px;
+		}
 	}
 </style>
