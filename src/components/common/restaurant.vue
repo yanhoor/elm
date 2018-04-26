@@ -37,7 +37,8 @@
 	}
 </script>
 
-<style type="text/css" scoped>
+<style lang="scss" type="text/css" scoped>
+	@import '../../style/mixin';
 	.rest{
 		line-height: 30px;
 		margin: 8px;
@@ -58,15 +59,14 @@
 	.left-container{
 		float: left;
 		flex: 1;
-	}
-	.left-container>img{
-		width: 100px;
-		height: 100px;
-	}
-	.left-container>span{
-		display: block;
-		color: #999;
-		line-height: 20px;
+		>img{
+			@include wh(100px);
+		}
+		>span{
+			display: block;
+			color: #999;
+			line-height: 20px;
+		}
 	}
 	.right-container{
 		flex: 2;
@@ -76,19 +76,15 @@
 		display: block;
 		max-width: 160px;
 		text-align: left;
-		font-size: 16px;
-		font-weight: bold;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		word-break: keep-all;
+		@include fontscw(16px, #000, bold);
+		@include ellipsis;
 	}
 	.rating-star-container{
 		overflow: hidden;
-	}
-	.rating-star-container>div{
-		font-size: 12px;
-		float: left;
+		>div{
+			font-size: 12px;
+			float: left;
+		}
 	}
 	.deliver-cost{
 		display: block;
@@ -102,8 +98,7 @@
 	}
 	.support-icon{
 		display: inline-block;
-		width: 20px;
-		height: 20px;
+		@include wh(20px);
 		border: 1px solid #333;
 		line-height: normal;
 		text-align: center;

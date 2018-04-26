@@ -27,7 +27,8 @@
 		},
 	}
 </script>
-<style type="text/css" scoped>
+<style lang="scss" type="text/css" scoped>
+	@import '../../style/mixin';
 	.food-container{
 		overflow: hidden;
 	}
@@ -40,42 +41,36 @@
 		border: 1px solid #eee;
 		background: #fff;
 		width: 48%;
-	}
-	.food>img{
-		flex-grow: 0;
-		width: 100px;
-		height: 100px;
-		margin-right: 14px;
-	}
-	.food>span{
-		align-self: flex-end;
-		display: inline-block;
-		cursor: pointer;
-		height: 30px;
-		padding: 5px;
-		margin-bottom: 10px;
-		background: #0089dc;
-		color: #fff;
-		font-size: 14px;
-		border-radius: 6px;
+		>img{
+			flex-grow: 0;
+			@include wh(100px);
+			margin-right: 14px;
+		}
+		>span{
+			align-self: flex-end;
+			display: inline-block;
+			cursor: pointer;
+			height: 30px;
+			padding: 5px;
+			margin-bottom: 10px;
+			background: #0089dc;
+			@include fontscw(14px, #fff);
+			border-radius: 6px;
+		}
 	}
 	.food-detail-container{
 		position: relative;
 		flex-grow: 1;
 		display: inline-block;
-	}
-	.food-detail-container>h3{
-		font-size: 16px;
-		font-weight: 700;
-		margin-top: 15px;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		word-break: keep-all;
-	}
-	.food-detail-container>div{
-		max-width: 200px;
-		display: inline-block;
+		>h3{
+			@include fontscw(16px, #000, 700);
+			margin-top: 15px;
+			@include ellipsis;
+		}
+		>div{
+			max-width: 200px;
+			display: inline-block;
+		}
 	}
 	.food-min-price-container{
 		position: absolute;
@@ -83,8 +78,6 @@
 		left: 0;
 	}
 	.food-min-price{
-		font-size: 14px;
-		font-weight: 700;
-		color: #f74342;
+		@include fontscw(14px, #f74342, 700);
 	}
 </style>

@@ -212,35 +212,35 @@
 		}
 	}
 </script>
-<style type="text/css" scoped>
+<style lang="scss" type="text/css" scoped>
+	@import '../style/mixin';
 	.info-bar{
-		width: 1180px;
+		@include wh(1180px, 60px);
 		margin: 0 auto;
-		height: 60px;
 	}
 	.location{
 		width: 20%;
 		float: left;
-	}
-	.location>span{
-		line-height: 60px;
-		font-size: 12px;
-		display: inline-block;
-		vertical-align: top;
-	}
-	.location-desc{
-		color: #999999;
-	}
-	.location-current{
-		max-width: 40%;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		word-break: keep-all;
-	}
-	.location-change{
-		color: #2d8cf0;
-		cursor: pointer;
+		>span{
+			line-height: 60px;
+			font-size: 12px;
+			display: inline-block;
+			vertical-align: top;
+		}
+		&-desc{
+			color: #999999;
+		}
+		&-current{
+			max-width: 40%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			word-break: keep-all;
+		}
+		&-change{
+			color: #2d8cf0;
+			cursor: pointer;
+		}
 	}
 	.search{
 		float: right;
@@ -256,8 +256,7 @@
 	}
 	.category-desc{
 		float: left;
-		font-size: 16px;
-		color: #999;
+		@include fontscw(16px, #999);
 		line-height: 36px;
 		margin: 5px 0;
 	}
@@ -273,17 +272,16 @@
 		line-height: 36px;
 		padding: 0 16px;
 		height: 38px;
-	}
-	.category-item-container{
-		display: inline-block;
-		max-width: 1000px;
-	}
-	.category-item-container a{
-		display: inline-block;
-		margin: 5px 6px;
-		border-radius: 4px;
-		font-size: 14px;
-		color: #666;
+		&-container{
+			display: inline-block;
+			max-width: 1000px;
+		}
+		&-container a{
+			display: inline-block;
+			margin: 5px 6px;
+			border-radius: 4px;
+			@include fontscw(14px, #666);
+		}
 	}
 	.sub-category{
 		background: #f6f6f6;
@@ -318,32 +316,30 @@
 		border: 1px solid #dddee1;
 		box-shadow: 0 0 10px #000;
 		background: #f7fcf6;
-	}
-	.rest-info-container-left::before{
-		position: absolute;
-		content: "";
-		left: -32px;
-		border: 20px solid transparent;
-		border-right-color: #f7fcf6;
-	}
-	.rest-info-container-right::before{
-		position: absolute;
-		content: "";
-		right: -32px;
-		border: 20px solid transparent;
-		border-left-color: #f7fcf6;
-	}
-	.rest-info-container>div{
-		color: #000;
+		&-left::before{
+			position: absolute;
+			content: "";
+			left: -32px;
+			border: 20px solid transparent;
+			border-right-color: #f7fcf6;
+		}
+		&-right::before{
+			position: absolute;
+			content: "";
+			right: -32px;
+			border: 20px solid transparent;
+			border-left-color: #f7fcf6;
+		}
+		>div{
+			color: #000;
+		}
 	}
 	.rest-info-top{
 		border-bottom: 1px solid #dddee1;
 	}
 	.rest-info-title{
 		display: block;
-		color: #000;
-		font-size: 16px;
-		font-weight: bold;
+		@include fontscw(16px, #000, bold);
 	}
 	.rest-info-support-container{
 		margin: 10px 0;
@@ -352,8 +348,7 @@
 	.rest-info-support-icon{
 		float: left;
 		display: inline-block;
-		width: 20px;
-		height: 20px;
+		@include wh(20px);
 		border: 1px solid #333;
 		line-height: normal;
 		text-align: center;

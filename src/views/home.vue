@@ -165,33 +165,30 @@
   }
 </script>
 
-<style type="text/css" scoped>
+<style lang="scss" type="text/css" scoped>
+  @import '../style/mixin';
   .home{
-    width: 100%;
-    height: 100%;
+    @include wh(100%);
   }
   .top{
     background: #008de1;
-    height: 70%;
-    width: 100%;
+    @include wh(100%, 70%);
     color: #fff;
   }
   .header-container{
-    width: 1180px;
+    @include wh(1180px 90px);
     margin: 0 auto;
     padding-top: 25px;
-    height: 90px;
   }
   .header-left-pannel{
     display: inline-block;
     float: left;
-  }
-  .header-container a{
-    display: inline-block;
-    line-height: 60px;
-    font-size: 16px;
-    color: #fff;
-    padding: 0 15px;
+    a{
+      display: inline-block;
+      line-height: 60px;
+      @include fontscw(16px, #fff);
+      padding: 0 15px;
+    }
   }
   .header-right-pannel{
     display: inline-block;
@@ -207,8 +204,7 @@
   }
   .city-container{
     float: left;
-    height: 60px;
-    width: 20%;
+    @include wh(20%, 60px);
   }
   .city-current{
     display: inline-block;
@@ -218,29 +214,25 @@
     width: 100%;
     font-size: 20px;
     background: #fff;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    word-break: keep-all;
-    overflow: hidden;
-  }
-  .city-current::after{
-    display: inline-block;
-    top: 45%;
-    right: 13px;
-    margin-left: 5px;
-    vertical-align: middle;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid #999;
-    content: '';
-    position: absolute;
+    @include ellipsis;
+    &::after{
+      display: inline-block;
+      top: 45%;
+      right: 13px;
+      margin-left: 5px;
+      vertical-align: middle;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #999;
+      content: '';
+      position: absolute;
+    }
   }
   .city-dialog{
     position: absolute;
     z-index: 1000;
     top: 76px;
-    width: 730px;
-    height: 400px;
+    @include wh(730px, 400px);
     overflow: auto;
     background-color: #fff;
     box-shadow: 0 20px 20px 0 rgba(0,0,0,.085);
@@ -256,30 +248,26 @@
   }
   .dialog-container{
     padding: 0 30px;
-    width: 100%;
-    height: 100%;
+    @include wh(100%);
   }
   .dialog-header{
-    width: 100%;
-    height: 45px;
+    @include wh(100%, 45px);
     border-bottom: 1px solid #eee;
-  }
-  .dialog-header>span{
-    position: relative;
-    color: #000;
-    font-size: 13px;
-    left: 150px;
+    >span{
+      position: relative;
+      @include fontscw(13px, #000);
+      left: 150px;
+    }
   }
   .dialog-header-right{
     display: inline-block;
     height: 100%;
     float: right;
-    color: #000;
-    font-size: 14px;
+    @include fontscw(14px, #000);
     padding: 0 50px 10px 0;
-  }
-  .dialog-header-right>span{
-    color: #008de1;
+    >span{
+      color: #008de1;
+    }
   }
   .dialog-guess-city-container{
     width: 100%;
@@ -289,36 +277,34 @@
     display: inline-block;
     position: relative;
     left: 150px;
-  }
-  .dialog-guess-city>span{
-    color: #008de1;
-    font-size: 16px;
-  }
-  .dialog-guess-city>button{
-    display: inline-block;
-    line-height: 30px;
-    margin: 0 0 0 14px;
-    padding: 2px 16px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 3px;
-    color: #fff;
-    border: none;
-    background-color: #ff6000;
+    >span{
+      @include fontscw(16px, #008de1);
+    }
+    >button{
+      display: inline-block;
+      line-height: 30px;
+      margin: 0 0 0 14px;
+      padding: 2px 16px;
+      @include fontscw(16px, #fff);
+      cursor: pointer;
+      border-radius: 3px;
+      border: none;
+      background-color: #ff6000;
+    }
   }
   .dialog-guess-city-search{
     display: inline-block;
     position: relative;
     left: 170px;
-  }
-  .dialog-guess-city-search>input{
-    line-height: 30px;
-    background-color: #f5f5f5;
-    border: 1px solid #ededed;
-    width: 200px;
-    padding: 0 12px 0 15px;
-    border-radius: 3px;
-    font-size: 12px;
+    >input{
+      line-height: 30px;
+      background-color: #f5f5f5;
+      border: 1px solid #ededed;
+      width: 200px;
+      padding: 0 12px 0 15px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
   }
   .dialog-search-city-list{
     position: absolute;
@@ -332,21 +318,18 @@
     border: 1px solid #eee;
     list-style: none;
     border-top: 0;
-  }
-  .dialog-search-city-list-item{
-    display: block;
-    height: 30px;
-  }
-  .dialog-search-city-list-item:hover{
-    background-color: #eee;
-  }
-  .dialog-search-city-list-item>span{
-    display: inline-block;
-    color: #000;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    word-break: keep-all;
-    overflow: hidden;
+    &-item{
+      display: block;
+      height: 30px;
+    }
+    &-item:hover{
+      background-color: #eee;
+    }
+    &-item>span{
+      display: inline-block;
+      color: #000;
+      @include ellipsis;
+    }
   }
   .name-span{
     width: 60%;
@@ -363,33 +346,28 @@
   .citylist-container{
     width: 100%;
     border-bottom: 1px solid #eee;
-  }
-  .citylist-container>span{
-    color: #008de1;
-    font-size: 14px;
-    float: left;
+    >span{
+      @include fontscw(14px, #008de1);
+      float: left;
+    }
   }
   .citylist-item-container{
     display: inline-block;
     width: 630px;
     padding-left: 50px;
-  }
-  .citylist-item-container>span{
-    display: inline-block;
-    width: 100px;
-    color: #000;
-    cursor: pointer;
-    font-size: 14px;
-    margin-right: 10px;
-    line-height: 30px;
-    text-align: center;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    word-break: keep-all;
-    overflow: hidden;
-  }
-  .citylist-item-container>span:hover{
-    color: #008de1;
+    >span{
+      display: inline-block;
+      width: 100px;
+      cursor: pointer;
+      @include fontscw(14px);
+      margin-right: 10px;
+      line-height: 30px;
+      text-align: center;
+      @include ellipsis;
+    }
+    >span:hover{
+      color: #008de1;
+    }
   }
   .search-form{
     height: 60px;
@@ -400,18 +378,16 @@
     position: relative;
     display: inline-block;
     width: 80%;
-  }
-  .form-container::before{
-    display: inline-block;
-    height: 60px;
-    width: 2px;
-    border-left: 1px solid #999;
+    &::before{
+      display: inline-block;
+      @include wh(2px, 60px);
+      border-left: 1px solid #999;
+    }
   }
   .search-input{
     position: relative;
     bottom: 1.5px;
-    height: 60px;
-    width: 70%;
+    @include wh(70%, 60px);
     border: none;
     padding-left: 18px;
     font-size: 16px;
@@ -424,11 +400,9 @@
     border: none;
     border-radius: 2px;
     cursor: pointer;
-    font-size: 20px;
+    @include fontscw(20px, #fff);
     letter-spacing: 10px;
     background-color: #f74342;
-    color: #fff;
-
   }
   .address-detail-container{
     position: absolute;
@@ -440,35 +414,29 @@
     list-style: none;
     height: 400px;
     overflow: auto;
-  }
-  .address-detail-list>li{
-    height: 60px;
-    cursor: pointer;
-    padding: 10px 0;
-  }
-  .address-detail-list>li:hover{
-    background: #f2f5f7;
-  }
-  .address-detail-list p{
-    padding-top: 2px;
-    height: 50%;
-    line-height: normal;
-    text-align: center;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    word-break: keep-all;
-    overflow: hidden;
+    >li{
+      height: 60px;
+      cursor: pointer;
+      padding: 10px 0;
+    }
+    >li:hover{
+      background: #f2f5f7;
+    }
+    p{
+      padding-top: 2px;
+      height: 50%;
+      line-height: normal;
+      text-align: center;
+      @include ellipsis;
+    }
   }
   .address-detail-list-name{
-    color: #000;
-    font-size: 14px;
+    @include fontscw(14px);
   }
   .address-detail-list-address{
-    color: #999;
-    font-size: 12px;
+    @include fontscw(12px, #999);
   }
   .bottom{
-    height: 30%;
-    width: 100%;
+    @include wh(100%, 30%);
   }
 </style>
