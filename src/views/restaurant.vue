@@ -114,19 +114,16 @@
 									{{ item.name }}
 									<span>{{ item.description }}</span>
 								</h2>
-								<GridFood :foodList="item.foods" v-if="listWay === 'grid'"></GridFood>
-								<LineFood v-else :foodList="item.foods"></LineFood>
+								<Food :foodList="item.foods" :listWay="listWay"></Food>
 							</div>
 						</template>
 						<template v-else-if="sortType === 'search'">
 							<span class="sort-msg">{{ sortMsg }}</span>
-							<GridFood :foodList="foodSearchResult" v-if="listWay === 'grid'"></GridFood>
-							<LineFood v-else :foodList="foodSearchResult"></LineFood>
+							<Food :foodList="foodSearchResult" :listWay="listWay"></Food>
 						</template>
 						<template v-else>
 							<span class="sort-msg">{{ sortMsg }}</span>
-							<GridFood :foodList="sortedFoodList" v-if="listWay === 'grid'"></GridFood>
-							<LineFood v-else :foodList="sortedFoodList"></LineFood>
+							<Food :foodList="sortedFoodList" :listWay="listWay"></Food>
 						</template>
 					</div>
 				</template>
@@ -239,8 +236,7 @@
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
 	import { getImgPath } from '../components/common/mixin.js';
-	import GridFood from '../components/common/gridFood.vue';
-	import LineFood from '../components/common/lineFood.vue';
+	import Food from '../components/common/food.vue';
 	import {
 		getRestaurantInfo,
 		getMenu,
@@ -254,13 +250,12 @@
 		components: {
 			TopBar,
 			FooterComp,
-			GridFood,
-			LineFood,
+			Food,
 		},
 		data(){
 			return {
 				restaurant: {}, //餐馆对象
-				menu: [], //食品列表(含分类描述等)
+				//menu: [], //食品列表(含分类描述等)
 				foodCate: [], //食品分类
 				ratings: [], //客户评价信息
 				ratingScore: {}, //餐馆评分
@@ -275,11 +270,14 @@
 				scrollTop: 0, //滚动条滚动距离
 				panel: 'food', //控制显示食品或评价或商家资质
 				keyWord: '', //搜索关键字
-				foodSearchResult: [],
+				foodSearchResult: [], //食品搜索结果
 			};
 		},
 		mixins: [getImgPath],
 		computed: {
+			menu(){
+				return this.$store.state.menu;
+			},
 			//menu内所有食品
 			foodList(){
 				let list = [];
@@ -349,6 +347,9 @@
 				//debugger
 				if (this.sortType !== 'default') {
 					this.sortType = 'default';
+					this.$nextTick( () => {
+						this.updateData();
+					});
 					this.bindEvent();
 				}
 				this.showOnLeft = true;
@@ -421,7 +422,8 @@
 			let id = this.$route.params.id;
 			getRestaurantInfo(id).then( res => this.restaurant = res);
 			getMenu(id).then( res => {
-				this.menu = res;
+				//this.menu = res;
+				this.$store.commit('saveMenu', res);
 				this.$nextTick( () => {
 					if (this.sortType === 'default') this.updateData();
 				});

@@ -18,50 +18,52 @@
       <div class="address-container">
         <div class="city-container">
           <a class="city-current" @click="showDialog = !showDialog">{{citySelected.name}}</a>
-          <div
-            class="city-dialog"
-            v-if="showDialog">
-              <div class="dialog-container">
-                <div class="dialog-header">
-                  <span>请选择你所在的城市</span>
-                  <div class="dialog-header-right">
-                    <span>选城市</span>
-                    >定位置>叫外卖
-                  </div>
-                </div>
-                <div class="dialog-guess-city-container">
-                  <div class="dialog-guess-city">
-                    <span>猜你在</span>
-                    <button @click="handleSelectCity(cityGuess)">{{cityGuess.name}}</button>
-                  </div>
-                  <div class="dialog-guess-city-search">
-                    <input v-model="citySearch" placeholder="请输入城市">
-                    <ul class="dialog-search-city-list" v-if="cityFiltedList.length">
-                      <li
-                        v-for="item in cityFiltedList"
-                        :key="item.id"
-                        @click=handleSelectCity(item)
-                        class="dialog-search-city-list-item">
-                          <span class="name-span">{{item.name}}</span>
-                          <span class="pinyin-span">{{item.pinyin}}</span>
-                        </li>
-                    </ul>
-                  </div>
-                </div>
-                <div
-                  class="citylist-container"
-                  v-for="(value, key) in citySource">
-                    <span>{{key}}</span>
-                    <div class="citylist-item-container">
-                        <span
-                          @click="handleSelectCity(item)"
-                          v-for="item in value">
-                            {{item.name}}
-                        </span>
+          <transition name="city-dialog">
+            <div
+              class="city-dialog"
+              v-if="showDialog">
+                <div class="dialog-container">
+                  <div class="dialog-header">
+                    <span>请选择你所在的城市</span>
+                    <div class="dialog-header-right">
+                      <span>选城市</span>
+                      >定位置>叫外卖
                     </div>
+                  </div>
+                  <div class="dialog-guess-city-container">
+                    <div class="dialog-guess-city">
+                      <span>猜你在</span>
+                      <button @click="handleSelectCity(cityGuess)">{{cityGuess.name}}</button>
+                    </div>
+                    <div class="dialog-guess-city-search">
+                      <input v-model="citySearch" placeholder="请输入城市">
+                      <ul class="dialog-search-city-list" v-if="cityFiltedList.length">
+                        <li
+                          v-for="item in cityFiltedList"
+                          :key="item.id"
+                          @click=handleSelectCity(item)
+                          class="dialog-search-city-list-item">
+                            <span class="name-span">{{item.name}}</span>
+                            <span class="pinyin-span">{{item.pinyin}}</span>
+                          </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div
+                    class="citylist-container"
+                    v-for="(value, key) in citySource">
+                      <span>{{key}}</span>
+                      <div class="citylist-item-container">
+                          <span
+                            @click="handleSelectCity(item)"
+                            v-for="item in value">
+                              {{item.name}}
+                          </span>
+                      </div>
+                  </div>
                 </div>
-              </div>
-          </div>
+            </div>
+          </transition>
         </div>
         <div class="form-container">
           <form class="search-form">
@@ -236,6 +238,12 @@
     overflow: auto;
     background-color: #fff;
     box-shadow: 0 20px 20px 0 rgba(0,0,0,.085);
+  }
+  .city-dialog-enter-active, .city-dialog-leave-active{
+    transition: opacity .8s;
+  }
+  .city-dialog-enter, .city-dialog-leave-to{
+    opacity: 0;
   }
   .city-dialog---::before{
     position: absolute;

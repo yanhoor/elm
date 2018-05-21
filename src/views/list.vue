@@ -4,7 +4,7 @@
 		<div class="info-bar">
 			<div class="location">
 				<span class="location-desc">当前位置：</span>
-				<span class="location-current">{{this.address.name}}</span>
+				<span class="location-current" :title="address.name">{{this.address.name}}</span>
 				<span
 					class="location-change"
 					@click="handleChangeAddress">[切换地址]</span>
