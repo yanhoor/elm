@@ -19,7 +19,6 @@ Vue.use(VueBus);
 const store = new Vuex.Store({
 	state: {
 		address: {},
-		foodOrderList: [],
 		menu: [],
 		cartList: [],
 	},
@@ -29,7 +28,6 @@ const store = new Vuex.Store({
 			localStorage.address = JSON.stringify(address);
 		},
 		addToCart(state, food){
-			state.foodOrderList.push(food);
 			for(let item of state.menu){
 				if (item.id === food.category_id) {
 					for(let f of item.foods){
@@ -46,16 +44,30 @@ const store = new Vuex.Store({
 				}
 			}
 		},
-		removeFromCart(food_id){
+		updateCount(state, payload){
+			for(let item of state.cartList){
+				if (item.food_id === payload.food_id) {
+					item.order_count = payload.value;
+				}
+			}
+		},
+		removeFromCart(state, food_id){
 			for(let i of state.cartList){
 				if (i.food_id === food_id) {
-					let index = state.cartList.findIndexOf(i);
+					i.order_count = 0;
+					let index = state.cartList.indexOf(i);
 					state.cartList.splice(index, 1);
 				}
 			}
 		},
 		saveMenu(state, menu){
 			state.menu = menu;
+		},
+		clearCartList(state){
+			for( let item of state.cartList){
+				item.order_count = 0;
+			}
+			state.cartList = [];
 		},
 	}
 });

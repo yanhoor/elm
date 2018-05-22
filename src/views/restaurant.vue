@@ -229,6 +229,33 @@
 				</div>
 			</div>
 		</div>
+		<div class="shop-cart-container">
+			<div class="cart-header">
+				<div class="cart-headline">
+					<span>购物车</span>
+					<span @click="clearCartList">[清空]</span>
+				</div>
+				<ul class="cart-list">
+					<li v-for="item of cartList">
+						<span>{{ item.name }}</span>
+						<div>
+							<button @click="updateCount(item, -1)">-</button>
+							<input :value="item.order_count" @input="inputCount(item, $event.target.value)">
+							<button @click="updateCount(item, 1)">+</button>
+						</div>
+						<span>￥{{ item.order_count * item.price }}</span>
+					</li>
+				</ul>
+			</div>
+			<div class="cart-footer">
+				<div class="cart-footer-desc">
+					<Badge :count="cartFoodAmount"><Icon type="android-cart" size= 24></Icon></Badge>
+					￥<span class="cart-footer-desc-amount">{{ amount }}</span>
+					<span class="cart-footer-desc-deliver-fee">配送费￥{{ restaurant.float_delivery_fee }}</span>
+				</div>
+				<span>去结算 ></span>
+			</div>
+		</div>
 		<footer-comp></footer-comp>
 	</div>
 </template>
@@ -313,6 +340,26 @@
 				}
 				return list;
 			},
+			//购物车食品
+			cartList(){
+				return this.$store.state.cartList;
+			},
+			//购物车食品总数
+			cartFoodAmount(){
+				let amount = 0;
+				for(let item of this.cartList){
+					amount += item.order_count;
+				}
+				return amount;
+			},
+			//购物车食品总价
+			amount(){
+				let sum = 0;
+				for(let item of this.cartList){
+					sum += item.order_count * item.price;
+				}
+				return sum;
+			},
 		},
 		watch: {
 			scrollTop(){
@@ -382,9 +429,6 @@
 			},
 			handleSwitchListWay(type){
 				this.listWay = type;
-				this.$nextTick( () => {
-					if (this.sortType === 'default') this.updateData();
-				});
 			},
 			handleSearch(){
 				this.sortType = 'search';
@@ -410,6 +454,24 @@
 				}else{
 					return (Number(num)*100).toFixed(1) + '%';
 				}
+			},
+			updateCount(food, value){
+				if (food.order_count === 1 && value === -1) {
+					this.$store.commit('removeFromCart', food.food_id);
+				}
+				this.$store.commit('updateCount', {
+					food_id: food.food_id,
+					value: food.order_count + value
+				});
+			},
+			inputCount(food, value){
+				this.$store.commit('updateCount', {
+					food_id: food.food_id,
+					value: parseInt(value, 10)
+				});
+			},
+			clearCartList(){
+				this.$store.commit('clearCartList');
 			},
 			bindEvent(){
 				document.addEventListener('scroll', this.scroll, false);
@@ -437,6 +499,10 @@
 		},
 		mounted(){
 			this.bindEvent();
+		},
+		updated(){
+			console.log('updated');
+			this.updateData();
 		},
 		beforeDestroy(){
 			this.unbindEvent();
@@ -868,6 +934,109 @@
 		}
 		span:first-child{
 			font-weight: 700;
+		}
+	}
+	.shop-cart-container{
+		width: 320px;
+		z-index: 100;
+		position: fixed;
+		right: 0;
+		bottom: 0;
+		font-size: 14px;
+	}
+	.cart-header{
+		box-shadow: 0 1px 15px #ccc;
+	}
+	.cart-headline{
+		background-color: #fafafa;
+		border-top: 2px solid #0089dc;
+		padding: 12px 10px;
+		>span:last-child{
+			color: #0089dc;
+			cursor: pointer;
+		}
+	}
+	.cart-list{
+		max-height: 350px;
+		list-style: none;
+		padding: 0 10px;
+		overflow: auto;
+		background-color: #fff;
+		>li{
+			display: flex;
+			border-top: 1px solid #eee;
+			align-items: center;
+			padding: 10px 0;
+			>span:first-child{
+				width: 40%;
+				@include ellipsis;
+			}
+			>div{
+				display: inline-block;
+				flex-grow: 1;
+				>button:first-child{
+					border-right: 1px solid #ddd;
+					border-radius: 20px 0 0 20px;
+					cursor: pointer;
+					width: 24px;
+					border: 0;
+					background-color: #eee;
+					outline: 0;
+					float: left;
+					line-height: 30px;
+				}
+				>input{
+					width: 50px;
+					text-align: center;
+					border: 1px solid #ddd;
+					outline: 0;
+					float: left;
+					line-height: 28px;
+				}
+				>button:last-child{
+					border-left: 1px solid #ddd;
+					border-radius: 0 20px 20px 0;
+					cursor: pointer;
+					width: 24px;
+					border: 0;
+					background-color: #eee;
+					outline: 0;
+					line-height: 30px;
+				}
+			}
+			>span:last-child{
+				float: right;
+				color: #f17530;
+			}
+		}
+	}
+	.cart-footer{
+		display: flex;
+		&-desc{
+			flex-grow: 1;
+			float: left;
+			padding: 0 10px;
+			display: inline-block;
+			background-color: #2c2c2c;
+			height: 46px;
+			line-height: 46px;
+			color: #fff;
+			&-amount{
+				font-size: 24px;
+			}
+			&-deliver-fee{
+				color: #999;
+				font-size: 12px;
+			}
+		}
+		>span{
+			line-height: 46px;
+			display: inline-block;
+			cursor: pointer;
+			@include wh(120px, 46px);
+			@include fontscw(14px, #fff, 700);
+			text-align: center;
+			background-color: #51d862;
 		}
 	}
 	.support-item-container{
