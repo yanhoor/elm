@@ -28,6 +28,12 @@ const store = new Vuex.Store({
 			localStorage.address = JSON.stringify(address);
 		},
 		addToCart(state, food){
+			for(let item of state.cartList){
+				if (item.food_id === food.food_id) {
+					item.order_count ++;
+					return;
+				}
+			}
 			for(let item of state.menu){
 				if (item.id === food.category_id) {
 					for(let f of item.foods){

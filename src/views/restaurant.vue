@@ -468,6 +468,8 @@
 				if(value === '') {
 					this.$store.commit('removeFromCart', food.food_id);
 					return;
+				}else if(value < 1){
+					value = 1;
 				}
 				this.$store.commit('updateCount', {
 					food_id: food.food_id,

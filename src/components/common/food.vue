@@ -27,9 +27,31 @@
 							</div>
 							<span v-else @click="addToCart($event, food.specfoods[0], food.category_id)">加入购物车</span>
 					</div>
-					<span v-else>选规格</span>
+					<span v-else @click="selectSpec($event,food)">选规格</span>
 			</div>
 			<DropBalls ref='balls' key='-99'></DropBalls>
+			<div class="specs-background" key='specs' v-show="showModal"></div>
+			<div class="specs-container" key="specsContainer" v-show="showModal">
+				<div class="specs">
+					<dl>
+						<dt>规格</dt>
+						<dd
+							v-for="item of spec.specfoods"
+							@click="selectedSpec = item"
+							:class="{active: selectedSpec.specs_name === item.specs_name}"">
+								{{ item.specs_name }}
+						</dd>
+					</dl>
+				</div>
+				<div class="spec-info">
+					<p>已选：{{ selectedSpec.specs_name }}</p>
+					<p>￥{{ selectedSpec.price }}</p>
+				</div>
+				<div class="specs-action">
+					<span @click="addToCart($event,selectedSpec, spec.category_id)">选好了，加入购物车</span>
+					<span @click="closeModal">不要了</span>
+				</div>
+			</div>
 	</transition-group>
 </template>
 <script type="text/javascript">
@@ -42,6 +64,13 @@
 				type: String,
 				default: 'grid'
 			},
+		},
+		data(){
+			return{
+				spec: '', //包含多种规格的食品
+				selectedSpec: '',//选中的规格
+				showModal: false,
+			}
 		},
 		components: {
 			DropBalls,
@@ -63,7 +92,12 @@
 				this.foodOrderCount[food.item_id] = 1;
 				food.category_id = cate_id;
 				this.$store.commit('addToCart', food);
-				this.$refs.balls.drop(event.target);
+				if (this.selectedSpec) {
+					this.showModal = false;
+					this.selectedSpec = '';
+				}else{
+					this.$refs.balls.drop(event.target);
+				}
 			},
 			updateCount(event, food, value){
 				if (food.order_count < 2 && value === -1) {
@@ -86,6 +120,21 @@
 					food_id: food.food_id,
 					value: parseInt(value, 10)
 				});
+			},
+			selectSpec(event, food){
+				this.spec = food;
+				let rect = event.target.getBoundingClientRect();
+				let el = document.getElementsByClassName('specs-container')[0];
+				el.style.left = `${rect.left + 60}px`;
+				el.style.top = `${rect.top + document.documentElement.scrollTop - 28}px`;
+				this.showModal = true;
+				this.selectedSpec = food.specfoods[0];
+				console.log('rect ', rect);
+				console.log('el ', el.style.left + ',' + el.style.top);
+			},
+			closeModal(){
+				this.showModal = false;
+				this.selectedSpec = '';
 			},
 		},
 	}
@@ -191,6 +240,86 @@
 					}
 				}
 			}
+		}
+		.specs-background{
+			position: fixed;
+			z-index: 1004;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			opacity: 0.5;
+			background: rgb(0, 0, 0);
+		}
+		.specs-container{
+			position: absolute;
+			background: #fff;
+			width: 300px;
+			border: 1px;
+			box-shadow: 0 1px 15px #ccc;
+			z-index: 1005;
+			.specs{
+				margin: 10px;
+				padding: 12px 10px 0;
+				border: 1px solid #eee;
+				background-color: #fcfcfc;
+				>dl{
+					padding-bottom: 14px;
+					dt{
+						font-size: 14px;
+						padding-bottom: 10px;
+						color: #666;
+					}
+					dd{
+						display: inline-block;
+						padding: 0 14px;
+						min-width: 28px;
+						height: 26px;
+						font-size: 14px;
+						border: 1px solid #bbb;
+						border-radius: 13px;
+						margin: 0 18px 6px 0;
+						cursor: pointer;
+					}
+					dd.active{
+						border-color: #0089dc;
+						color: #0089dc;
+					}
+				}
+			}
+			.spec-info{
+				padding: 0 10px;
+				>p:first-child{
+					font-size: 14px;
+					color: #666;
+				}
+				>p:last-child{
+					@include fontscw(16px, #ff6000, 700);
+				}
+			}
+			.specs-action{
+				padding: 14px 10px;
+				>span:first-child{
+					padding: 8px 17px;
+					border-radius: 2px;
+					cursor: pointer;
+					background-color: #0089dc;
+					@include fontscw(14px, #fff);
+				}
+				>span:last-child{
+					margin-left: 12px;
+					@include fontscw(14px, #999);
+					cursor: pointer;
+				}
+			}
+		}
+		.specs-container::before{
+			content: '';
+			border: 10px solid transparent;
+			position: absolute;
+			top: 30px;
+			left: -18px;
+			border-right-color: #fff;
 		}
 	}
 	.food-container-line{
