@@ -456,7 +456,7 @@
 				}
 			},
 			updateCount(food, value){
-				if (food.order_count === 1 && value === -1) {
+				if (food.order_count < 2 && value === -1) {
 					this.$store.commit('removeFromCart', food.food_id);
 				}
 				this.$store.commit('updateCount', {
@@ -465,6 +465,10 @@
 				});
 			},
 			inputCount(food, value){
+				if(value === '') {
+					this.$store.commit('removeFromCart', food.food_id);
+					return;
+				}
 				this.$store.commit('updateCount', {
 					food_id: food.food_id,
 					value: parseInt(value, 10)
