@@ -46,7 +46,7 @@ export let axios1 = async(url = '', data = {}, type = 'get') => {
 }
 
 export let fetch = async(url = '', data = {}, type = 'GET', method = 'fetch') => {
-	let baseUrl = '';
+	let baseUrl = 'http://cangdu.org:8001';
 	type = type.toUpperCase();
 	url = baseUrl + url;
 
@@ -83,13 +83,13 @@ export let fetch = async(url = '', data = {}, type = 'GET', method = 'fetch') =>
 		}
 		
 		try {
-			console.log('url is ', url);
 			const response = await fetch(url, requestConfig);
+			console.log('response ', response);
 			const responseJson = await response.json();
 			console.log('responseJson is ', responseJson);
 			return responseJson
 		} catch (error) {
-			throw new Error(error)
+			console.log('error ', error);
 		}
 	} else {
 		return new Promise((resolve, reject) => {

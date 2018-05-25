@@ -422,5 +422,85 @@
 				}
 			}
 		}
+		.specs-background{
+			position: fixed;
+			z-index: 1004;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			opacity: 0.5;
+			background: rgb(0, 0, 0);
+		}
+		.specs-container{
+			position: absolute;
+			background: #fff;
+			width: 300px;
+			border: 1px;
+			box-shadow: 0 1px 15px #ccc;
+			z-index: 1005;
+			.specs{
+				margin: 10px;
+				padding: 12px 10px 0;
+				border: 1px solid #eee;
+				background-color: #fcfcfc;
+				>dl{
+					padding-bottom: 14px;
+					dt{
+						font-size: 14px;
+						padding-bottom: 10px;
+						color: #666;
+					}
+					dd{
+						display: inline-block;
+						padding: 0 14px;
+						min-width: 28px;
+						height: 26px;
+						font-size: 14px;
+						border: 1px solid #bbb;
+						border-radius: 13px;
+						margin: 0 18px 6px 0;
+						cursor: pointer;
+					}
+					dd.active{
+						border-color: #0089dc;
+						color: #0089dc;
+					}
+				}
+			}
+			.spec-info{
+				padding: 0 10px;
+				>p:first-child{
+					font-size: 14px;
+					color: #666;
+				}
+				>p:last-child{
+					@include fontscw(16px, #ff6000, 700);
+				}
+			}
+			.specs-action{
+				padding: 14px 10px;
+				>span:first-child{
+					padding: 8px 17px;
+					border-radius: 2px;
+					cursor: pointer;
+					background-color: #0089dc;
+					@include fontscw(14px, #fff);
+				}
+				>span:last-child{
+					margin-left: 12px;
+					@include fontscw(14px, #999);
+					cursor: pointer;
+				}
+			}
+		}
+		.specs-container::before{
+			content: '';
+			border: 10px solid transparent;
+			position: absolute;
+			top: 30px;
+			left: -18px;
+			border-right-color: #fff;
+		}
 	}
 </style>

@@ -507,7 +507,6 @@
 			this.bindEvent();
 		},
 		updated(){
-			console.log('updated');
 			this.updateData();
 		},
 		beforeDestroy(){
