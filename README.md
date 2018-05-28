@@ -3,7 +3,7 @@
 > 这是一个为了学习Vue而编写的demo，界面基本仿照饿了么PC端页面，使用这里提供的[API接口](https://github.com/bailicangdu/node-elm/blob/master/API.md)
 
 
-##技术栈
+## 技术栈
 Vue2 + vuex + vue-cli + vue-router + ES6 + axios + flex + sass
 
 
