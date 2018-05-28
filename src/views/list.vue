@@ -196,7 +196,7 @@
 			},
 		},
 		created(){
-			getRestaurants(this.address.latitude, this.address.longitude).then( res => {
+			getRestaurants(this.address.latitude, this.address.longitude, 0, 1000).then( res => {
 				this.restaurantList = [...res];
 				this.restaurantSortedList = [...res];
 				console.log('restaurantList ', res);
