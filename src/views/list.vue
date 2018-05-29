@@ -196,10 +196,9 @@
 			},
 		},
 		created(){
-			getRestaurants(this.address.latitude, this.address.longitude, 0, 1000).then( res => {
+			getRestaurants(this.address.latitude, this.address.longitude, 0, 30).then( res => {
 				this.restaurantList = [...res];
 				this.restaurantSortedList = [...res];
-				console.log('restaurantList ', res);
 			});
 			getRestaurantCategory().then( res => {
 				let index = -1;

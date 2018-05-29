@@ -374,6 +374,7 @@
 		},
 		methods: {
 			updateData(){
+				if (this.sortType !== 'default') return; //不是默认排序时不用更新
 				let list = [];
 				for( let item of this.menu){
 					let index = this.menu.indexOf(item);
@@ -384,7 +385,7 @@
 							key: index,
 							foodCate: item.name,
 							ele: ele,
-							offsetTop: offsetTop,
+							offsetTop,
 						});
 					}
 				}

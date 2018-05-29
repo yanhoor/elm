@@ -38,7 +38,7 @@
 						<dd
 							v-for="item of spec.specfoods"
 							@click="selectedSpec = item"
-							:class="{active: selectedSpec.specs_name === item.specs_name}"">
+							:class="{active: selectedSpec._id === item._id}"">
 								{{ item.specs_name }}
 						</dd>
 					</dl>

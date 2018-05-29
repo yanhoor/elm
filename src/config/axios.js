@@ -15,7 +15,7 @@ export let axios1 = async(url = '', data = {}, type = 'get') => {
 				'Content-Type': 'application/json'
 			},
 			withCredentials:true,
-			url: url,
+			url,
 			params: data,
 			method: type,
 		};
@@ -28,12 +28,10 @@ export let axios1 = async(url = '', data = {}, type = 'get') => {
 				'Content-Type': 'application/json'
 			},
 			withCredentials:true,
-			url: url,
+			url,
 			method: type,
+			data,
 		};
-		Object.defineProperty(config, 'body', {
-			value: JSON.stringify(data)
-		});
 		console.log('axios config object is ', config);
 	}
 
