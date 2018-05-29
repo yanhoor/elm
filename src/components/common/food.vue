@@ -31,7 +31,7 @@
 			</div>
 			<DropBalls ref='balls' key='-99'></DropBalls>
 			<div class="specs-background" key='specs' v-show="showModal"></div>
-			<div class="specs-container" key="specsContainer" v-show="showModal">
+			<div class="specs-container" id="specsContainer" key="specsContainer" v-show="showModal">
 				<div class="specs">
 					<dl>
 						<dt>规格</dt>
@@ -64,6 +64,7 @@
 				type: String,
 				default: 'grid'
 			},
+			cateIndex: Number, //默认排序时菜品分类index
 		},
 		data(){
 			return{
@@ -123,14 +124,20 @@
 			},
 			selectSpec(event, food){
 				this.spec = food;
+				this.showModal = true;
 				let rect = event.target.getBoundingClientRect();
-				let el = document.getElementsByClassName('specs-container')[0];
+				//specs-container类名的元素有多个？？
+				//console.log('el in classname ', document.getElementsByClassName('specs-container'));
+				//console.log('el in classname2 ', document.getElementsByClassName('specs-container v-move v-enter-to'));
+				let el;
+				if (this.cateIndex) {
+					el = document.getElementsByClassName('specs-container')[this.cateIndex];
+				}else{
+					el = document.getElementsByClassName('specs-container')[0];
+				}
 				el.style.left = `${rect.left + 60}px`;
 				el.style.top = `${rect.top + document.documentElement.scrollTop - 28}px`;
-				this.showModal = true;
 				this.selectedSpec = food.specfoods[0];
-				console.log('rect ', rect);
-				console.log('el ', el.style.left + ',' + el.style.top);
 			},
 			closeModal(){
 				this.showModal = false;
@@ -274,12 +281,15 @@
 						display: inline-block;
 						padding: 0 14px;
 						min-width: 28px;
+						max-width: 120px;
 						height: 26px;
+						line-height: 26px;
 						font-size: 14px;
 						border: 1px solid #bbb;
 						border-radius: 13px;
 						margin: 0 18px 6px 0;
 						cursor: pointer;
+						@include ellipsis;
 					}
 					dd.active{
 						border-color: #0089dc;

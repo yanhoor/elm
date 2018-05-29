@@ -1,6 +1,6 @@
 # 前言
 
-> 这是一个为了学习Vue而编写的demo，界面基本仿照饿了么PC端页面，使用这里提供的[API接口](https://github.com/bailicangdu/node-elm/blob/master/API.md)
+> 这是一个为了学习Vue而编写的demo，界面和功能基本仿照饿了么PC端页面，使用这里提供的[API接口](https://github.com/bailicangdu/node-elm/blob/master/API.md)
 
 
 ## 技术栈
@@ -30,8 +30,6 @@ npm run build --report
 - [x] 展示所选地址附近商家列表 -- 完成
 - [x] 搜索美食，餐馆 -- 完成
 - [x] 根据距离、销量、评分、特色菜、配送方式等进行排序和筛选 -- 完成
-- [x] 餐馆食品列表页 -- 完成
+- [x] 餐馆食品列表页、商家信息 -- 完成
 - [x] 购物车功能 -- 完成
-- [x] 店铺评价页面 -- 完成
-- [x] 商家详情页 -- 完成
 - [ ] 登录、注册 -- 尚未完成

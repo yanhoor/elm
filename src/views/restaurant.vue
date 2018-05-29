@@ -114,7 +114,7 @@
 									{{ item.name }}
 									<span>{{ item.description }}</span>
 								</h2>
-								<Food :foodList="item.foods" :listWay="listWay"></Food>
+								<Food :foodList="item.foods" :listWay="listWay" :cateIndex="key"></Food>
 							</div>
 						</template>
 						<template v-else-if="sortType === 'search'">
@@ -379,7 +379,7 @@
 					let index = this.menu.indexOf(item);
 					let ele = document.getElementById('foodItem' + index);
 					if(ele){
-						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop - 160; //160是食品分类在顶部时的高度， 点击选择有一个偏移量
+						let offsetTop = ele.getBoundingClientRect().top + document.documentElement.scrollTop - 210; //210是食品分类在顶部时的高度， 点击选择有一个偏移量
 						list.push({
 							key: index,
 							foodCate: item.name,
