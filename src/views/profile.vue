@@ -114,17 +114,22 @@
 						<h3>地址管理</h3>
 						<div class="address-pannel-content">
 							<div class="address-detail-info">
-								<div class="address-detail-item" v-for="item of addressList">
+								<div class="address-detail-item" v-for="(item, index) of addressList" :key="index">
 									<div class="address-detail-item-top">
 										<span>{{ item.name }}</span>
 										<div>
-											<span>修改</span>
-											<span>删除</span>
+											<span @click="handleModifyAddress(item)">修改</span>
+											<span @click="addressToDelete = item">删除</span>
 										</div>
 									</div>
 									<div class="address-detail-item-bottom">
 										<p>{{ item.address + item.address_detail}}</p>
 										<p>{{ item.phone }}</p>
+									</div>
+									<div :class="{'address-detail-item-delete-confirm': true, 'active': addressToDelete.id === item.id}" >
+										<p>确定删除收货地址？</p>
+										<button class="confirm-delete" @click="handleConfirmDeleteAddress(addressToDelete)">确定</button>
+										<button class="cancel-delete" @click="addressToDelete = {}">取消</button>
 									</div>
 								</div>
 								<button @click="showModal = true">
@@ -135,7 +140,7 @@
 					</div>
 				</template>
 			</div>
-			<Modal class="modal-container" v-model="showModal" title="添加新地址" ok-text="保存" @on-ok="handleClickSaveAddress">
+			<Modal class="modal-container" v-model="showModal" title="添加新地址" ok-text="保存" @on-ok="handleClickSaveAddress" @on-cancel="handleClickCloseModal">
 				<div class="modal-form-item">
 					<label>姓名</label>
 					<input placeholder="请输入您的姓名" v-model="addressInfo.name">
@@ -211,6 +216,7 @@
 				addressKeyword: '',
 				searchAddressList: [], //对话框输入位置时显示的列表
 				showAddressList: false, //是否显示对话框的地址搜索结果
+				addressToDelete: {},
 				addressInfo: {
 					user_id: '',
 					address: '',
@@ -253,6 +259,10 @@
 				this.addressKeyword = address.name;
 			},
 			handleClickSaveAddress(){
+				if (this.addressInfo.id) {
+					this.addressInfo.geohash = this.addressInfo.st_geohash;
+					this.handleDeleteAddress(this.addressInfo);
+				}
 				this.addressInfo.user_id = this.user.user_id;
 				switch(this.addressInfo.tag_type){
 					case '2':
@@ -267,7 +277,8 @@
 				}
 				let {user_id,address,address_detail,geohash,name,phone,tag,sex,phone_bk,tag_type,poi_type} = this.addressInfo;
 				addAddress(user_id,address,address_detail,geohash,name,phone,tag,sex,phone_bk,tag_type,poi_type).then( res => {
-					if (res.status === 1) this.updateAddressList();
+					console.log('add result ', res);
+					this.resetAddressInfo(); //重置addressInfo;
 				});
 			},
 			handleSearchAddress(){
@@ -276,10 +287,43 @@
 					if (this.addressKeyword !== this.addressInfo.address) this.showAddressList = true;
 				});
 			},
+			handleClickCloseModal(){
+				this.resetAddressInfo();
+			},
+			resetAddressInfo(){
+				//防止修改地址时点击取消，addressInfo仍保留其信息
+				this.addressKeyword = '';
+				this.addressInfo = {
+					user_id: '',
+					address: '',
+					address_detail: '',
+					geohash: '',
+					name: '',
+					phone: '',
+					tag: '',
+					tag_type: '',
+					sex: '',
+					poi_type: 0,
+					phone_bk: '',
+				};
+				this.updateAddressList();
+			},
 			updateAddressList(){
 				getReceivedAddresses(this.user.user_id).then( res => {
 					this.addressList = res;
+					console.log('completed updating');
 				});
+			},
+			handleModifyAddress(address){
+				this.addressInfo = address;
+				this.showModal = true;
+				this.addressKeyword = address.address;
+			},
+			handleConfirmDeleteAddress(address){
+				deleteAddress(address.user_id, address.id).then( res => {
+					console.log('delete result ', res);
+				});
+				this.updateAddressList();
 			},
 		},
 		created(){
@@ -524,6 +568,7 @@
 				margin-right: -33px;
 				padding-top: 15px;
 				.address-detail-item{
+					position: relative;
 					@include wh(300px, 110px);
 					margin-right: 33px;
 					display: inline-block;
@@ -551,6 +596,44 @@
 					.address-detail-item-bottom{
 						>p{
 							@include ellipsis;
+						}
+					}
+					.address-detail-item-delete-confirm{
+						display: none;
+					}
+					.address-detail-item-delete-confirm.active{
+						display: block;
+						position: absolute;
+						left: 0;
+						top: 0;
+						@include wh(100%);
+						text-align: center;
+						font-size: 14px;
+						padding-top: 23px;
+						background: #808080;
+						opacity: 0.9;
+						>p{
+							vertical-align: top;
+							@include fontscw(14px, #fff);
+							line-height: 26px;
+							text-align: center;
+						}
+						>button{
+							cursor: pointer;
+							border: 0;
+							border-radius: 2px;
+							margin-top: 5px;
+							@include wh(60px, 24px);
+							padding: 0 10px;
+							line-height: 24px;
+						}
+						.confirm-delete{
+							background: #0089dc;
+							color: #fff;
+						}
+						.cancel-delete{
+							margin-left: 10px;
+							background: #fff;
 						}
 					}
 				}

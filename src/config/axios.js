@@ -7,7 +7,7 @@ export let axios1 = async(url = '', data = {}, type = 'get') => {
 	});
 
 	let config = {};
-	if (type === 'get') {
+	if (type === 'get' || type === 'DELETE') {
 		config = {
 			baseURL: '',
 			headers: {
