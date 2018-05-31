@@ -84,6 +84,9 @@ const store = new Vuex.Store({
 			}
 			state.cartList = [];
 		},
+		signout(state){
+			state.user = {};
+		},
 	}
 });
 router.beforeEach( (to, from, next ) => {

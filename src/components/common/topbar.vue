@@ -29,6 +29,8 @@
 	</div>
 </template>
 <script type="text/javascript">
+	import { signout } from '../../service/getData.js';
+
 	export default{
 		data(){
 			return{
@@ -43,6 +45,12 @@
 						this.$router.push('/profile/');
 						break;
 					case 'favorite':
+						break;
+					case 'logout':
+						signout().then( res => {
+							this.$store.commit('signout');
+							this.$router.push('/login');
+						});
 						break;
 				}
 			},

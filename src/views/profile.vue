@@ -99,7 +99,9 @@
 							<div class="profile-detail-info">
 								<p>
 									<span>头像</span>
-									<span><img :src="'/img/' + user.avatar"></span>
+									<span>
+										<img :src="'/img/' + user.avatar">
+									</span>
 								</p>
 								<p>
 									<span>用户名</span>
@@ -213,10 +215,10 @@
 				addressList: [], //已有地址列表
 				showModal: false,
 				city: {}, //所在城市
-				addressKeyword: '',
+				addressKeyword: '', //对应对话框位置
 				searchAddressList: [], //对话框输入位置时显示的列表
 				showAddressList: false, //是否显示对话框的地址搜索结果
-				addressToDelete: {},
+				addressToDelete: {}, //点击删除的地址
 				addressInfo: {
 					user_id: '',
 					address: '',
@@ -261,7 +263,9 @@
 			handleClickSaveAddress(){
 				if (this.addressInfo.id) {
 					this.addressInfo.geohash = this.addressInfo.st_geohash;
-					this.handleDeleteAddress(this.addressInfo);
+					deleteAddress(this.addressInfo.user_id, this.addressInfo.id).then( res => {
+						console.log('delete result ', res);
+					});
 				}
 				this.addressInfo.user_id = this.user.user_id;
 				switch(this.addressInfo.tag_type){
