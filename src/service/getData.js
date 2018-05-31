@@ -7,10 +7,10 @@ export const groupCities = () => axios('/v1/cities', {type: 'group'});
 //2. 获取所选城市信息
 export const getCityInfo = (id) => axios('/v1/cities/'+ id);
 //3. 搜索地址
-export const searchAddress = (city_id, keyword) => axios('/v1/pois',{
+export const searchAddress = (city_id, keyword, type) => axios('/v1/pois',{
 	keyword,
 	city_id,
-	type: 'search'
+	type,
 });
 //4. 根据经纬度详细定位
 export const getLocation = (geohash) => axios('/v2/pois/'+ geohash);
@@ -87,9 +87,7 @@ export const getRemarks = (cart_id) => axios('/v1/carts/:cart_id/remarks', {
 	cart_id
 });
 //22. 获取收货地址列表
-export const getReceivedAddresses = (user_id) => axios('/v1/users/:user_id/addresses', {
-	user_id
-});
+export const getReceivedAddresses = (user_id) => axios('/v1/users/' + user_id + '/addresses');
 //23. 获取验证码
 export const getCaptchas = () => axios('/v1/captchas', {}, 'post');
 //24. 获取用户信息
@@ -144,8 +142,9 @@ export const postOrder = ( user_id, cart_id, address_id, restaurant_id, entities
 		user_id, cart_id, restaurant_id, entities, geohash, desctiption
 	}, 'post');
 //31. 订单列表
-export const getOrderList = (user_id) => axios('/bos/v2/users/' + user_id + '/orders',
-	{ user_id });
+export const getOrderList = (user_id, limit = 20, offset = 0) => axios('/bos/v2/users/' + user_id + '/orders', {
+	limit, offset
+});
 //32. 订单详情
 export const getOrderDetail = ( user_id, order_id ) =>
 	axios('/bos/v1/users/' + user_id + '/orders/' + order_id + '/snapshot', {
@@ -154,8 +153,8 @@ export const getOrderDetail = ( user_id, order_id ) =>
 //33. 服务中心
 export const getServiceExplain = () => axios('/v3/profile/explain');
 //34. 可用红包
-export const getAvailableHongbaos = (user_id) => axios('/promotion/v2/users/' + user_id + '/hongbaos',{
-	user_id
+export const getAvailableHongbaos = (user_id, limit = 20, offset = 0) => axios('/promotion/v2/users/' + user_id + '/hongbaos',{
+	limit, offset
 });
 //35. 过期红包
 export const getExpiredHongbaos = ( user_id ) => axios('/promotion/v2/users/' + user_id + '/expired_hongbaos', {

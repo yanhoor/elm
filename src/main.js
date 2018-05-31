@@ -21,8 +21,17 @@ const store = new Vuex.Store({
 		address: {},
 		menu: [],
 		cartList: [],
+		user: {},
+		city: {},//主页选中的城市
 	},
 	mutations: {
+		saveUserInfo(state, user){
+			state.user = user;
+			localStorage.user = JSON.stringify(user);
+		},
+		saveCity(state, city){
+			state.city = city;
+		},
 		changeAddress(state, address){
 			state.address = address;
 			localStorage.address = JSON.stringify(address);
@@ -90,5 +99,6 @@ new Vue({
   template: '<App/>',
   mounted(){
   	store.state.address = JSON.parse(localStorage.address);
+  	store.state.user = JSON.parse(localStorage.user);
   }
 })

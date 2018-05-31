@@ -133,10 +133,11 @@
         this.citySelected = city;
         this.showDialog = false;
         if (this.addressDetail) this.handleSearchPlace();
+        this.$store.commit('saveCity', city);
       },
       handleSearchPlace(){
         this.detailAddressList = [];
-        searchAddress(this.citySelected.id, this.addressDetail).then( res => {
+        searchAddress(this.citySelected.id, this.addressDetail, 'search').then( res => {
           this.detailAddressList = [...res];
         });
       },
@@ -151,6 +152,7 @@
         console.log('guessCity ', res);
         this.citySelected = res;
         this.cityGuess = res;
+        this.$store.commit('saveCity', res);
       });
       groupCities().then( res => {
         let object = {};

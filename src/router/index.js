@@ -35,6 +35,20 @@ export default new Router({
       component: (resolve) => require(['../views/login.vue'], resolve)
     },
     {
+      path: '/profile/',
+      meta: {
+        title: 'profile'
+      },
+      component: (resolve) => require(['../views/profile.vue'], resolve)
+    },
+    {
+      path: '/profile/:type',
+      meta: {
+        title: 'profile'
+      },
+      component: (resolve) => require(['../views/profile.vue'], resolve)
+    },
+    {
       path: '/test',
       meta: {
         title: 'test'

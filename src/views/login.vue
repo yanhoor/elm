@@ -38,11 +38,11 @@
 			getVerifyCode(){
 				getCaptchas().then( res => {
 					this.imgUrl = res.code;
-					console.log(res);
 				});
 			},
 			handleLogin(){
 				login(this.username, this.password, this.verifyCode).then( res => {
+					this.$store.commit('saveUserInfo', res);
 					console.log('login ', res);
 				});
 			}
