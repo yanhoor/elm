@@ -38,6 +38,7 @@ const store = new Vuex.Store({
 			localStorage.address = JSON.stringify(address);
 		},
 		addToCart(state, payload){
+			//console.log('addToCart');
 			let food = payload.food;
 			let currentItem = {}; //购物车内含有对应餐馆的那一项
 			let restInList = false;
@@ -49,6 +50,7 @@ const store = new Vuex.Store({
 					for(let i of item.orderList){
 						if (i.food_id === food.food_id) {
 							i.order_count ++;
+							//console.log('addToCart multispecs');
 							return;
 						}
 					}
@@ -63,13 +65,14 @@ const store = new Vuex.Store({
 				};
 				state.cartList.push(currentItem);
 			}
-			for(let item of state.menu){
+			for(let item of currentItem.menu){
 				if (item.id === food.category_id) {
 					for(let f of item.foods){
 						if (f.item_id === food.item_id) {
 							for(let spec of f.specfoods){
 								if (spec.food_id === food.food_id) {
 									Vue.set(spec, 'order_count', 1);
+									//console.log('addToCart add new item');
 									currentItem.orderList.push(spec);
 								}
 							}
@@ -83,6 +86,7 @@ const store = new Vuex.Store({
 				if (item.restaurant_id === payload.rest.id) {
 					for( let i of item.orderList){
 						if (i.food_id === payload.food_id) {
+							console.log('updateCount');
 							i.order_count = payload.value;
 						}
 					}
@@ -111,7 +115,7 @@ const store = new Vuex.Store({
 		},
 		clearCartList(state, rest){
 			for( let item of state.cartList){
-				if (item.restaurant.id === rest.id) {
+				if (item.restaurant_id === rest.id) {
 					for( let i of item.orderList){
 						i.order_count = 0;
 					}
