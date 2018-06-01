@@ -157,8 +157,8 @@ export const getAvailableHongbaos = (user_id, limit = 20, offset = 0) => axios('
 	limit, offset
 });
 //35. 过期红包
-export const getExpiredHongbaos = ( user_id ) => axios('/promotion/v2/users/' + user_id + '/expired_hongbaos', {
-	user_id
+export const getExpiredHongbaos = ( user_id, limit = 20, offset = 0 ) => axios('/promotion/v2/users/' + user_id + '/expired_hongbaos',{
+	limit, offset
 });
 //36. 兑换红包
 export const exchangeHongbao = (user_id, exchange_code, captcha_code) =>

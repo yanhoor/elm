@@ -65,6 +65,7 @@
 				default: 'grid'
 			},
 			cateIndex: Number, //默认排序时菜品分类index
+			rest: Object,
 		},
 		data(){
 			return{
@@ -92,7 +93,10 @@
 			addToCart(event, food, cate_id){
 				this.foodOrderCount[food.item_id] = 1;
 				food.category_id = cate_id;
-				this.$store.commit('addToCart', food);
+				this.$store.commit('addToCart', {
+					food,
+					rest: this.rest
+				});
 				if (this.selectedSpec) {
 					this.showModal = false;
 					this.selectedSpec = '';
@@ -102,17 +106,24 @@
 			},
 			updateCount(event, food, value){
 				if (food.order_count < 2 && value === -1) {
-					this.$store.commit('removeFromCart', food.food_id);
+					this.$store.commit('removeFromCart', {
+						food_id: food.food_id,
+						rest: this.rest
+					});
 				}
 				this.$store.commit('updateCount', {
 					food_id: food.food_id,
-					value: food.order_count + value
+					value: food.order_count + value,
+					rest: this.rest
 				});
 				if (value === 1) this.$refs.balls.drop(event.target);
 			},
 			inputCount(food, value){
 				if(value === '') {
-					this.$store.commit('removeFromCart', food.food_id);
+					this.$store.commit('removeFromCart', {
+						rest: this.rest,
+						food_id: food.food_id
+					});
 					return;
 				}else if(value < 1){
 					value = 1;

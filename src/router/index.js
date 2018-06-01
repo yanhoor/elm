@@ -49,6 +49,13 @@ export default new Router({
       component: (resolve) => require(['../views/profile.vue'], resolve)
     },
     {
+      path: '/checkout',
+      meta: {
+        title: 'checkout'
+      },
+      component: (resolve) => require(['../views/checkout.vue'], resolve)
+    },
+    {
       path: '/test',
       meta: {
         title: 'test'

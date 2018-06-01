@@ -23,6 +23,7 @@ const store = new Vuex.Store({
 		cartList: [],
 		user: {},
 		city: {},//主页选中的城市
+		currentRestaurant: {},
 	},
 	mutations: {
 		saveUserInfo(state, user){
@@ -36,12 +37,31 @@ const store = new Vuex.Store({
 			state.address = address;
 			localStorage.address = JSON.stringify(address);
 		},
-		addToCart(state, food){
+		addToCart(state, payload){
+			let food = payload.food;
+			let currentItem = {}; //购物车内含有对应餐馆的那一项
+			let restInList = false;
 			for(let item of state.cartList){
-				if (item.food_id === food.food_id) {
-					item.order_count ++;
-					return;
+				if (item.restaurant_id === payload.rest.id) {
+					restInList = true;
+					currentItem = item;
+					//对于多规格食品
+					for(let i of item.orderList){
+						if (i.food_id === food.food_id) {
+							i.order_count ++;
+							return;
+						}
+					}
 				}
+			}
+			if (!restInList) {
+				currentItem = {
+					restaurant_id: payload.rest.id,
+					restaurant: payload.rest,
+					orderList: [],
+					menu: state.menu
+				};
+				state.cartList.push(currentItem);
 			}
 			for(let item of state.menu){
 				if (item.id === food.category_id) {
@@ -50,8 +70,7 @@ const store = new Vuex.Store({
 							for(let spec of f.specfoods){
 								if (spec.food_id === food.food_id) {
 									Vue.set(spec, 'order_count', 1);
-									state.cartList.push(spec);
-									//spec.order_count = 1;
+									currentItem.orderList.push(spec);
 								}
 							}
 						}
@@ -61,16 +80,28 @@ const store = new Vuex.Store({
 		},
 		updateCount(state, payload){
 			for(let item of state.cartList){
-				if (item.food_id === payload.food_id) {
-					item.order_count = payload.value;
+				if (item.restaurant_id === payload.rest.id) {
+					for( let i of item.orderList){
+						if (i.food_id === payload.food_id) {
+							i.order_count = payload.value;
+						}
+					}
 				}
 			}
 		},
-		removeFromCart(state, food_id){
-			for(let i of state.cartList){
-				if (i.food_id === food_id) {
-					i.order_count = 0;
-					let index = state.cartList.indexOf(i);
+		removeFromCart(state, payload){
+			for(let item of state.cartList){
+				if (item.restaurant_id === payload.rest.id) {
+					for(let i of item.orderList){
+						if (i.food_id === payload.food_id) {
+							i.order_count = 0;
+							let index = item.orderList.indexOf(i);
+							item.orderList.splice(index, 1);
+						}
+					}
+				}
+				if (!item.orderList.length) {
+					let index = state.cartList.indexOf(item);
 					state.cartList.splice(index, 1);
 				}
 			}
@@ -78,14 +109,22 @@ const store = new Vuex.Store({
 		saveMenu(state, menu){
 			state.menu = menu;
 		},
-		clearCartList(state){
+		clearCartList(state, rest){
 			for( let item of state.cartList){
-				item.order_count = 0;
+				if (item.restaurant.id === rest.id) {
+					for( let i of item.orderList){
+						i.order_count = 0;
+					}
+					let index = state.cartList.indexOf(item);
+					state.cartList.splice(index, 1);
+				}
 			}
-			state.cartList = [];
 		},
 		signout(state){
 			state.user = {};
+		},
+		saveCurrentRestaurant(state, restaurant){
+			state.currentRestaurant = restaurant;
 		},
 	}
 });

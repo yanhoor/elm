@@ -114,16 +114,16 @@
 									{{ item.name }}
 									<span>{{ item.description }}</span>
 								</h2>
-								<Food :foodList="item.foods" :listWay="listWay" :cateIndex="key"></Food>
+								<Food :foodList="item.foods" :listWay="listWay" :cateIndex="key" :rest="restaurant"></Food>
 							</div>
 						</template>
 						<template v-else-if="sortType === 'search'">
 							<span class="sort-msg">{{ sortMsg }}</span>
-							<Food :foodList="foodSearchResult" :listWay="listWay"></Food>
+							<Food :foodList="foodSearchResult" :listWay="listWay" :rest="restaurant"></Food>
 						</template>
 						<template v-else>
 							<span class="sort-msg">{{ sortMsg }}</span>
-							<Food :foodList="sortedFoodList" :listWay="listWay"></Food>
+							<Food :foodList="sortedFoodList" :listWay="listWay" :rest="restaurant"></Food>
 						</template>
 					</div>
 				</template>
@@ -303,7 +303,15 @@
 		mixins: [getImgPath],
 		computed: {
 			menu(){
-				return this.$store.state.menu;
+				let menuInList = false;
+				for(let item of this.$store.state.cartList){
+					if (item.restaurant_id === this.restaurant.id) menuInList = item;
+				}
+				if (menuInList) {
+					return menuInList.menu;
+				}else{
+					return this.$store.state.menu;
+				}
 			},
 			//menu内所有食品
 			foodList(){
@@ -342,7 +350,13 @@
 			},
 			//购物车食品
 			cartList(){
-				return this.$store.state.cartList;
+				let list = this.$store.state.cartList;
+				let restInList = false;
+				for(let item of list){
+					if (item.restaurant.id === this.restaurant.id) restInList = item;
+				}
+				if (restInList) return restInList.orderList;
+				return [];
 			},
 			//购物车食品总数
 			cartFoodAmount(){
@@ -458,11 +472,15 @@
 			},
 			updateCount(food, value){
 				if (food.order_count < 2 && value === -1) {
-					this.$store.commit('removeFromCart', food.food_id);
+					this.$store.commit('removeFromCart', {
+						food_id: food.food_id,
+						rest: this.restaurant
+					});
 				}
 				this.$store.commit('updateCount', {
 					food_id: food.food_id,
-					value: food.order_count + value
+					value: food.order_count + value,
+					rest: this.restaurant
 				});
 			},
 			inputCount(food, value){
@@ -478,7 +496,7 @@
 				});
 			},
 			clearCartList(){
-				this.$store.commit('clearCartList');
+				this.$store.commit('clearCartList', this.restaurant);
 			},
 			bindEvent(){
 				document.addEventListener('scroll', this.scroll, false);
@@ -489,7 +507,13 @@
 		},
 		created(){
 			let id = this.$route.params.id;
-			getRestaurantInfo(id).then( res => this.restaurant = res);
+			//let lastRest = this.$store.state.currentRestaurant;
+			//进入新餐馆先清空上个餐馆的购物车
+			//if (lastRest.id !== id) this.$store.commit('clearCartList');
+			getRestaurantInfo(id).then( res => {
+				this.restaurant = res;
+				this.$store.commit('saveCurrentRestaurant', res);
+			});
 			getMenu(id).then( res => {
 				//this.menu = res;
 				this.$store.commit('saveMenu', res);

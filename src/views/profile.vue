@@ -50,7 +50,7 @@
 							<div class="profile-info-item">
 								<p>我的红包</p>
 								<p class="profile-info-item-number-wrap">
-									<span class="profile-info-item-number">{{ hongbaoCount }}</span>
+									<span class="profile-info-item-number">{{ availableHongbaos.length }}</span>
 									个
 								</p>
 							</div>
@@ -199,7 +199,7 @@
 <script type="text/javascript">
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
-	import { getAvailableHongbaos, getOrderList, getReceivedAddresses, addAddress, deleteAddress, searchAddress } from '../service/getData.js';
+	import { getAvailableHongbaos, getOrderList, getReceivedAddresses, addAddress, deleteAddress, searchAddress, getExpiredHongbaos } from '../service/getData.js';
 
 	export default {
 		components: {
@@ -210,7 +210,8 @@
 			return {
 				type: '',
 				user: {},
-				hongbaos: [],
+				availableHongbaos: [],
+				expiredHongbaos: [],
 				orderList: [], //最近订单列表
 				addressList: [], //已有地址列表
 				showModal: false,
@@ -239,17 +240,6 @@
 				this.handleSearchAddress();
 			},
 		},
-		computed: {
-			hongbaoCount(){
-				let count = 0;
-				for(let item of this.hongbaos){
-					let endDate = new Date(Date.parse(item.end_date)).getTime();
-					let nowDate = new Date().getTime();
-					if (nowDate <= endDate) count ++;
-				}
-				return count;
-			},
-		},
 		methods: {
 			handleClickSidebar(type){
 				this.type = type;
@@ -260,10 +250,10 @@
 				this.showAddressList = false;
 				this.addressKeyword = address.name;
 			},
-			handleClickSaveAddress(){
+			async handleClickSaveAddress(){
 				if (this.addressInfo.id) {
 					this.addressInfo.geohash = this.addressInfo.st_geohash;
-					deleteAddress(this.addressInfo.user_id, this.addressInfo.id).then( res => {
+					await deleteAddress(this.addressInfo.user_id, this.addressInfo.id).then( res => {
 						console.log('delete result ', res);
 					});
 				}
@@ -334,10 +324,13 @@
 			this.city = this.$store.state.city;
 			this.user = this.$store.state.user;
 			getAvailableHongbaos(this.user.user_id).then( res => {
-				this.hongbaos = res;
+				this.availableHongbaos = res;
 			});
 			getOrderList(this.user.user_id).then( res => {
 				this.orderList = res;
+			});
+			getExpiredHongbaos(this.user.user_id).then( res => {
+				this.expiredHongbaos = res;
 			});
 			this.updateAddressList();
 		},
