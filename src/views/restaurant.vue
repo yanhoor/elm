@@ -37,10 +37,10 @@
 						</li>
 						<li class="shop-contact">
 							<p>商家地址：{{ restaurant.address }}</p>
-							<p>营业时间：{{ restaurant.opening_hours[0] }}</p>
+							<p>营业时间：{{ opening_hour }}</p>
 						</li>
 						<li>
-							<p class="delivery-mode">由  {{ restaurant.delivery_mode.text }}  提供配送服务</p>
+							由 <p class="delivery-mode">{{ delivery_mode }}</p> 提供配送服务
 						</li>
 					</ul>
 				</div>
@@ -302,6 +302,20 @@
 		},
 		mixins: [getImgPath],
 		computed: {
+		  delivery_mode(){
+		    let s;
+		    if (this.restaurant.delivery_mode) {
+		      s = this.restaurant.delivery_mode.text;
+        }
+        return s;
+      },
+		  opening_hour(){
+		    let s;
+		    if (this.restaurant.opening_hours){
+          s = this.restaurant.opening_hours[0].replace('/', ' - ');
+        }
+		    return s;
+      },
 			menu(){
 				let menuInList = false;
 				for(let item of this.$store.state.cartList){
@@ -594,6 +608,11 @@
 				padding: 15px 0;
 				border-bottom: 1px dashed #eee;
 				color: #333;
+        font-size: 14px;
+        .delivery-mode{
+          display: inline-block;
+          color: #0089dc;
+        }
 			}
 		}
 	}

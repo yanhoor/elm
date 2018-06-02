@@ -2,7 +2,7 @@
 	<div class="header-container">
 	  <header>
 	    <div class="header">
-	      <router-link :to="homePage" class="topbar-item">首页</router-link :to="">
+	      <router-link :to="homePage" class="topbar-item">首页</router-link>
 	      <a class="topbar-item">我的订单</a>
 	      <a class="topbar-item">加盟合作</a>
 	      <a class="topbar-item">我的客服</a>
@@ -106,7 +106,7 @@
 		height: 60px;
 		color: #fff;
 		display: flex;
-		jutify-content: center;
+		justify-content: center;
 		padding-left: 30px;
 	}
 	.topbar-user-info{
