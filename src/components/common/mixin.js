@@ -17,4 +17,23 @@ export const getImgPath = {
 		},
 	}
 
-}
+};
+export const handleClickDropbox = {
+  methods: {
+    handleClickDropbox(type){
+      switch(type){
+        case 'center':
+          this.$router.push('/profile/');
+          break;
+        case 'favorite':
+          break;
+        case 'logout':
+          signout().then( res => {
+            this.$store.commit('signout');
+            this.$router.push('/login');
+          });
+          break;
+      }
+    }
+  },
+};

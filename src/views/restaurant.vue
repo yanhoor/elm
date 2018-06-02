@@ -253,7 +253,7 @@
 					￥<span class="cart-footer-desc-amount">{{ amount }}</span>
 					<span class="cart-footer-desc-deliver-fee">配送费￥{{ restaurant.float_delivery_fee }}</span>
 				</div>
-				<span>去结算 ></span>
+				<span @click="handleOrder(restaurant.id)">去结算 ></span>
 			</div>
 		</div>
 		<footer-comp></footer-comp>
@@ -512,6 +512,16 @@
 			clearCartList(){
 				this.$store.commit('clearCartList', this.restaurant);
 			},
+      handleOrder(id){
+			  let geohash = this.$store.state.address.geohash;
+			  this.$router.push({
+          path: '/checkout',
+          query: {
+            geohash,
+            restaurant_id: this.restaurant.id
+          }
+        });
+      },
 			bindEvent(){
 				document.addEventListener('scroll', this.scroll, false);
 			},

@@ -30,6 +30,7 @@
 </template>
 <script type="text/javascript">
 	import { signout } from '../../service/getData.js';
+	import { handleClickDropbox } from './mixin.js';
 
 	export default{
 		data(){
@@ -38,23 +39,7 @@
 				user: {},
 			};
 		},
-		methods: {
-			handleClickDropbox(type){
-				switch(type){
-					case 'center':
-						this.$router.push('/profile/');
-						break;
-					case 'favorite':
-						break;
-					case 'logout':
-						signout().then( res => {
-							this.$store.commit('signout');
-							this.$router.push('/login');
-						});
-						break;
-				}
-			},
-		},
+		mixins: [handleClickDropbox],
 		created(){
 			this.$store.state.address.geohash ? this.homePage = '/list' : this.homePage = '/home';
 			this.user = this.$store.state.user;

@@ -213,7 +213,7 @@
 				availableHongbaos: [],
 				expiredHongbaos: [],
 				orderList: [], //最近订单列表
-				addressList: [], //已有地址列表
+				addressList: [], //已有收货地址列表
 				showModal: false,
 				city: {}, //所在城市
 				addressKeyword: '', //对应对话框位置

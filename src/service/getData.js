@@ -80,7 +80,7 @@ export const getRestaurantRatingTags = (restaurant_id) =>
 	axios('/ugc/v2/restaurants/'+ restaurant_id + '/ratings/tags');
 //20. 加入购物车
 export const addToCart = (restaurant_id, geohash, entities) => axios('/v1/carts/checkout', {
-	restaurant_id, geohash, entities
+	restaurant_id, geohash, entities, come_from: "web"
 }, 'post');
 //21. 获取备注信息
 export const getRemarks = (cart_id) => axios('/v1/carts/:cart_id/remarks', {

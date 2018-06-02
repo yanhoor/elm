@@ -107,12 +107,12 @@
 				restaurantSortedList: [], //已筛选的餐馆列表
 				restaurantCategoryList: [], //餐馆分类列表，删除‘全部商家’项
 				subCategories: [], //餐馆分类子类别
-				mainCate: {}, //选中的餐馆主类
-				subCate: {}, //选中的餐馆子类
+				mainCate: null, //选中的餐馆主类
+				subCate: null, //选中的餐馆子类
 				cateSelected: '', //主类与子类name组成的字符串
 				showRestInfo: false, //是否显示餐馆信息
 				info: '', //鼠标停留处的餐馆对象
-				floatXY: {}, //包含浮动元素坐标的样式对象
+				floatXY: null, //包含浮动元素坐标的样式对象
 				onLeft: true, //控制浮动元素类名
 			}
 		},
