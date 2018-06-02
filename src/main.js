@@ -9,7 +9,7 @@ import iView from 'iView'
 import 'iview/dist/styles/iview.css'
 import '../style.css'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 Vue.use(iView);

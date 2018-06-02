@@ -169,7 +169,7 @@
   }
 </script>
 
-<style lang="scss" type="text/css" scoped>
+<style lang="scss" type="text/scss" scoped>
   @import '../style/mixin';
   .home{
     @include wh(100%);

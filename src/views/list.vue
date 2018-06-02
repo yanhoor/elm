@@ -211,7 +211,7 @@
 		}
 	}
 </script>
-<style lang="scss" type="text/css" scoped>
+<style lang="scss" type="text/scss" scoped>
 	@import '../style/mixin';
 	.info-bar{
 		@include wh(1180px, 60px);

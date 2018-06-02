@@ -61,7 +61,7 @@
 		},
 	}
 </script>
-<style type="text/css" lang="scss" scoped>
+<style type="text/scss" lang="scss" scoped>
 	@import '../../style/mixin';
 	.header-container{
 	  @include wh(100%, 60px);

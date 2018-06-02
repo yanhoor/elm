@@ -38,7 +38,7 @@
 						<dd
 							v-for="item of spec.specfoods"
 							@click="selectedSpec = item"
-							:class="{active: selectedSpec._id === item._id}"">
+							:class="{active: selectedSpec._id === item._id}">
 								{{ item.specs_name }}
 						</dd>
 					</dl>
@@ -157,7 +157,7 @@
 		},
 	}
 </script>
-<style lang="scss" type="text/css" scoped>
+<style lang="scss" type="text/scss" scoped>
 	@import '../../style/mixin';
 	.food-container-grid{
 		overflow: hidden;

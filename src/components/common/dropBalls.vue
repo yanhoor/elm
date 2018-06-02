@@ -58,7 +58,7 @@
 		          //el.style.webkitTransform = 'translate3d(0, 0, 0)';
 		          el.style.transform = 'translate3d(0, 0, 0)';
 		          // 处理内层动画
-		          let inner = el.getElementsByClassName('inner-hook')[0]; 
+		          let inner = el.getElementsByClassName('inner-hook')[0];
 		          //inner.style.webkitTransform = 'translate3d(0, 0, 0)';
 		          let endX = window.innerWidth - 380;
 		          inner.style.transform = `translate3d(${endX}px, 0, 0)`;//小球终点坐标
@@ -75,7 +75,7 @@
 		},
 	}
 </script>
-<style lang="scss" type="text/css" scoped>
+<style lang="scss" type="text/scss" scoped>
 	@import '../../style/mixin';
 	.ball{
 		position: fixed;

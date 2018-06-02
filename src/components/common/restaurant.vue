@@ -37,7 +37,7 @@
 	}
 </script>
 
-<style lang="scss" type="text/css" scoped>
+<style lang="scss" type="text/scss" scoped>
 	@import '../../style/mixin';
 	.rest{
 		line-height: 30px;

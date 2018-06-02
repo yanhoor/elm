@@ -341,7 +341,7 @@
 		},
 	}
 </script>
-<style type="text/css" lang="scss" scoped>
+<style type="text/scss" lang="scss" scoped>
 	@import '../style/mixin';
 
 	.profile-container{
