@@ -86,7 +86,7 @@ const store = new Vuex.Store({
 				if (item.restaurant_id === payload.rest.id) {
 					for( let i of item.orderList){
 						if (i.food_id === payload.food_id) {
-							console.log('updateCount');
+							//console.log('updateCount');
 							i.order_count = payload.value;
 						}
 					}

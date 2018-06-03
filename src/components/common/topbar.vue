@@ -98,7 +98,7 @@
 		display: inline-block;
 		margin-left: 8px;
 		margin-right: 3px;
-	    position: relative;
+    position: relative;
 		.down-arrow{
 			text-align: center;
 			background: #449be5;
