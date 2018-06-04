@@ -145,20 +145,20 @@
   export default {
     data(){
       return {
-        restaurant: null,
-        restaurantId: '',
-        address: null,
+        restaurant: null, //根据id重新获取的餐馆信息
+        restaurantId: '', //从路由参数获取的id
+        address: null, //首页选中的地址
         user: null,
         cartList: null,
         addressList: [], //已有收货地址列表
         addressAvailable: [], //配送范围内地址列表
-        addressDisable: [],
-        showMoreAddress:false,
+        addressDisable: [], //超出配送范围的地址
+        showMoreAddress:false, //是否显示更多收货地址
         checkoutData: null, //下单时服务器返回的验证数据
         geohash: '',//主页选中的地址经纬度
-        showFloatCommit: true,
-        orderDescription: '',
-        selectedAddress: null,
+        showFloatCommit: true, //显示浮动下单按钮
+        orderDescription: '', //下单备注
+        selectedAddress: null, //选中的收货地址
       }
     },
     computed: {
@@ -185,6 +185,7 @@
         }
         this.addressAvailable = list1;
         this.addressDisable = list2;
+        if (this.addressAvailable.length) this.selectedAddress = this.addressAvailable;
       },
     },
     mixins: [handleClickDropbox, updateCount],

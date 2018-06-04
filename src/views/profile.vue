@@ -89,6 +89,52 @@
 							<div class="no-order" v-if="!orderList.length">
 								<p>暂无记录，现在就去<a href="/list">订餐</a>吧~</p>
 							</div>
+              <table class="order-table" v-else>
+                <thead>
+                <tr>
+                  <th>下单时间</th>
+                  <th class="table-title-info"></th>
+                  <th>订单内容</th>
+                  <th>支付金额</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr></tr>
+                <tr class="table-item" v-for="order in orderList">
+                  <td class="table-item-time" v-time="Date.parse(order.formatted_created_at)"></td>
+                  <td class="table-item-avatar">
+                    <a :href="'/restaurant/' + order.restaurant_id">
+                      <img :src="'/img/' + order.restaurant_image_url">
+                    </a>
+                  </td>
+                  <td class="table-item-info">
+                    <h3></h3>
+                    <p class="item-info-food">
+                      <a href="">
+                        <span class="item-info-food-list">{{ getOrderFoodList(order) }}</span>
+                         等 <span class="item-info-food-num">{{ order.basket.group[0].length }}</span>
+                        个菜品
+                      </a>
+                    </p>
+                    <p>
+                      订单号
+                      <a href="">{{ order.unique_id }}</a>
+                    </p>
+                  </td>
+                  <td class="table-item-amount">
+                    <h3>{{ order.total_amount }}</h3>
+                  </td>
+                  <td class="table-item-status">
+                    <h3>{{ order.status_bar.title }}</h3>
+                  </td>
+                  <td class="table-item-action">
+                    <a href="">订单详情</a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
 						</div>
 					</div>
 				</template>
@@ -199,6 +245,7 @@
 <script type="text/javascript">
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
+  import time from '../components/directives/time';
 	import { getAvailableHongbaos, getOrderList, getReceivedAddresses, addAddress, deleteAddress, searchAddress, getExpiredHongbaos } from '../service/getData.js';
 
 	export default {
@@ -206,6 +253,7 @@
 			TopBar,
 			FooterComp,
 		},
+    directives: { time },
 		data(){
 			return {
 				type: '',
@@ -319,6 +367,15 @@
 				});
 				this.updateAddressList();
 			},
+      getOrderFoodList(order){
+			  if (!order) return;
+			  let foodList = order.basket.group[0];
+			  let s = [];
+			  for (let food of foodList){
+			    s.push(food.name);
+        }
+        return s.join(' / ');
+      },
 		},
 		created(){
 			this.city = this.$store.state.city;
@@ -327,6 +384,7 @@
 				this.availableHongbaos = res;
 			});
 			getOrderList(this.user.user_id).then( res => {
+			  console.log('orderList ', res);
 				this.orderList = res;
 			});
 			getExpiredHongbaos(this.user.user_id).then( res => {
@@ -494,6 +552,115 @@
 				text-align: center;
 				font-size: 14px;
 			}
+      .order-table{
+        width: 100%;
+        word-break: break-all;
+        word-wrap: break-word;
+        border-collapse: collapse;
+        border-spacing: 0;
+        display: table;
+        border-color: grey;
+        >thead{
+          display: table-header-group;
+          vertical-align: middle;
+          >tr{
+            height: 10px;
+            line-height: 30px;
+            background-color: #eee;
+            >th{
+              text-align: center;
+              line-height: 30px;
+              @include fontscw(12px, #333, 400);
+            }
+            .table-title-info{
+              padding-left: 26px;
+              text-align: left;
+            }
+          }
+        }
+        >tbody{
+          >tr:first-child{
+            height: 10px;
+          }
+          .table-item{
+            >td{
+              padding-top: 30px;
+              padding-bottom: 30px;
+              text-align: center;
+              font-size: 12px;
+            }
+            .table-item-time{
+              text-align: right;
+              padding-right: 18px;
+              width: 8%;
+              color: #999;
+              border-right: 1px solid #eee;
+            }
+            .table-item-avatar{
+              padding-left: 37px;
+              padding-right: 16px;
+              width: 70px;
+              img{
+                @include wh(70px);
+                border-radius: 50%;
+              }
+            }
+            .table-item-info{
+              text-align: left;
+              border-bottom: 1px #eee dashed;
+              color: #999;
+              >p{
+                >a{
+                  color: #999;
+                }
+              }
+              .item-info-food{
+                >a{
+                  .item-info-food-list{
+                    vertical-align: middle;
+                    max-width: 300px;
+                    display: inline-block;
+                    @include ellipsis;
+                  }
+                  .item-info-food-num{
+                    @include fontscw(normal, #666, 700);
+                  }
+                }
+              }
+            }
+            .table-item-amount{
+              width: 13%;
+              border-bottom: 1px #eee dashed;
+              color: #999;
+              >h3{
+                @include fontscw(16px, #333, 700);
+                margin-bottom: 5px;
+              }
+            }
+            .table-item-status{
+              width: 13%;
+              border-bottom: 1px #eee dashed;
+              color: #999;
+              >h3{
+                @include fontscw(16px, #f74342, 400);
+                margin-bottom: 5px;
+              }
+            }
+            .table-item-action{
+              width: 13%;
+              border-bottom: 1px #eee dashed;
+              color: #999;
+              >a{
+                display: inline-block;
+                width: 78px;
+                line-height: 24px;
+                margin: 5px 0;
+                color: #333;
+              }
+            }
+          }
+        }
+      }
 		}
 	}
 	.profile-pannel-container{

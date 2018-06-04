@@ -25,16 +25,22 @@
 	    </div>
 	    <div class="big-box" ref="bigBox"></div>
 	    <button @click.prevent="handleClickToImg">返回上面图像位置</button>
+    <h1 v-time="1519930777777"></h1>
 	</div>
 </template>
 <script type="text/javascript">
+  import time from '../components/directives/time';
+
 	export default {
 		methods: {
 			handleClickToImg(){
 				let imgY = this.$refs.img.getBoundingClientRect().top + document.documentElement.scrollTop;
 				window.scrollTo(0, imgY);
 			}
-		}
+		},
+    directives: {
+      time,
+    },
 	}
 </script>
 <style type="text/css" scoped>
