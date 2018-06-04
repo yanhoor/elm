@@ -41,16 +41,16 @@ export const handleClickDropbox = {
 //购物车菜品数量加减
 export const updateCount = {
   methods: {
-    updateCount(restaurant, food, value){
-      if (food.order_count < 2 && value === -1) {
+    updateCount(restaurant, food_id, value){
+      if (value < 1) {
         this.$store.commit('removeFromCart', {
-          food_id: food.food_id,
+          food_id,
           rest: restaurant
         });
       }
       this.$store.commit('updateCount', {
-        food_id: food.food_id,
-        value: food.order_count + value,
+        food_id,
+        value,
         rest: restaurant
       });
     },

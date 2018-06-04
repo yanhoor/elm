@@ -239,9 +239,9 @@
 					<li v-for="item of cartList">
 						<span>{{ item.name }}</span>
 						<div>
-							<button @click="updateCount(restaurant, item, -1)">-</button>
+							<button @click="updateCount(restaurant, item.food_id, orderNum[item.food_id]-1)">-</button>
 							<input :value="item.order_count" @input="inputCount(item, $event.target.value)">
-							<button @click="updateCount(restaurant, item, 1)">+</button>
+							<button @click="updateCount(restaurant, item.food_id, orderNum[item.food_id]+1)">+</button>
 						</div>
 						<span>￥{{ item.order_count * item.price }}</span>
 					</li>
@@ -322,14 +322,14 @@
 				  //console.log('cartList');
 					if (item.restaurant_id === this.restaurant.id) {
             menuInList = item;
-            console.log('restaurant.vue, found menu in cartList');
+            //console.log('restaurant.vue, found menu in cartList');
           }
 				}
 				if (menuInList) {
-          console.log('old menu', menuInList.menu);
+          //console.log('old menu', menuInList.menu);
 					return menuInList.menu;
 				}else{
-				  console.log('new menu', this.$store.state.menu);
+				  //console.log('new menu', this.$store.state.menu);
 					return this.$store.state.menu;
 				}
 			},
@@ -378,6 +378,13 @@
 				if (restInList) return restInList.orderList;
 				return [];
 			},
+      orderNum(){
+        let o = {};
+        for (let food of this.cartList) {
+          o[food.food_id] = food.order_count;
+        }
+        return o;
+      },
 			//购物车食品总数
 			cartFoodAmount(){
 				let amount = 0;
@@ -523,7 +530,7 @@
 			}
 		},
 		created(){
-		  console.log('restaurant.vue created()');
+		  //console.log('restaurant.vue created()');
 			let id = this.$route.params.id;
 			//let lastRest = this.$store.state.currentRestaurant;
 			//进入新餐馆先清空上个餐馆的购物车

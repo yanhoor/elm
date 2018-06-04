@@ -21,14 +21,26 @@ const saveToStorage = (name, content) => {
   if (typeof content !== 'string') {
     content = JSON.stringify(content);
   }
-  localStorage[name] = content;
+  localStorage.setItem(name, content);
   //console.log('save to storage ', localStorage[name]);
 };
 
 const getFromStorage = name => {
   if (!name) return;
   return JSON.parse(localStorage[name]);
-}
+};
+
+const getMenuSpecs = menu => {
+  let list = [];
+  for (let item of menu) {
+    for (let food of item.foods) {
+      for (let spec of food.specfoods) {
+        list.push(spec);
+      }
+    }
+  }
+  return list;
+};
 
 const store = new Vuex.Store({
 	state: {
@@ -42,7 +54,7 @@ const store = new Vuex.Store({
 	mutations: {
 		saveUserInfo(state, user){
 			state.user = user;
-			saveToStorage('user', usre);
+			saveToStorage('user', user);
 		},
 		saveCity(state, city){
 			state.city = city;
@@ -54,7 +66,7 @@ const store = new Vuex.Store({
 		addToCart(state, payload){
 			//console.log('addToCart');
 			let food = payload.food;
-			let currentItem = {}; //购物车内含有对应餐馆的那一项
+			let currentItem = null; //购物车内含有对应餐馆的那一项
 			let restInList = false;
 			for(let item of state.cartList){
 				if (item.restaurant_id === payload.rest.id) {
@@ -71,7 +83,7 @@ const store = new Vuex.Store({
 				}
 			}
 			if (!restInList) {
-			  console.log('update cartList menu in store');
+			  //console.log('update cartList menu in store');
 				currentItem = {
 					restaurant_id: payload.rest.id,
 					restaurant: payload.rest,
@@ -80,21 +92,14 @@ const store = new Vuex.Store({
 				};
 				state.cartList.push(currentItem);
 			}
-			for(let item of currentItem.menu){
-				if (item.id === food.category_id) {
-					for(let f of item.foods){
-						if (f.item_id === food.item_id) {
-							for(let spec of f.specfoods){
-								if (spec.food_id === food.food_id) {
-									Vue.set(spec, 'order_count', 1);
-									//console.log('addToCart add new item');
-									currentItem.orderList.push(spec);
-								}
-							}
-						}
-					}
-				}
-			}
+			let allSpecs = getMenuSpecs(currentItem.menu);
+			for(let spec of allSpecs){
+        if (spec.food_id === food.food_id) {
+          Vue.set(spec, 'order_count', 1);
+          //console.log('addToCart add new item');
+          currentItem.orderList.push(spec);
+        }
+      }
 			saveToStorage('cartlist', state.cartList);
 		},
 		updateCount(state, payload){
@@ -102,7 +107,7 @@ const store = new Vuex.Store({
 				if (item.restaurant_id === payload.rest.id) {
 					for( let i of item.orderList){
 						if (i.food_id === payload.food_id) {
-							console.log('updateCount cartList', state.cartList);
+							//console.log('updateCount cartList', state.cartList);
 							i.order_count = payload.value;
 						}
 					}
@@ -129,7 +134,7 @@ const store = new Vuex.Store({
       saveToStorage('cartlist', state.cartList);
 		},
 		saveMenu(state, menu){
-		  console.log('save new state.menu');
+		  //console.log('save new state.menu');
 			state.menu = menu;
 		},
 		clearCartList(state, rest){
@@ -164,12 +169,16 @@ new Vue({
   components: { App },
   template: '<App/>',
   mounted(){
-    console.log('mounted in #app');
+    //console.log('mounted in #app');
   	store.state.address = getFromStorage('address');
   	store.state.user = getFromStorage('user');
-  	//store.state.cartList = getFromStorage('cartlist');
+  	store.state.cartList = getFromStorage('cartlist');
   },
   updated(){
-    console.log('updated in #app');
+    //console.log('updated in #app');
   },
-})
+  beforeDestroyed(){
+    //console.log('beforeDestroyed in #app');
+    //localStorage.clear();
+  },
+});

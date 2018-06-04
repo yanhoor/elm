@@ -186,18 +186,7 @@
     mixins: [handleClickDropbox, updateCount],
     methods: {
       editCount(restaurant, food, value){
-        Object.defineProperties(food, {
-          order_count: {
-            value: food.quantity,
-            writable: true,
-          },
-          food_id: {
-            value: food.id,
-            writable: true,
-          }
-        });
-        console.log('food ', food);
-        this.updateCount(restaurant, food, value);
+        this.updateCount(restaurant, food.id, food.quantity + value);
         this.updateData();
       },
       updateData(){

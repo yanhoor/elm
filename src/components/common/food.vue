@@ -20,10 +20,10 @@
 					<div
 						v-if="food.specfoods.length === 1"
 						:class="{'food-container-grid-item-btn': listWay === 'grid', 'food-container-line-item-btn': listWay === 'line'}">
-							<div v-if="food.specfoods[0].order_count">
-								<button @click="editCount($event, food.specfoods[0], -1)">-</button>
-								<input :value="food.specfoods[0].order_count" @input="inputCount(food.specfoods[0], $event.target.value)">
-								<button @click="editCount($event, food.specfoods[0], 1)">+</button>
+							<div v-if="orderNum[food.specfoods[0].food_id]">
+								<button @click="editCount($event, food.specfoods[0].food_id, -1)">-</button>
+								<input :value="orderNum[food.specfoods[0].food_id]" @input="inputCount(food.specfoods[0], $event.target.value)">
+								<button @click="editCount($event, food.specfoods[0].food_id, 1)">+</button>
 							</div>
 							<span v-else @click="addToCart($event, food.specfoods[0], food.category_id)">加入购物车</span>
 					</div>
@@ -79,9 +79,6 @@
 			DropBalls,
 		},
 		computed: {
-			foodOrderList(){
-				return this.$store.state.foodOrderList;
-			},
 			foodOrderCount(){
 				let o = {};
 				for(let item of this.foodList){
@@ -89,6 +86,22 @@
 				}
 				return o;
 			},
+      orderList(){
+        let list = this.$store.state.cartList;
+        let restInList = false;
+        for(let item of list){
+          if (item.restaurant.id === this.rest.id) restInList = item;
+        }
+        if (restInList) return restInList.orderList;
+        return [];
+      },
+      orderNum(){
+			  let o = {};
+			  for (let food of this.orderList) {
+			    o[food.food_id] = food.order_count;
+        }
+        return o;
+      },
 		},
     mixins: [ updateCount],
 		methods: {
@@ -106,8 +119,8 @@
 					this.$refs.balls.drop(event.target);
 				}
 			},
-			editCount(event, food, value){
-				this.updateCount(this.rest, food, value);
+			editCount(event, food_id, value){
+				this.updateCount(this.rest, food_id, this.orderNum[food_id] + value);
 				if (value === 1) this.$refs.balls.drop(event.target);
 			},
 			inputCount(food, value){
