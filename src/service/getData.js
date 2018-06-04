@@ -137,9 +137,9 @@ export const deleteAddress = ( user_id, address_id) =>
 		user_id, address_id
 	}, 'DELETE');
 //30. 下单
-export const postOrder = ( user_id, cart_id, address_id, restaurant_id, entities, geohash, desctiption) =>
+export const postOrder = ( user_id, cart_id, address_id, restaurant_id, geohash, desctiption, entities) =>
 	axios('/v1/users/' + user_id + '/carts/' + cart_id + '/orders', {
-		user_id, cart_id, restaurant_id, entities, geohash, desctiption
+		user_id, cart_id, address_id, restaurant_id, entities, geohash, desctiption, come_from: "web"
 	}, 'post');
 //31. 订单列表
 export const getOrderList = (user_id, limit = 20, offset = 0) => axios('/bos/v2/users/' + user_id + '/orders', {

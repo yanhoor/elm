@@ -5,7 +5,7 @@
         <div class="top-left">
           <span>当前位置：</span>
           <span>{{ address.name }} ></span>
-          <span>{{ checkoutData.cart.restaurant_info.name }} ></span>
+          <span v-if="checkoutData.cart">{{ checkoutData.cart.restaurant_info.name }} ></span>
           <span>订单信息</span>
         </div>
         <div class="top-right">
@@ -69,7 +69,7 @@
             收货地址 <a>添加新地址</a>
           </h2>
           <ul>
-            <li v-for="address in addressList" class="checkout-section-address">
+            <li v-for="address in addressList" class="checkout-section-address" @click="handleClickAddress(address)">
               <Icon type="ios-location-outline" size="40" class="address-icon"></Icon>
               <div class="address-info">
                 <p>{{ address.name + ['', '先生', '女士'][address.sex] + address.phone }}</p>
@@ -120,32 +120,33 @@
           </div>
           <div class="checkout-info">
             <span class="checkout-info-label">订单备注</span>
-            <span class="checkout-info-desc"><input></span>
+            <span class="checkout-info-desc"><input v-model="orderDescription"></span>
           </div>
         </div>
-        <button>确认下单</button>
+        <button ref="commitButton" @click="handleClickOrder">确认下单</button>
       </div>
     </div>
-    <div class="float-commit">
+    <div :class="{'float-commit': true, active: showFloatCommit}">
       <div class="float-commit-content">
         <span>
           应付金额
           <span class="yuan">￥</span>
           <span class="float-commit-total">{{ checkoutData.cart.total }}</span>
         </span>
-        <button>确认下单</button>
+        <button @click="handleClickOrder">确认下单</button>
       </div>
     </div>
   </div>
 </template>
 <script>
   import { handleClickDropbox, updateCount } from '../components/common/mixin.js';
-  import { getReceivedAddresses,addToCart } from '../service/getData.js';
+  import { getReceivedAddresses,addToCart, postOrder,getRestaurantInfo } from '../service/getData.js';
 
   export default {
     data(){
       return {
         restaurant: null,
+        restaurantId: '',
         address: null,
         user: null,
         cartList: null,
@@ -155,6 +156,9 @@
         showMoreAddress:false,
         checkoutData: null, //下单时服务器返回的验证数据
         geohash: '',//主页选中的地址经纬度
+        showFloatCommit: true,
+        orderDescription: '',
+        selectedAddress: null,
       }
     },
     computed: {
@@ -192,7 +196,7 @@
       updateData(){
         let list = this.$store.state.cartList;
         for ( let item of list){
-          if (item.restaurant_id === this.restaurant.id){
+          if (item.restaurant_id === this.restaurantId){
             this.cartList = item.orderList;
           }
         }
@@ -211,22 +215,53 @@
             stock: item.stock,
           });
         }
-        addToCart( this.restaurant.id, this.geohash, [entities] ).then( res => {
+        addToCart( this.restaurantId, this.geohash, [entities] ).then( res => {
           this.checkoutData = res;
-          console.log('checkoutData ', res);
+          //console.log('checkoutData ', res);
         });
       },
+      handleClickOrder(){
+        postOrder(this.user.id, this.checkoutData.cart.id, this.selectedAddress.id, this.restaurant.id, this.geohash, this.orderDescription, this.checkoutData.cart.groups).then( res => {
+          console.log(res);
+          this.$store.commit('clearCartList', this.restaurant.id);
+          this.$router.push('/restaurant/' + this.restaurant.id);
+        });
+      },
+      handleClickAddress(address){
+        this.selectedAddress = address;
+      },
+      scroll(){
+        if (!this.$refs.commitButton) return;
+        if (this.$refs.commitButton.getBoundingClientRect().top >= window.innerHeight) {
+          this.showFloatCommit = true;
+        }else{
+          this.showFloatCommit = false;
+        }
+      },
+      bindEvent(){
+        document.addEventListener('scroll', this.scroll, false);
+      },
+      unbindEvent(){
+        document.removeEventListener('scroll', this.scroll, false);
+      }
     },
     created(){
       this.geohash = this.$route.query.geohash;
-      this.restaurant = this.$store.state.currentRestaurant;
+      this.restaurantId = parseInt(this.$route.query.restaurant_id, 10);
       this.address = this.$store.state.address;
       this.user = this.$store.state.user;
+      getRestaurantInfo(this.restaurantId).then( res => this.restaurant = res);
       getReceivedAddresses(this.user.user_id).then( res => {
         this.addressList = res;
       });
       this.updateData();
-    }
+    },
+    mounted(){
+      this.bindEvent();
+    },
+    beforeDestroy(){
+      this.unbindEvent();
+    },
   }
 </script>
 <style lang="scss" type="text/scss" scoped>

@@ -32,7 +32,7 @@ export let axios1 = async(url = '', data = {}, type = 'get') => {
 			method: type,
 			data,
 		};
-		console.log('axios config object is ', config);
+		//console.log('axios config object is ', config);
 	}
 
 	try{
@@ -79,7 +79,7 @@ export let fetch = async(url = '', data = {}, type = 'GET', method = 'fetch') =>
 			});
 			console.log('fetch config object is ', requestConfig);
 		}
-		
+
 		try {
 			const response = await fetch(url, requestConfig);
 			console.log('response ', response);

@@ -79,13 +79,6 @@
 			DropBalls,
 		},
 		computed: {
-			foodOrderCount(){
-				let o = {};
-				for(let item of this.foodList){
-					o[item.item_id] = 0;
-				}
-				return o;
-			},
       orderList(){
         let list = this.$store.state.cartList;
         let restInList = false;
@@ -95,6 +88,7 @@
         if (restInList) return restInList.orderList;
         return [];
       },
+      //购物车各食品下单数量
       orderNum(){
 			  let o = {};
 			  for (let food of this.orderList) {
@@ -106,7 +100,6 @@
     mixins: [ updateCount],
 		methods: {
 			addToCart(event, food, cate_id){
-				this.foodOrderCount[food.item_id] = 1;
 				food.category_id = cate_id;
 				this.$store.commit('addToCart', {
 					food,

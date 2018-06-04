@@ -137,9 +137,9 @@ const store = new Vuex.Store({
 		  //console.log('save new state.menu');
 			state.menu = menu;
 		},
-		clearCartList(state, rest){
+		clearCartList(state, restId){
 			for( let item of state.cartList){
-				if (item.restaurant_id === rest.id) {
+				if (item.restaurant_id === restId) {
 					for( let i of item.orderList){
 						i.order_count = 0;
 					}
