@@ -27,7 +27,7 @@
       <div class="left-content-container">
         <div class="order-title">
           <h2>订单详情</h2>
-          <a :href="'/restaurant' + restaurant.id">< 返回商家修改</a>
+          <a :href="'/restaurant/' + restaurant.id">< 返回商家修改</a>
         </div>
         <div class="cart-cate">
           <span class="item-name">商品</span>
@@ -39,9 +39,9 @@
           <dd v-for=" item in checkoutData.cart.groups[0]">
             <div class="cart-item-name">{{ item.name }}</div>
             <div class="cart-item-quantity">
-              <button>-</button>
+              <button @click="editCount(restaurant, item, -1)">-</button>
               <input v-model="item.quantity">
-              <button>+</button>
+              <button @click="editCount(restaurant, item, 1)">+</button>
             </div>
             <div class="cart-item-total">￥{{ item.price * item.quantity }}</div>
           </dd>
@@ -139,7 +139,7 @@
   </div>
 </template>
 <script>
-  import { handleClickDropbox } from '../components/common/mixin.js';
+  import { handleClickDropbox, updateCount } from '../components/common/mixin.js';
   import { getReceivedAddresses,addToCart } from '../service/getData.js';
 
   export default {
@@ -183,41 +183,60 @@
         this.addressDisable = list2;
       },
     },
-    mixins: [handleClickDropbox],
+    mixins: [handleClickDropbox, updateCount],
+    methods: {
+      editCount(restaurant, food, value){
+        Object.defineProperties(food, {
+          order_count: {
+            value: food.quantity,
+            writable: true,
+          },
+          food_id: {
+            value: food.id,
+            writable: true,
+          }
+        });
+        console.log('food ', food);
+        this.updateCount(restaurant, food, value);
+        this.updateData();
+      },
+      updateData(){
+        let list = this.$store.state.cartList;
+        for ( let item of list){
+          if (item.restaurant_id === this.restaurant.id){
+            this.cartList = item.orderList;
+          }
+        }
+        let entities = [];
+        for (let item of this.cartList) {
+          entities.push({
+            attrs: [],
+            extra: {},
+            id: item.food_id,
+            name: item.name,
+            packing_fee: item.packing_fee,
+            price: item.price,
+            quantity: item.order_count,
+            sku_id: item.sku_id,
+            specs: item.specs,
+            stock: item.stock,
+          });
+        }
+        addToCart( this.restaurant.id, this.geohash, [entities] ).then( res => {
+          this.checkoutData = res;
+          console.log('checkoutData ', res);
+        });
+      },
+    },
     created(){
       this.geohash = this.$route.query.geohash;
       this.restaurant = this.$store.state.currentRestaurant;
       this.address = this.$store.state.address;
       this.user = this.$store.state.user;
-      let list = this.$store.state.cartList;
-      for ( let item of list){
-        if (item.restaurant_id === this.restaurant.id){
-          this.cartList = item.orderList;
-        }
-      }
       getReceivedAddresses(this.user.user_id).then( res => {
         this.addressList = res;
       });
-
-      let entities = [];
-      for (let item of this.cartList) {
-        entities.push({
-          attrs: [],
-          extra: {},
-          id: item.food_id,
-          name: item.name,
-          packing_fee: item.packing_fee,
-          price: item.price,
-          quantity: item.order_count,
-          sku_id: item.sku_id,
-          specs: item.specs,
-          stock: item.stock,
-        });
-      }
-      addToCart( this.restaurant.id, this.geohash, [entities] ).then( res => {
-        this.checkoutData = res;
-        console.log('checkoutData ', res);
-      });
+      this.updateData();
     }
   }
 </script>

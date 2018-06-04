@@ -21,9 +21,9 @@
 						v-if="food.specfoods.length === 1"
 						:class="{'food-container-grid-item-btn': listWay === 'grid', 'food-container-line-item-btn': listWay === 'line'}">
 							<div v-if="food.specfoods[0].order_count">
-								<button @click="updateCount($event, food.specfoods[0], -1)">-</button>
+								<button @click="editCount($event, food.specfoods[0], -1)">-</button>
 								<input :value="food.specfoods[0].order_count" @input="inputCount(food.specfoods[0], $event.target.value)">
-								<button @click="updateCount($event, food.specfoods[0], 1)">+</button>
+								<button @click="editCount($event, food.specfoods[0], 1)">+</button>
 							</div>
 							<span v-else @click="addToCart($event, food.specfoods[0], food.category_id)">加入购物车</span>
 					</div>
@@ -56,6 +56,7 @@
 </template>
 <script type="text/javascript">
 	import DropBalls from './dropBalls.vue';
+  import { updateCount } from './mixin.js';
 
 	export default{
 		props: {
@@ -89,6 +90,7 @@
 				return o;
 			},
 		},
+    mixins: [ updateCount],
 		methods: {
 			addToCart(event, food, cate_id){
 				this.foodOrderCount[food.item_id] = 1;
@@ -104,18 +106,8 @@
 					this.$refs.balls.drop(event.target);
 				}
 			},
-			updateCount(event, food, value){
-				if (food.order_count < 2 && value === -1) {
-					this.$store.commit('removeFromCart', {
-						food_id: food.food_id,
-						rest: this.rest
-					});
-				}
-				this.$store.commit('updateCount', {
-					food_id: food.food_id,
-					value: food.order_count + value,
-					rest: this.rest
-				});
+			editCount(event, food, value){
+				this.updateCount(this.rest, food, value);
 				if (value === 1) this.$refs.balls.drop(event.target);
 			},
 			inputCount(food, value){

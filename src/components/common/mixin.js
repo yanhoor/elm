@@ -18,6 +18,7 @@ export const getImgPath = {
 	}
 
 };
+//顶栏用户名操作
 export const handleClickDropbox = {
   methods: {
     handleClickDropbox(type){
@@ -35,5 +36,23 @@ export const handleClickDropbox = {
           break;
       }
     }
+  },
+};
+//购物车菜品数量加减
+export const updateCount = {
+  methods: {
+    updateCount(restaurant, food, value){
+      if (food.order_count < 2 && value === -1) {
+        this.$store.commit('removeFromCart', {
+          food_id: food.food_id,
+          rest: restaurant
+        });
+      }
+      this.$store.commit('updateCount', {
+        food_id: food.food_id,
+        value: food.order_count + value,
+        rest: restaurant
+      });
+    },
   },
 };

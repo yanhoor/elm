@@ -15,6 +15,20 @@ Vue.config.productionTip = false;
 Vue.use(iView);
 Vue.use(Vuex);
 Vue.use(VueBus);
+console.log('main.js running');
+const saveToStorage = (name, content) => {
+  if (!name) return;
+  if (typeof content !== 'string') {
+    content = JSON.stringify(content);
+  }
+  localStorage[name] = content;
+  //console.log('save to storage ', localStorage[name]);
+};
+
+const getFromStorage = name => {
+  if (!name) return;
+  return JSON.parse(localStorage[name]);
+}
 
 const store = new Vuex.Store({
 	state: {
@@ -28,14 +42,14 @@ const store = new Vuex.Store({
 	mutations: {
 		saveUserInfo(state, user){
 			state.user = user;
-			localStorage.user = JSON.stringify(user);
+			saveToStorage('user', usre);
 		},
 		saveCity(state, city){
 			state.city = city;
 		},
 		changeAddress(state, address){
 			state.address = address;
-			localStorage.address = JSON.stringify(address);
+			saveToStorage('address', address);
 		},
 		addToCart(state, payload){
 			//console.log('addToCart');
@@ -57,6 +71,7 @@ const store = new Vuex.Store({
 				}
 			}
 			if (!restInList) {
+			  console.log('update cartList menu in store');
 				currentItem = {
 					restaurant_id: payload.rest.id,
 					restaurant: payload.rest,
@@ -80,18 +95,20 @@ const store = new Vuex.Store({
 					}
 				}
 			}
+			saveToStorage('cartlist', state.cartList);
 		},
 		updateCount(state, payload){
 			for(let item of state.cartList){
 				if (item.restaurant_id === payload.rest.id) {
 					for( let i of item.orderList){
 						if (i.food_id === payload.food_id) {
-							//console.log('updateCount');
+							console.log('updateCount cartList', state.cartList);
 							i.order_count = payload.value;
 						}
 					}
 				}
 			}
+      saveToStorage('cartlist', state.cartList);
 		},
 		removeFromCart(state, payload){
 			for(let item of state.cartList){
@@ -109,8 +126,10 @@ const store = new Vuex.Store({
 					state.cartList.splice(index, 1);
 				}
 			}
+      saveToStorage('cartlist', state.cartList);
 		},
 		saveMenu(state, menu){
+		  console.log('save new state.menu');
 			state.menu = menu;
 		},
 		clearCartList(state, rest){
@@ -123,6 +142,7 @@ const store = new Vuex.Store({
 					state.cartList.splice(index, 1);
 				}
 			}
+      saveToStorage('cartlist', state.cartList);
 		},
 		signout(state){
 			state.user = {};
@@ -144,7 +164,12 @@ new Vue({
   components: { App },
   template: '<App/>',
   mounted(){
-  	store.state.address = JSON.parse(localStorage.address);
-  	store.state.user = JSON.parse(localStorage.user);
-  }
+    console.log('mounted in #app');
+  	store.state.address = getFromStorage('address');
+  	store.state.user = getFromStorage('user');
+  	//store.state.cartList = getFromStorage('cartlist');
+  },
+  updated(){
+    console.log('updated in #app');
+  },
 })

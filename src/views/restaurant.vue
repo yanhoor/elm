@@ -239,9 +239,9 @@
 					<li v-for="item of cartList">
 						<span>{{ item.name }}</span>
 						<div>
-							<button @click="updateCount(item, -1)">-</button>
+							<button @click="updateCount(restaurant, item, -1)">-</button>
 							<input :value="item.order_count" @input="inputCount(item, $event.target.value)">
-							<button @click="updateCount(item, 1)">+</button>
+							<button @click="updateCount(restaurant, item, 1)">+</button>
 						</div>
 						<span>￥{{ item.order_count * item.price }}</span>
 					</li>
@@ -262,7 +262,7 @@
 <script type="text/javascript">
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
-	import { getImgPath } from '../components/common/mixin.js';
+	import { getImgPath, updateCount } from '../components/common/mixin.js';
 	import Food from '../components/common/food.vue';
 	import {
 		getRestaurantInfo,
@@ -300,7 +300,7 @@
 				foodSearchResult: [], //食品搜索结果
 			};
 		},
-		mixins: [getImgPath],
+		mixins: [getImgPath, updateCount],
 		computed: {
 		  delivery_mode(){
 		    let s;
@@ -319,11 +319,17 @@
 			menu(){
 				let menuInList = false;
 				for(let item of this.$store.state.cartList){
-					if (item.restaurant_id === this.restaurant.id) menuInList = item;
+				  //console.log('cartList');
+					if (item.restaurant_id === this.restaurant.id) {
+            menuInList = item;
+            console.log('restaurant.vue, found menu in cartList');
+          }
 				}
 				if (menuInList) {
+          console.log('old menu', menuInList.menu);
 					return menuInList.menu;
 				}else{
+				  console.log('new menu', this.$store.state.menu);
 					return this.$store.state.menu;
 				}
 			},
@@ -484,19 +490,6 @@
 					return (Number(num)*100).toFixed(1) + '%';
 				}
 			},
-			updateCount(food, value){
-				if (food.order_count < 2 && value === -1) {
-					this.$store.commit('removeFromCart', {
-						food_id: food.food_id,
-						rest: this.restaurant
-					});
-				}
-				this.$store.commit('updateCount', {
-					food_id: food.food_id,
-					value: food.order_count + value,
-					rest: this.restaurant
-				});
-			},
 			inputCount(food, value){
 				if(value === '') {
 					this.$store.commit('removeFromCart', food.food_id);
@@ -530,6 +523,7 @@
 			}
 		},
 		created(){
+		  console.log('restaurant.vue created()');
 			let id = this.$route.params.id;
 			//let lastRest = this.$store.state.currentRestaurant;
 			//进入新餐馆先清空上个餐馆的购物车
@@ -539,6 +533,7 @@
 				this.$store.commit('saveCurrentRestaurant', res);
 			});
 			getMenu(id).then( res => {
+			  //不直接使用返回的menu，先检查购物车是否有对应menu
 				//this.menu = res;
 				this.$store.commit('saveMenu', res);
 				this.$nextTick( () => {

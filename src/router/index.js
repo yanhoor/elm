@@ -9,21 +9,24 @@ export default new Router({
     {
       path: '/home',
       meta: {
-      	title: 'home'
+      	title: 'home',
+        //keepAlive: true,
       },
       component: (resolve) => require(['../views/home.vue'], resolve)
     },
     {
       path: '/list',
       meta: {
-      	title: 'list'
+      	title: 'list',
+        //keepAlive: true,
       },
       component: (resolve) => require(['../views/list.vue'], resolve)
     },
     {
       path: '/restaurant/:id',
       meta: {
-        title: 'restaurant'
+        title: 'restaurant',
+        //keepAlive: true,
       },
       component: (resolve) => require(['../views/restaurant.vue'], resolve)
     },
