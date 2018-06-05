@@ -93,9 +93,10 @@
                 <thead>
                 <tr>
                   <th>下单时间</th>
-                  <th class="table-title-info"></th>
+                  <th></th>
+                  <th></th>
                   <th>订单内容</th>
-                  <th>支付金额</th>
+                  <th>支付金额(元)</th>
                   <th>状态</th>
                   <th>操作</th>
                 </tr>
@@ -104,6 +105,7 @@
                 <tr></tr>
                 <tr class="table-item" v-for="order in orderList">
                   <td class="table-item-time" v-time="Date.parse(order.formatted_created_at)"></td>
+                  <td class="table-item-clock"><Icon class="item-clock-icon" type="android-time" size="15" color="#94c852"></Icon></td>
                   <td class="table-item-avatar">
                     <a :href="'/restaurant/' + order.restaurant_id">
                       <img :src="'/img/' + order.restaurant_image_url">
@@ -595,6 +597,12 @@
               width: 8%;
               color: #999;
               border-right: 1px solid #eee;
+            }
+            .table-item-clock{
+              .item-clock-icon{
+                position: relative;
+                left: -7.5px;
+              }
             }
             .table-item-avatar{
               padding-left: 37px;

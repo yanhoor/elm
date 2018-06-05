@@ -932,7 +932,7 @@
 	}
 	.bad-quality{
 		margin-left: 15px;
-		color: #red;
+		color: red;
 	}
 	.quality-info-container{
 		li{

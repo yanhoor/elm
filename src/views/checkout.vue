@@ -185,7 +185,7 @@
         }
         this.addressAvailable = list1;
         this.addressDisable = list2;
-        if (this.addressAvailable.length) this.selectedAddress = this.addressAvailable;
+        if (this.addressAvailable.length) this.selectedAddress = this.addressAvailable[0];
       },
     },
     mixins: [handleClickDropbox, updateCount],
