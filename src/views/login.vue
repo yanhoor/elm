@@ -18,34 +18,38 @@
 				<button
 					@click.prevent="handleLogin"
 					class="login-btn">登录</button>
-				<button @click.prevent="showModal = true">修改密码</button>
+				<button @click.prevent="handleChangePassword">修改密码</button>
 			</form>
 		</div>
-		<Modal v-model="showModal" title="修改密码" @on-ok="handleConfirmChangePassword">
-			<div class="modal-form-item">
-				<label>用户名</label>
-				<input placeholder="输入手机号" v-model="passwordInfo.username">
-			</div>
-			<div class="modal-form-item">
-				<label>旧密码</label>
-				<input type="password" placeholder="输入旧密码" v-model="passwordInfo.oldpassWord">
-			</div>
-			<div class="modal-form-item">
-				<label>新密码</label>
-				<input type="password" placeholder="输入新密码" v-model="passwordInfo.newpassword">
-			</div>
-			<div class="modal-form-item">
-				<label>确认</label>
-				<input type="password" placeholder="再次输入新密码" v-model="passwordInfo.confirmpassword">
-			</div>
-			<div class="modal-form-item">
-				<label>验证码</label>
-				<input placeholder="输入验证码" v-model="passwordInfo.captcha_code">
-			</div>
-			<div class="modal-form-verify">
-				<img :src="imgUrl">
-				<span @click="getVerifyCode">看不清，换一张</span>
-			</div>
+		<Modal
+      v-model="showModal"
+      title="修改密码"
+      @on-ok="handleConfirmChangePassword"
+      @on-cancel="handleCancelChangePassword">
+        <div class="modal-form-item">
+          <label>用户名</label>
+          <input placeholder="输入手机号" v-model="passwordInfo.username">
+        </div>
+        <div class="modal-form-item">
+          <label>旧密码</label>
+          <input type="password" placeholder="输入旧密码" v-model="passwordInfo.oldpassWord">
+        </div>
+        <div class="modal-form-item">
+          <label>新密码</label>
+          <input type="password" placeholder="输入新密码" v-model="passwordInfo.newpassword">
+        </div>
+        <div class="modal-form-item">
+          <label>确认</label>
+          <input type="password" placeholder="再次输入新密码" v-model="passwordInfo.confirmpassword">
+        </div>
+        <div class="modal-form-item">
+          <label>验证码</label>
+          <input placeholder="输入验证码" v-model="passwordInfo.captcha_code">
+        </div>
+        <div class="modal-form-verify">
+          <img :src="imgUrl">
+          <span @click="getVerifyCode">看不清，换一张</span>
+        </div>
 		</Modal>
 	</div>
 </template>
@@ -89,6 +93,20 @@
 					}
 				});
 			},
+      handleChangePassword(){
+        this.showModal = true;
+        this.getVerifyCode();
+      },
+      handleCancelChangePassword(){
+			  this.passwordInfo = {
+          username: '',
+          oldpassWord: '',
+          newpassword: '',
+          confirmpassword: '',
+          captcha_code: ''
+        };
+			  this.getVerifyCode();
+      },
 			handleConfirmChangePassword(){
 				let { username, oldpassWord, newpassword, confirmpassword, captcha_code } = this.passwordInfo;
 				changePassword(username, oldpassWord, newpassword, confirmpassword, captcha_code).then( res => {

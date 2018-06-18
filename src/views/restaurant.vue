@@ -513,6 +513,10 @@
 				this.$store.commit('clearCartList', this.restaurant);
 			},
       handleOrder(id){
+			  if (!this.$store.state.user) {
+          this.$router.push('/login');
+          return;
+        }
 			  let geohash = this.$store.state.address.geohash;
 			  this.$router.push({
           path: '/checkout',

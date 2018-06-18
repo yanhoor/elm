@@ -15,7 +15,22 @@ Vue.config.productionTip = false;
 Vue.use(iView);
 Vue.use(Vuex);
 Vue.use(VueBus);
-console.log('main.js running');
+
+let p1 = new Promise((resolve, reject) => {
+  setTimeout( () => reject(new Error('fail')), 3000);
+});
+let p3 = p1.catch( error => {
+  console.log('p3 ', p3);
+  new Error('new error');
+  return error;
+} );
+
+let p2 = new Promise((resolve, reject) => {
+  setTimeout( () => resolve(p3), 1000);
+});
+p2.then( result => console.log('p2 then ', result))
+  .catch( error => console.log('p2 catch ', error));
+console.log('p2 ', p2);
 const saveToStorage = (name, content) => {
   if (!name) return;
   if (typeof content !== 'string') {
@@ -98,6 +113,7 @@ const store = new Vuex.Store({
           Vue.set(spec, 'order_count', 1);
           //console.log('addToCart add new item');
           currentItem.orderList.push(spec);
+          break;
         }
       }
 			saveToStorage('cartlist', state.cartList);
@@ -109,11 +125,12 @@ const store = new Vuex.Store({
 						if (i.food_id === payload.food_id) {
 							//console.log('updateCount cartList', state.cartList);
 							i.order_count = payload.value;
+              saveToStorage('cartlist', state.cartList);
+							return;
 						}
 					}
 				}
 			}
-      saveToStorage('cartlist', state.cartList);
 		},
 		removeFromCart(state, payload){
 			for(let item of state.cartList){

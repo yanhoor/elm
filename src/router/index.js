@@ -10,7 +10,7 @@ export default new Router({
       path: '/home',
       meta: {
       	title: 'home',
-        //keepAlive: true,
+        keepAlive: true,
       },
       component: (resolve) => require(['../views/home.vue'], resolve)
     },
@@ -18,7 +18,7 @@ export default new Router({
       path: '/list',
       meta: {
       	title: 'list',
-        //keepAlive: true,
+        keepAlive: true,
       },
       component: (resolve) => require(['../views/list.vue'], resolve)
     },
