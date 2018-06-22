@@ -133,7 +133,7 @@
                       <h3>{{ order.status_bar.title }}</h3>
                     </td>
                     <td class="table-item-action">
-                      <a href="">订单详情</a>
+                      <a @click.prevent="handleClickOrderDetail(order.id)">订单详情</a>
                     </td>
                   </tr>
                 </tbody>
@@ -198,10 +198,10 @@
                 <img :src="'/img/' + orderDetail._doc.restaurant_image_url">
                 <div class="order-detail-rest">
                   <h3>{{ orderDetail._doc.restaurant_name }}</h3>
-                  <h3>
+                  <div>
                     <span>订单号：{{ orderDetail._doc.id }}</span>
                     <span>商家电话：无</span>
-                  </h3>
+                  </div>
                 </div>
               </div>
               <div class="order-detail-content">
@@ -211,7 +211,7 @@
                       <tr>
                         <th>菜品</th>
                         <th>数量</th>
-                        <th>小计</th>
+                        <th>小计（元）</th>
                       </tr>
                     </thead>
 
@@ -221,17 +221,17 @@
                         <td>{{ order.quantity }}</td>
                         <td>{{ order.price * order.quantity }}</td>
                       </tr>
-                      <tr>
+                      <tr class="order-detail-cost-item">
                         <td>{{ orderDetail._doc.basket.packing_fee.name }}</td>
                         <td></td>
                         <td>{{ orderDetail._doc.basket.packing_fee.price }}</td>
                       </tr>
-                      <tr>
+                      <tr class="order-detail-cost-item">
                         <td>{{ orderDetail._doc.basket.deliver_fee.name }}</td>
                         <td></td>
                         <td>{{ orderDetail._doc.basket.deliver_fee.price }}</td>
                       </tr>
-                      <tr>
+                      <tr class="order-detail-cost-item">
                         <td></td>
                         <td></td>
                         <td>实际支付：<span>{{ orderDetail._doc.total_amount }}</span></td>
@@ -243,15 +243,15 @@
                   <h3>配送信息</h3>
                   <div class="deliver-info">
                     <div class="deliver-info-item">
-                      配送方式：蜂鸟专送
+                      <span>配送方式：</span>蜂鸟专送
                     </div>
                     <div class="deliver-info-item">
-                      送达时间：<span>{{ orderDetail.deliver_time }}</span>
+                      <span>送达时间：</span>{{ orderDetail.deliver_time }}
                     </div>
 
                     <div class="deliver-address" v-if="addressDetail">
                       <div class="deliver-address-item">
-                        <span>联系人：</span>{{ addressDetail.name }}（{{ ['女士', '先生'][addressDetail.sex]}}）
+                        <span>联系人：</span>{{ addressDetail.name }}（{{ ['', '先生', '女士'][addressDetail.sex]}}）
                       </div>
                       <div class="deliver-address-item">
                         <span>联系电话： </span>{{ addressDetail.phone }}
@@ -936,6 +936,114 @@
 			}
 		}
 	}
+  .order-detail-pannel-container{
+    margin: 20px 0;
+    border: 1px solid #eee;
+    background-color: #fff;
+    padding: 20px 18px;
+    width: 100%;
+    >h3{
+      border-bottom: 2px solid #f4f4f4;
+      padding: 0 20px 11px;
+      @include fontscw(18px, #000, 700);
+    }
+    .order-detail-pannel-content{
+      background-color: #f8f8f8;
+      .order-detail-title{
+        padding: 18px 30px 16px;
+        border-bottom: 1px solid #eee;
+        >img{
+          @include wh(44px);
+          margin-right: 12px;
+        }
+        .order-detail-rest{
+          display: inline-block;
+          height: 44px;
+          vertical-align: top;
+          >h3{
+            @include fontscw(16px, #333, 400);
+          }
+          >div{
+            font-size: 14px;
+            color: #999;
+            >span:first-child{
+              padding-right: 50px;
+              max-width: 250px;
+              @include ellipsis;
+            }
+          }
+        }
+      }
+      .order-detail-content{
+        width: 100%;
+        overflow: hidden;
+        .order-detail-content-left{
+          border-right: 1px solid #999000;
+          float: left;
+          padding: 12px 30px 10px;
+          width: 52%;
+          >table{
+            border-collapse: collapse;
+            width: 100%;
+            >thead{
+              th{
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+                @include fontscw(14px, #666, 700);
+              }
+              th:first-child{
+                text-align: left;
+              }
+              th:last-child{
+                text-align: right;
+              }
+            }
+            >tbody{
+              td{
+                padding-top: 24px;
+                @include fontscw(14px, #666);
+                text-align: center;
+                >span{
+                  @include fontscw(26px, #f74342, 700);
+                }
+              }
+              td:first-child{
+                text-align: left;
+              }
+              td:last-child{
+                text-align: right;
+              }
+            }
+          }
+        }
+        .order-detail-content-right{
+          display: inline-block;
+          width: 48%;
+          height: 100%;
+          padding: 12px 30px 10px;
+          >h3{
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+          }
+          .deliver-info-item{
+            padding: 10px 0;
+            font-size: 14px;
+          }
+          .deliver-address{
+            border-top: 1px solid #eee;
+            .deliver-address-item{
+              padding: 10px 0;
+              font-size: 14px;
+              >span{
+                display: inline-block;
+                min-width: 70px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 	.modal-form-item{
 		position: relative;
 		padding-bottom: 25px;

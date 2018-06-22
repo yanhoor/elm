@@ -34,7 +34,7 @@
           <span class="item-quantity">份数</span>
           <span class="item-total">小计(元)</span>
         </div>
-        <dl v-if="checkoutData.cart.groups">
+        <dl v-if="checkoutData.cart">
           <dt>1号购物车</dt>
           <dd v-for=" item in checkoutData.cart.groups[0]">
             <div class="cart-item-name">{{ item.name }}</div>
