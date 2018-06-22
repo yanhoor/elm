@@ -1,3 +1,5 @@
+import { signout } from '../../service/getData.js';
+
 export const getImgPath = {
 	methods: {
 		//传递过来的图片地址需要处理后才能正常使用

@@ -7,19 +7,17 @@ export let axios1 = async(url = '', data = {}, type = 'get') => {
 	});
 
 	let config = {};
-	if (type === 'get' || type === 'DELETE') {
-		config = {
-			baseURL: '',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			withCredentials:true,
-			url,
-			params: data,
-			method: type,
-		};
-	}
+  config = {
+    baseURL: '',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    withCredentials:true,
+    url,
+    params: data,
+    method: type,
+  };
 	if (type === 'post') {
 		config = {
 			//baseURL: '',

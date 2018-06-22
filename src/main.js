@@ -16,21 +16,6 @@ Vue.use(iView);
 Vue.use(Vuex);
 Vue.use(VueBus);
 
-let p1 = new Promise((resolve, reject) => {
-  setTimeout( () => reject(new Error('fail')), 3000);
-});
-let p3 = p1.catch( error => {
-  console.log('p3 ', p3);
-  new Error('new error');
-  return error;
-} );
-
-let p2 = new Promise((resolve, reject) => {
-  setTimeout( () => resolve(p3), 1000);
-});
-p2.then( result => console.log('p2 then ', result))
-  .catch( error => console.log('p2 catch ', error));
-console.log('p2 ', p2);
 const saveToStorage = (name, content) => {
   if (!name) return;
   if (typeof content !== 'string') {
@@ -174,6 +159,7 @@ const store = new Vuex.Store({
 		},
 	}
 });
+
 router.beforeEach( (to, from, next ) => {
 	window.document.title = to.meta.title;
 	next();

@@ -83,8 +83,8 @@ export const addToCart = (restaurant_id, geohash, entities) => axios('/v1/carts/
 	restaurant_id, geohash, entities, come_from: "web"
 }, 'post');
 //21. 获取备注信息
-export const getRemarks = (cart_id) => axios('/v1/carts/:cart_id/remarks', {
-	cart_id
+export const getRemarks = (cart_id) => axios('/v1/carts/'+ cart_id + '/remarks', {
+  cart_id
 });
 //22. 获取收货地址列表
 export const getReceivedAddresses = (user_id) => axios('/v1/users/' + user_id + '/addresses');

@@ -91,50 +91,51 @@
 							</div>
               <table class="order-table" v-else>
                 <thead>
-                <tr>
-                  <th>下单时间</th>
-                  <th></th>
-                  <th></th>
-                  <th>订单内容</th>
-                  <th>支付金额(元)</th>
-                  <th>状态</th>
-                  <th>操作</th>
-                </tr>
+                  <tr>
+                    <th>下单时间</th>
+                    <th></th>
+                    <th></th>
+                    <th>订单内容</th>
+                    <th>支付金额(元)</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                  </tr>
                 </thead>
+
                 <tbody>
-                <tr></tr>
-                <tr class="table-item" v-for="order in orderList">
-                  <td class="table-item-time" v-time="Date.parse(order.formatted_created_at)"></td>
-                  <td class="table-item-clock"><Icon class="item-clock-icon" type="android-time" size="15" color="#94c852"></Icon></td>
-                  <td class="table-item-avatar">
-                    <a :href="'/restaurant/' + order.restaurant_id">
-                      <img :src="'/img/' + order.restaurant_image_url">
-                    </a>
-                  </td>
-                  <td class="table-item-info">
-                    <h3></h3>
-                    <p class="item-info-food">
-                      <a href="">
-                        <span class="item-info-food-list">{{ getOrderFoodList(order) }}</span>
-                         等 <span class="item-info-food-num">{{ order.basket.group[0].length }}</span>
-                        个菜品
+                  <tr></tr>
+                  <tr class="table-item" v-for="order in orderList">
+                    <td class="table-item-time" v-time="Date.parse(order.formatted_created_at)"></td>
+                    <td class="table-item-clock"><Icon class="item-clock-icon" type="android-time" size="15" color="#94c852"></Icon></td>
+                    <td class="table-item-avatar" @click.prevent="handleClickOrderDetail(order.id)">
+                      <a :href="'/restaurant/' + order.restaurant_id">
+                        <img :src="'/img/' + order.restaurant_image_url">
                       </a>
-                    </p>
-                    <p>
-                      订单号
-                      <a href="">{{ order.unique_id }}</a>
-                    </p>
-                  </td>
-                  <td class="table-item-amount">
-                    <h3>{{ order.total_amount }}</h3>
-                  </td>
-                  <td class="table-item-status">
-                    <h3>{{ order.status_bar.title }}</h3>
-                  </td>
-                  <td class="table-item-action">
-                    <a href="">订单详情</a>
-                  </td>
-                </tr>
+                    </td>
+                    <td class="table-item-info" @click.prevent="handleClickOrderDetail(order.id)">
+                      <h3></h3>
+                      <p class="item-info-food">
+                        <a href="">
+                          <span class="item-info-food-list">{{ getOrderFoodList(order) }}</span>
+                           等 <span class="item-info-food-num">{{ order.basket.group[0].length }}</span>
+                          个菜品
+                        </a>
+                      </p>
+                      <p>
+                        订单号
+                        <a href="">{{ order.unique_id }}</a>
+                      </p>
+                    </td>
+                    <td class="table-item-amount">
+                      <h3>{{ order.total_amount }}</h3>
+                    </td>
+                    <td class="table-item-status">
+                      <h3>{{ order.status_bar.title }}</h3>
+                    </td>
+                    <td class="table-item-action">
+                      <a href="">订单详情</a>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
 						</div>
@@ -189,6 +190,88 @@
 						</div>
 					</div>
 				</template>
+        <template v-if=" type === 'order-detail' ">
+          <div class="order-detail-pannel-container">
+            <h3>订单详情</h3>
+            <div class="order-detail-pannel-content" v-if="orderDetail">
+              <div class="order-detail-title">
+                <img :src="'/img/' + orderDetail._doc.restaurant_image_url">
+                <div class="order-detail-rest">
+                  <h3>{{ orderDetail._doc.restaurant_name }}</h3>
+                  <h3>
+                    <span>订单号：{{ orderDetail._doc.id }}</span>
+                    <span>商家电话：无</span>
+                  </h3>
+                </div>
+              </div>
+              <div class="order-detail-content">
+                <div class="order-detail-content-left">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>菜品</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr v-for="order of orderDetail._doc.basket.group[0]">
+                        <td>{{ order.name }}</td>
+                        <td>{{ order.quantity }}</td>
+                        <td>{{ order.price * order.quantity }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ orderDetail._doc.basket.packing_fee.name }}</td>
+                        <td></td>
+                        <td>{{ orderDetail._doc.basket.packing_fee.price }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ orderDetail._doc.basket.deliver_fee.name }}</td>
+                        <td></td>
+                        <td>{{ orderDetail._doc.basket.deliver_fee.price }}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td>实际支付：<span>{{ orderDetail._doc.total_amount }}</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="order-detail-content-right">
+                  <h3>配送信息</h3>
+                  <div class="deliver-info">
+                    <div class="deliver-info-item">
+                      配送方式：蜂鸟专送
+                    </div>
+                    <div class="deliver-info-item">
+                      送达时间：<span>{{ orderDetail.deliver_time }}</span>
+                    </div>
+
+                    <div class="deliver-address" v-if="addressDetail">
+                      <div class="deliver-address-item">
+                        <span>联系人：</span>{{ addressDetail.name }}（{{ ['女士', '先生'][addressDetail.sex]}}）
+                      </div>
+                      <div class="deliver-address-item">
+                        <span>联系电话： </span>{{ addressDetail.phone }}
+                      </div>
+                      <div class="deliver-address-item">
+                        <span>收货地址：</span>{{ addressDetail.address + addressDetail.address_detail}}
+                      </div>
+                      <div class="deliver-address-item">
+                        <span>发票信息：</span>无发票
+                      </div>
+                      <div class="deliver-address-item">
+                        <span>备注：</span>无备注
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
 			</div>
 			<Modal class="modal-container" v-model="showModal" title="添加新地址" ok-text="保存" @on-ok="handleClickSaveAddress" @on-cancel="handleClickCloseModal">
 				<div class="modal-form-item">
@@ -248,7 +331,16 @@
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
   import time from '../components/directives/time';
-	import { getAvailableHongbaos, getOrderList, getReceivedAddresses, addAddress, deleteAddress, searchAddress, getExpiredHongbaos } from '../service/getData.js';
+	import {
+	  getAvailableHongbaos,
+    getOrderList,
+    getOrderDetail,
+    getReceivedAddresses,
+    addAddress,
+    deleteAddress,
+    getAddressDetail,
+    searchAddress,
+    getExpiredHongbaos } from '../service/getData.js';
 
 	export default {
 		components: {
@@ -263,6 +355,9 @@
 				availableHongbaos: [],
 				expiredHongbaos: [],
 				orderList: [], //最近订单列表
+        orderDetail: null, //查看详情的订单
+        addressDetail: null, //通过id获取的地址详情
+        remarks: null, //订单详情的备注
 				addressList: [], //已有收货地址列表
 				showModal: false,
 				city: {}, //所在城市
@@ -300,6 +395,17 @@
 				this.showAddressList = false;
 				this.addressKeyword = address.name;
 			},
+      async handleClickOrderDetail(id){
+        await getOrderDetail(this.user.id, id).then( res => {
+          this.orderDetail = res;
+          console.log('orderDetail', res);
+        });
+        getAddressDetail(this.orderDetail._doc.address_id).then( res => {
+          console.log('addressdetail ', res);
+          this.addressDetail = res;
+        });
+			  this.type = 'order-detail';
+      },
 			async handleClickSaveAddress(){
 				if (this.addressInfo.id) {
 					this.addressInfo.geohash = this.addressInfo.st_geohash;
@@ -393,11 +499,9 @@
 				this.expiredHongbaos = res;
 			});
 			this.updateAddressList();
-		},
-		mounted(){
-			let path = this.$route.path;
-			let arr = path.split('/');
-			if (arr.length === 3) this.type = 'center';
+      let path = this.$route.path;
+      let arr = path.split('/');
+      if (arr.length === 3) this.type = 'center';
 		},
 	}
 </script>

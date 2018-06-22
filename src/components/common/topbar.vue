@@ -29,7 +29,6 @@
 	</div>
 </template>
 <script type="text/javascript">
-	import { signout } from '../../service/getData.js';
 	import { handleClickDropbox } from './mixin.js';
 
 	export default{

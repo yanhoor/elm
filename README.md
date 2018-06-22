@@ -59,7 +59,7 @@ elm
 │       ├── list.vue                            //商铺列表页面
 │       ├── login.vue                           //登录页面
 │       ├── profile.vue                         //个人中心页面
-│       └──restaurant.vue                      //商铺详情页面
+│       └──restaurant.vue                       //商铺详情页面
 └── style.css                                   //全局样式文件
 ```
 
