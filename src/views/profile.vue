@@ -73,12 +73,33 @@
 					<div class="profile-order-container">
 						<div class="order-tab">
 							<a>最近订单</a>
-							<a>查看全部订单></a>
+							<a @click.prevent="type = 'order'">查看全部订单></a>
 						</div>
 						<div class="order-content">
 							<div class="order-content-tip" v-if="!orderList.length">
 								<p>你最近没有下过单哦，现在就去<a href="/list">订餐</a>吧~</p>
 							</div>
+              <div class="profile-order-list" v-else>
+                <ul>
+                  <li v-for="order of getProfileOrderList(orderList)">
+                    <img :src="'/img/' + order.restaurant_image_url">
+                    <div class="profile-order-item-title">
+                      <h3>{{ order.restaurant_name }}</h3>
+                      <span class="profile-order-item-list">{{ getOrderFoodList(order) }}</span>
+                      <span @click.prevent="handleClickOrderDetail(order.id)">共 {{ order.basket.group[0].length }} 个菜品 ></span>
+                    </div>
+                    <div class="profile-order-item-time">
+                      <span>{{ getOrderTime(order)[0]}}</span>
+                      <span>{{ getOrderTime(order)[1]}}</span>
+                    </div>
+                    <span class="profile-order-item-total">￥{{ order.total_amount }}</span>
+                    <div class="profile-order-item-control">
+                      <span>{{ order.status_bar.title }}</span>
+                      <span @click.prevent="handleClickOrderDetail(order.id)">订单详情</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
 						</div>
 					</div>
 				</template>
@@ -198,10 +219,14 @@
                 <img :src="'/img/' + orderDetail._doc.restaurant_image_url">
                 <div class="order-detail-rest">
                   <h3>{{ orderDetail._doc.restaurant_name }}</h3>
-                  <div>
+                  <div class="order-detail-rest-info">
                     <span>订单号：{{ orderDetail._doc.id }}</span>
                     <span>商家电话：无</span>
                   </div>
+                </div>
+                <div class="order-detail-time">
+                  <span>{{ getOrderTime(orderDetail._doc)[0]}}</span>
+                  <span>{{ getOrderTime(orderDetail._doc)[1]}}</span>
                 </div>
               </div>
               <div class="order-detail-content">
@@ -484,6 +509,13 @@
         }
         return s.join(' / ');
       },
+      getOrderTime(order){
+        return order.formatted_created_at.split(' ');
+      },
+      getProfileOrderList(list){
+			  if (list.length < 4) return list;
+			  return list.slice(0, 3);
+      },
 		},
 		created(){
 			this.city = this.$store.state.city;
@@ -626,6 +658,7 @@
 		}
 		.order-content{
 			height: 324px;
+      overflow: auto;
 			&-tip{
 				padding-top: 90px;
 				text-align: center;
@@ -636,6 +669,66 @@
 					}
 				}
 			}
+      .profile-order-list{
+        width: 100%;
+        text-align: center;
+        border-top: 1px solid #eee;
+        li{
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          width: 100%;
+          padding: 20px 0 15px;
+          >img{
+            float: left;
+            @include wh(70px);
+          }
+          .profile-order-item-title{
+            width: 50%;
+            text-align: left;
+            padding-left: 20px;
+            >h3{
+              @include fontscw(16px, #000, 700);
+            }
+            .profile-order-item-list{
+              display: block;
+              margin: 6px 0;
+              max-width: 400px;
+              @include fontscw(12px, #999);
+              @include ellipsis;
+            }
+            >span:last-child{
+              display: block;
+              @include fontscw(12px, #999);
+              cursor: pointer;
+            }
+          }
+          .profile-order-item-time{
+            width: 20%;
+            >span{
+              display: block;
+              @include fontscw(12px, #999);
+            }
+          }
+          .profile-order-item-total{
+            width: 10%;
+            font-size: 16px;
+          }
+          .profile-order-item-control{
+            flex-grow: 1;
+            >span{
+              display: block;
+            }
+            >span:first-child{
+              @include fontscw(16px, #999);
+            }
+            >span:last-child{
+              color: #0089dc;
+              cursor: pointer;
+            }
+          }
+        }
+      }
 		}
 	}
 	.order-pannel-container{
@@ -652,7 +745,9 @@
 		}
 		.order-pannel-content{
 			display: inline-block;
+      overflow: auto;
 			width: 100%;
+      max-height: 600px;
 			.no-order{
 				padding-top: 50px;
 				text-align: center;
@@ -963,7 +1058,7 @@
           >h3{
             @include fontscw(16px, #333, 400);
           }
-          >div{
+          .order-detail-rest-info{
             font-size: 14px;
             color: #999;
             >span:first-child{
@@ -971,6 +1066,14 @@
               max-width: 250px;
               @include ellipsis;
             }
+          }
+        }
+        .order-detail-time{
+          float: right;
+          >span{
+            text-align: center;
+            display: block;
+            @include fontscw(16px, #999);
           }
         }
       }
