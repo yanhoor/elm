@@ -83,9 +83,11 @@
 			<div class="search-pane">
 				<Input
 					@on-enter="handleSearch"
+          @on-click="handleSearch"
 					v-model="keyWord"
 					class="search-input"
-					placeholder="搜索商家,美食..."
+					placeholder="搜索美食"
+          icon="ios-search-strong"
 					size="large">
 				</Input>
 			</div>
@@ -510,13 +512,15 @@
 				});
 			},
 			clearCartList(){
+        if (this.cartList.length === 0) return;
 				this.$store.commit('clearCartList', this.restaurant.id);
 			},
-      handleOrder(id){
+      handleOrder(){
 			  if (!this.$store.state.user) {
           this.$router.push('/login');
           return;
         }
+        if (this.cartList.length === 0) return;
 			  let geohash = this.$store.state.address.geohash;
 			  this.$router.push({
           path: '/checkout',

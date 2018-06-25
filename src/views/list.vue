@@ -12,7 +12,10 @@
 			<div class="search">
 				<Input
 					class="search-input"
-					placeholder="搜索商家,美食..."
+          v-model="searchKeyword"
+          @on-enter="handleSearch"
+          @on-click="handleSearch"
+					placeholder="搜索商家"
 					icon="ios-search-strong"
 					size="large"></Input>
 			</div>
@@ -114,6 +117,7 @@
 				info: '', //鼠标停留处的餐馆对象
 				floatXY: {}, //包含浮动元素坐标的样式对象
 				onLeft: true, //控制浮动元素类名
+        searchKeyword: '', //搜索餐馆的关键词
 			}
 		},
 		methods: {
@@ -160,6 +164,15 @@
 				}
 				this.restaurantSortedList = list;
 			},
+      handleSearch(){
+        let list = [];
+        for(let rest of this.restaurantList){
+          if( rest.name.includes(this.searchKeyword) ){
+            list.push(rest);
+          }
+        }
+        this.restaurantSortedList = list;
+      },
 			handleMouseEvent(item, index, event){
 				let floatOnLeft = (index + 1) % 4 === 0;
 				//X，Y是绝对坐标
