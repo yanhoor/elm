@@ -1,9 +1,10 @@
 <template>
 	<div class="login">
 		<div class="login-container">
+      <h2>注：使用饿了么真实账号登录，或使用测试账号：13680325065，密码：123456</h2>
 			<form method="post">
 				<section class="account-section">
-					<input type="text" placeholder="手机/邮箱/用户名" v-model="username">
+					<input type="text" placeholder="手机号" v-model="username">
 				</section>
 				<section class="password-section">
 					<input type="password" placeholder="密码" v-model="password">
@@ -132,7 +133,7 @@
 	}
 	.login-container{
 		position: relative;
-		top: 200px;
+		top: 100px;
 		width: 20%;
 		margin: 0 auto;
 	}

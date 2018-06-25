@@ -510,7 +510,7 @@
 				});
 			},
 			clearCartList(){
-				this.$store.commit('clearCartList', this.restaurant);
+				this.$store.commit('clearCartList', this.restaurant.id);
 			},
       handleOrder(id){
 			  if (!this.$store.state.user) {

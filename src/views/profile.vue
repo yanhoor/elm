@@ -317,7 +317,7 @@
 					<input placeholder="请输入小区、大厦或学校" v-model="addressKeyword">
 					<div class="address-list-container" v-show="showAddressList">
 						<ul>
-							<li v-for="item in searchAddressList" @click="handleclickAddressList(item)">
+							<li v-for="item in searchAddressList" @click="handleClickAddressList(item)">
 								<p>{{ item.name }}</p>
 								<p>{{ item.address }}</p>
 							</li>
@@ -415,7 +415,7 @@
 				this.type = type;
 				this.$router.push('/profile/' + type);
 			},
-			handleclickAddressList(address){
+			handleClickAddressList(address){
 				this.addressInfo.geohash = address.geohash;
 				this.addressInfo.address = address.name;
 				this.showAddressList = false;
@@ -454,6 +454,10 @@
 				let {user_id,address,address_detail,geohash,name,phone,tag,sex,phone_bk,tag_type,poi_type} = this.addressInfo;
 				addAddress(user_id,address,address_detail,geohash,name,phone,tag,sex,phone_bk,tag_type,poi_type).then( res => {
 					console.log('add result ', res);
+          this.$Message.success({
+            content: '添加地址成功！',
+            duration: 2,
+          });
 					this.resetAddressInfo(); //重置addressInfo;
 				});
 			},
@@ -497,6 +501,10 @@
 			},
 			handleConfirmDeleteAddress(address){
 				deleteAddress(address.user_id, address.id).then( res => {
+          this.$Message.warning({
+            content: '删除地址成功！',
+            duration: 2,
+          });
 					//console.log('delete result ', res);
 				});
 				this.updateAddressList();

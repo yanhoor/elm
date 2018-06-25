@@ -224,8 +224,12 @@
       handleClickOrder(){
         postOrder(this.user.id, this.checkoutData.cart.id, this.selectedAddress.id, this.restaurant.id, this.geohash, this.orderDescription, this.checkoutData.cart.groups).then( res => {
           console.log(res);
+          this.$Message.success({
+            content: '下单成功！',
+            duration: 2,
+          });
           this.$store.commit('clearCartList', this.restaurant.id);
-          this.$router.push('/restaurant/' + this.restaurant.id);
+          this.$router.push('/profile/order');
         });
       },
       handleClickAddress(address){
