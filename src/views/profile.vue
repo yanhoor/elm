@@ -413,6 +413,7 @@
 		methods: {
 			handleClickSidebar(type){
 				this.type = type;
+				this.$router.push('/profile/' + type);
 			},
 			handleclickAddressList(address){
 				this.addressInfo.geohash = address.geohash;
@@ -486,7 +487,7 @@
 			updateAddressList(){
 				getReceivedAddresses(this.user.user_id).then( res => {
 					this.addressList = res;
-					console.log('completed updating');
+					//console.log('completed updating');
 				});
 			},
 			handleModifyAddress(address){
@@ -496,7 +497,7 @@
 			},
 			handleConfirmDeleteAddress(address){
 				deleteAddress(address.user_id, address.id).then( res => {
-					console.log('delete result ', res);
+					//console.log('delete result ', res);
 				});
 				this.updateAddressList();
 			},
@@ -533,8 +534,16 @@
 			this.updateAddressList();
       let path = this.$route.path;
       let arr = path.split('/');
-      if (arr.length === 3) this.type = 'center';
+      //console.log('arr ', arr);
+      if ( arr[arr.length - 1] === '') {
+        this.type = 'center';
+      }else{
+        this.type = arr[arr.length - 1];
+      }
 		},
+    updated(){
+		  //console.log('updated');
+    },
 	}
 </script>
 <style type="text/scss" lang="scss" scoped>
@@ -1140,6 +1149,7 @@
               >span{
                 display: inline-block;
                 min-width: 70px;
+                text-align: right;
               }
             }
           }

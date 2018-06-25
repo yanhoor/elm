@@ -26,9 +26,12 @@ export const handleClickDropbox = {
     handleClickDropbox(type){
       switch(type){
         case 'center':
-          this.$router.push('/profile/');
+          this.$router.push('/profile/center');
           break;
         case 'favorite':
+          break;
+        case 'address':
+          this.$router.push('/profile/address');
           break;
         case 'logout':
           signout().then( res => {

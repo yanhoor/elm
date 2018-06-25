@@ -3,7 +3,7 @@
 	  <header>
 	    <div class="header">
 	      <router-link :to="homePage" class="topbar-item">首页</router-link>
-	      <a class="topbar-item">我的订单</a>
+	      <a class="topbar-item" @click="handleClickTopbar('order')">我的订单</a>
 	      <a class="topbar-item">加盟合作</a>
 	      <a class="topbar-item">我的客服</a>
 	      <nav class="topbar-nav">
@@ -39,6 +39,15 @@
 			};
 		},
 		mixins: [handleClickDropbox],
+    methods: {
+		  handleClickTopbar(type){
+		    switch (type){
+          case 'order':
+            this.$router.push('/profile/order');
+            break;
+        }
+      },
+    },
 		created(){
 			this.$store.state.address.geohash ? this.homePage = '/list' : this.homePage = '/home';
 			this.user = this.$store.state.user;
