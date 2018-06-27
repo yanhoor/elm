@@ -142,14 +142,14 @@
         });
       },
       handleSelectAddress(address){
-        console.log('select address');
+        //console.log('select address');
         this.$store.commit('changeAddress', address);
         this.$router.push('/list');
       }
     },
     created(){
       guessCity().then( res => {
-        console.log('guessCity ', res);
+        //console.log('guessCity ', res);
         this.citySelected = res;
         this.cityGuess = res;
         this.$store.commit('saveCity', res);

@@ -545,7 +545,6 @@
 			//if (lastRest.id !== id) this.$store.commit('clearCartList');
 			getRestaurantInfo(id).then( res => {
 				this.restaurant = res;
-				this.$store.commit('saveCurrentRestaurant', res);
 			});
 			getMenu(id).then( res => {
 			  //不直接使用返回的menu，先检查购物车是否有对应menu

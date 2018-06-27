@@ -84,7 +84,13 @@
 					</div>
 			</div>
 		</div>
-    	<div class="sidebar"></div>
+    	<div class="sidebar">
+        <div class="sidebar-cart-container">
+          <Badge></Badge>
+          <Icon type="android-cart" size= 24></Icon>
+          <span>购物车</span>
+        </div>
+      </div>
     	<footer-comp></footer-comp>
 	</div>
 </template>
@@ -120,6 +126,20 @@
         searchKeyword: '', //搜索餐馆的关键词
 			}
 		},
+    computed: {
+		  cartList(){
+		    let list = [...this.$store.state.cartList];
+		    if (list.length === 0) return null;
+		    let item = list.pop();
+		    return {
+		      orderList: item.orderList,
+          restaurant_id: item.restaurant_id
+        };
+      },
+      address(){
+        return this.$store.state.address;
+      },
+    },
 		methods: {
 			handleChangeAddress(){
 				this.$router.push('home');
@@ -201,11 +221,6 @@
 					this.showRestInfo = false;
 				}
 				//console.log('mouse event', x + ' , ' + y + item.name);
-			},
-		},
-		computed: {
-			address(){
-				return this.$store.state.address;
 			},
 		},
 		created(){

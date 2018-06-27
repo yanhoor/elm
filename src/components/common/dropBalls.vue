@@ -24,7 +24,7 @@
 		},
 		methods: {
 			drop(target){
-				//取出一个小球
+				//return取出一个小球
 				this.balls.some(ball => {
 					if(!ball.show){
 						ball.show = true;

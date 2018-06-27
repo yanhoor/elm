@@ -111,7 +111,7 @@
 			handleConfirmChangePassword(){
 				let { username, oldpassWord, newpassword, confirmpassword, captcha_code } = this.passwordInfo;
 				changePassword(username, oldpassWord, newpassword, confirmpassword, captcha_code).then( res => {
-					console.log('changepassword ', res);
+					//console.log('changepassword ', res);
 					this.getVerifyCode();
 				});
 			},
