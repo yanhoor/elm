@@ -533,7 +533,7 @@
 				this.availableHongbaos = res;
 			});
 			getOrderList(this.user.user_id).then( res => {
-			  console.log('orderList ', res);
+			  //console.log('orderList ', res);
 				this.orderList = res;
 			});
 			getExpiredHongbaos(this.user.user_id).then( res => {

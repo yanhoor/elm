@@ -88,7 +88,7 @@
         <div class="sidebar-tap">
           <div class="sidebar-tap-top">
             <div class="sidebar-order-icon">
-              <Tooltip content="我的订单" placement="left" transfer= true>
+              <Tooltip content="我的订单" placement="left">
                 <Icon type="document-text" size=24 @click.native="handleClickRecentOrder"></Icon>
               </Tooltip>
             </div>
@@ -178,11 +178,13 @@
 		  cartList(){
 		    let list = [...this.$store.state.cartList];
 		    if (list.length === 0) return null;
-		    let item = list.pop();
-		    return {
-		      orderList: item.orderList,
-          restaurant_id: item.restaurant_id
-        };
+		    let list1 = list.map( item => {
+          return {
+            orderList: item.orderList,
+            restaurant_id: item.restaurant_id
+          };
+        });
+		    return list1.pop();
       },
       //侧栏购物车食品总数
       cartFoodAmount(){

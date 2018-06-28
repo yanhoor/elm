@@ -520,7 +520,8 @@
 				this.$store.commit('clearCartList', this.restaurant.id);
 			},
       handleOrder(){
-			  if (!this.$store.state.user) {
+			  console.log('user ', this.$store.state.user.id);
+			  if (!this.$store.state.user.id) {
           this.$router.push('/login');
           return;
         }
