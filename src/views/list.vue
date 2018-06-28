@@ -88,7 +88,7 @@
         <div class="sidebar-tap">
           <div class="sidebar-tap-top">
             <div class="sidebar-order-icon">
-              <Tooltip content="我的订单" placement="left">
+              <Tooltip content="我的订单" placement="left" transfer= true>
                 <Icon type="document-text" size=24 @click.native="handleClickRecentOrder"></Icon>
               </Tooltip>
             </div>

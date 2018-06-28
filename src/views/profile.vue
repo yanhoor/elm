@@ -1132,6 +1132,7 @@
               }
               td:last-child{
                 text-align: right;
+                width: 40%;
               }
             }
           }
