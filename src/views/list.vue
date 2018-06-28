@@ -86,12 +86,19 @@
 		</div>
     	<div :class="{'sidebar': true, 'active': showSidebarCart}">
         <div class="sidebar-tap">
-          <div class="sidebar-cart-container">
-            <Badge :count="cartFoodAmount" class="sidebar-cart-icon"></Badge>
-            <span class="sidebar-cart-title" @click="showSidebarCart = !showSidebarCart">
+          <div class="sidebar-tap-top">
+            <div class="sidebar-order-icon">
+              <Tooltip content="我的订单" placement="left">
+                <Icon type="document-text" size=24 @click.native="handleClickRecentOrder"></Icon>
+              </Tooltip>
+            </div>
+            <div class="sidebar-cart-container">
+              <Badge :count="cartFoodAmount" class="sidebar-cart-icon"></Badge>
+              <span class="sidebar-cart-title" @click="showSidebarCart = !showSidebarCart">
               <Icon type="android-cart" size= 24></Icon>
               购物车
             </span>
+            </div>
           </div>
         </div>
         <div class="sidebar-content-container">
@@ -251,6 +258,13 @@
           }
         }
         this.restaurantSortedList = list;
+      },
+      handleClickRecentOrder(){
+        if (!this.$store.state.user) {
+          this.$router.push('/login');
+          return;
+        }
+			  this.$router.push('profile/order');
       },
       clearCartList(){
         this.$store.commit('clearCartList', this.cartList.restaurant_id);
@@ -509,24 +523,32 @@
         float: left;
         width: 35px;
         height: 100%;
-        .sidebar-cart-container{
+        .sidebar-tap-top{
           position: absolute;
-          text-align: center;
           width: 35px;
           top: 50%;
           margin-top: -180px;
-          .sidebar-cart-icon{
-            margin-bottom: 5px;
-          }
-          .sidebar-cart-title{
-            display: block;
+          .sidebar-order-icon{
+            color: #ccc;
             text-align: center;
-            @include fontscw(14px, #fff, 700);
-            background: #26a2ff;
-            line-height: 16px;
-            padding: 7px 8px 10px;
-            margin-bottom: 8px;
             cursor: pointer;
+            padding-bottom: 20px;
+          }
+          .sidebar-cart-container{
+            text-align: center;
+            .sidebar-cart-icon{
+              margin-bottom: 5px;
+            }
+            .sidebar-cart-title{
+              display: block;
+              text-align: center;
+              @include fontscw(14px, #fff, 700);
+              background: #26a2ff;
+              line-height: 16px;
+              padding: 7px 8px 10px;
+              margin-bottom: 8px;
+              cursor: pointer;
+            }
           }
         }
       }
