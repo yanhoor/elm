@@ -113,13 +113,13 @@
 				}
 			},
 			editCount(event, food_id, value){
-				this.updateCount(this.rest, food_id, this.orderNum[food_id] + value);
+				this.updateCount(this.rest.id, food_id, this.orderNum[food_id] + value);
 				if (value === 1) this.$refs.balls.drop(event.target);
 			},
 			inputCount(food, value){
 				if(value === '') {
 					this.$store.commit('removeFromCart', {
-						rest: this.rest,
+						rest_id: this.rest.id,
 						food_id: food.food_id
 					});
 					return;
@@ -127,6 +127,7 @@
 					value = 1;
 				}
 				this.$store.commit('updateCount', {
+          rest_id: this.rest.id,
 					food_id: food.food_id,
 					value: parseInt(value, 10)
 				});

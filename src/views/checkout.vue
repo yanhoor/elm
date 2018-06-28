@@ -39,9 +39,9 @@
           <dd v-for=" item in checkoutData.cart.groups[0]">
             <div class="cart-item-name">{{ item.name }}</div>
             <div class="cart-item-quantity">
-              <button @click="editCount(restaurant, item, -1)">-</button>
+              <button @click="editCount(restaurant.id, item, -1)">-</button>
               <input v-model="item.quantity">
-              <button @click="editCount(restaurant, item, 1)">+</button>
+              <button @click="editCount(restaurant.id, item, 1)">+</button>
             </div>
             <div class="cart-item-total">￥{{ item.price * item.quantity }}</div>
           </dd>
@@ -190,8 +190,8 @@
     },
     mixins: [handleClickDropbox, updateCount],
     methods: {
-      editCount(restaurant, food, value){
-        this.updateCount(restaurant, food.id, food.quantity + value);
+      editCount(restaurant_id, food, value){
+        this.updateCount(restaurant_id, food.id, food.quantity + value);
         this.updateData();
       },
       updateData(){

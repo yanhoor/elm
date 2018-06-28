@@ -241,9 +241,9 @@
 					<li v-for="item of cartList">
 						<span>{{ item.name }}</span>
 						<div>
-							<button @click="updateCount(restaurant, item.food_id, orderNum[item.food_id]-1)">-</button>
+							<button @click="updateCount(restaurant.id, item.food_id, orderNum[item.food_id]-1)">-</button>
 							<input :value="item.order_count" @input="inputCount(item, $event.target.value)">
-							<button @click="updateCount(restaurant, item.food_id, orderNum[item.food_id]+1)">+</button>
+							<button @click="updateCount(restaurant.id, item.food_id, orderNum[item.food_id]+1)">+</button>
 						</div>
 						<span>￥{{ item.order_count * item.price }}</span>
 					</li>
@@ -501,12 +501,16 @@
 			},
 			inputCount(food, value){
 				if(value === '') {
-					this.$store.commit('removeFromCart', food.food_id);
+          this.$store.commit('removeFromCart', {
+            rest_id: this.restaurant.id,
+            food_id: food.food_id
+          });
 					return;
 				}else if(value < 1){
 					value = 1;
 				}
 				this.$store.commit('updateCount', {
+          rest_id: this.restaurant.id,
 					food_id: food.food_id,
 					value: parseInt(value, 10)
 				});

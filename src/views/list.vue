@@ -84,11 +84,48 @@
 					</div>
 			</div>
 		</div>
-    	<div class="sidebar">
-        <div class="sidebar-cart-container">
-          <Badge></Badge>
-          <Icon type="android-cart" size= 24></Icon>
-          <span>购物车</span>
+    	<div :class="{'sidebar': true, 'active': showSidebarCart}">
+        <div class="sidebar-tap">
+          <div class="sidebar-cart-container">
+            <Badge :count="cartFoodAmount" class="sidebar-cart-icon"></Badge>
+            <span class="sidebar-cart-title" @click="showSidebarCart = !showSidebarCart">
+              <Icon type="android-cart" size= 24></Icon>
+              购物车
+            </span>
+          </div>
+        </div>
+        <div class="sidebar-content-container">
+          <div class="sidebar-cart-container" v-if="cartList">
+            <div class="sidebar-cart-caption">
+              <a>购物车</a>
+              <span @click="showSidebarCart = !showSidebarCart"> >> </span>
+            </div>
+            <div class="sidebar-cart">
+              <dl>
+                <dt>
+                  <span>一号购物车</span>
+                  <a @click="clearCartList()">[清空]</a>
+                </dt>
+                <dd v-for="item of cartList.orderList">
+                  <span class="sidebar-food-name">{{ item.name }}</span>
+                  <div class="sidebar-food-count">
+                    <button @click="updateCount(cartList.restaurant_id, item.food_id, item.order_count - 1)">-</button>
+                    <input :value="item.order_count" @input="inputCount(item.food_id, $event.target.value)">
+                    <button @click="updateCount(cartList.restaurant_id, item.food_id, item.order_count + 1)">+</button>
+                  </div>
+                  <span class="sidebar-food-cost">{{ item.order_count * item.price }}</span>
+                </dd>
+              </dl>
+            </div>
+            <div class="sidebar-cart-amount">
+              共 <span>{{ cartFoodAmount }}</span> 份，总计 <span>{{ cartCostAmount }}</span>
+              <button @click="handleOrder">去结算</button>
+            </div>
+          </div>
+          <div class="sidebar-cart-empty" v-else>
+            <Icon type="refresh" size= 48></Icon>
+            <span>购物车空空如也</span>
+          </div>
         </div>
       </div>
     	<footer-comp></footer-comp>
@@ -103,6 +140,7 @@
 	import Rest from '../components/common/restaurant.vue';
 	import TopBar from '../components/common/topbar.vue';
 	import FooterComp from '../components/common/footer.vue';
+  import { updateCount } from '../components/common/mixin.js';
 
 	export default{
 		components: {
@@ -124,9 +162,12 @@
 				floatXY: {}, //包含浮动元素坐标的样式对象
 				onLeft: true, //控制浮动元素类名
         searchKeyword: '', //搜索餐馆的关键词
+        showSidebarCart: false,
 			}
 		},
+    mixins: [ updateCount],
     computed: {
+		  //侧栏购物车
 		  cartList(){
 		    let list = [...this.$store.state.cartList];
 		    if (list.length === 0) return null;
@@ -135,6 +176,24 @@
 		      orderList: item.orderList,
           restaurant_id: item.restaurant_id
         };
+      },
+      //侧栏购物车食品总数
+      cartFoodAmount(){
+        let amount = 0;
+        if (!this.cartList) return 0;
+        for(let item of this.cartList.orderList){
+          amount += item.order_count;
+        }
+        return amount;
+      },
+      //侧栏购物车总价
+      cartCostAmount(){
+        let amount = 0;
+        if (!this.cartList) return 0;
+        for(let item of this.cartList.orderList){
+          amount += item.order_count * item.price;
+        }
+        return amount;
       },
       address(){
         return this.$store.state.address;
@@ -192,6 +251,39 @@
           }
         }
         this.restaurantSortedList = list;
+      },
+      clearCartList(){
+        this.$store.commit('clearCartList', this.cartList.restaurant_id);
+      },
+      handleOrder(){
+        if (!this.$store.state.user) {
+          this.$router.push('/login');
+          return;
+        }
+        let geohash = this.$store.state.address.geohash;
+        this.$router.push({
+          path: '/checkout',
+          query: {
+            geohash,
+            restaurant_id: this.cartList.restaurant_id
+          }
+        });
+      },
+      inputCount(food_id, value){
+        if(value === '') {
+          this.$store.commit('removeFromCart', {
+            rest_id: this.cartList.restaurant_id,
+            food_id: food_id
+          });
+          return;
+        }else if(value < 1){
+          value = 1;
+        }
+        this.$store.commit('updateCount', {
+          rest_id: this.cartList.restaurant_id,
+          food_id: food_id,
+          value: parseInt(value, 10)
+        });
       },
 			handleMouseEvent(item, index, event){
 				let floatOnLeft = (index + 1) % 4 === 0;
@@ -401,6 +493,9 @@
 	.rest-info-desc-container{
 		margin-top: 15px;
 	}
+  .sidebar.active{
+    transform: translate3d(-295px,0,0);
+  }
 	.sidebar{
 	    position: fixed;
 	    top: 0;
@@ -410,5 +505,150 @@
 	    background: #504d53;
 	    color: #cccccc;
 	    z-index: 7;
+      .sidebar-tap{
+        float: left;
+        width: 35px;
+        height: 100%;
+        .sidebar-cart-container{
+          position: absolute;
+          text-align: center;
+          width: 35px;
+          top: 50%;
+          margin-top: -180px;
+          .sidebar-cart-icon{
+            margin-bottom: 5px;
+          }
+          .sidebar-cart-title{
+            display: block;
+            text-align: center;
+            @include fontscw(14px, #fff, 700);
+            background: #26a2ff;
+            line-height: 16px;
+            padding: 7px 8px 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+          }
+        }
+      }
+      .sidebar-content-container{
+        margin-left: 35px;
+        @include wh(295px, 100%);
+        background-color: #e6e6e6;
+        .sidebar-cart-container{
+          .sidebar-cart-caption{
+            background: #fff;
+            @include fontscw(16px, #999);
+            padding: 5px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            >a{
+              line-height: 16px;
+              max-width: 240px;
+              color: #333;
+            }
+            >a:hover{
+              color: #0089dc;
+            }
+            >span{
+              float: right;
+              cursor: pointer;
+            }
+            >span:hover{
+              color: #0089dc;
+            }
+          }
+          .sidebar-cart{
+            >dl{
+              padding: 10px;
+              background: #fff;
+              border: 1px solid #ddd;
+              margin-bottom: 10px;
+              >dt{
+                @include fontscw(12px, #666);
+                border-bottom: 1px solid #ddd;
+                padding: 2px 3px;
+                >a{
+                  float: right;
+                }
+              }
+              >dd{
+                overflow: hidden;
+                margin: 5px 0;
+                padding: 5px 10px;
+                @include fontscw(12px, #666);
+                line-height: 20px;
+                .sidebar-food-name{
+                  display: inline-block;
+                  float: left;
+                  width: 45%;
+                  @include ellipsis;
+                }
+                .sidebar-food-count{
+                  float: left;
+                  width: 26%;
+                  >button{
+                    float: left;
+                    @include wh(20px);
+                    line-height: 18px;
+                    outline: none;
+                    background: #f5f5f5;
+                    border: 1px solid #ddd;
+                    cursor: pointer;
+                  }
+                  >input{
+                    @include fontscw(12px, #666);
+                    float: left;
+                    @include wh(20px);
+                    text-align: center;
+                    border: 1px solid #ddd;
+                    line-height: normal;
+                  }
+                }
+                .sidebar-food-cost{
+                  display: inline-block;
+                  float: right;
+                }
+              }
+            }
+          }
+          .sidebar-cart-amount{
+            position: absolute;
+            padding: 20px 10px;
+            text-align: right;
+            border: 1px solid #ddd;
+            width: 295px;
+            left: 35px;
+            bottom: 0;
+            background: #fff;
+            opacity: .95;
+            @include fontscw(14px, #333);
+            >span{
+              color: #f74342;
+            }
+            >button{
+              display: block;
+              width: 100%;
+              border: 0;
+              background: #fa5858;
+              text-align: center;
+              line-height: 32px;
+              margin-top: 10px;
+              color: #fff;
+              cursor: pointer;
+            }
+          }
+        }
+        .sidebar-cart-empty{
+          @include wh(100%);
+          text-align: center;
+          padding-top: 100px;
+          color: #9c9c9c;
+          >span{
+            margin-top: 20px;
+            display: block;
+            @include fontscw(18px, #333, 400);
+          }
+        }
+      }
   	}
 </style>

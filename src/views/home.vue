@@ -66,17 +66,17 @@
           </transition>
         </div>
         <div class="form-container">
-          <form class="search-form">
+          <div class="search-form">
             <input
               class="search-input"
               v-model="addressDetail"
-              placeholder="请输入你的收货地址（写字楼、小区、街道、学校）"></input>
+              placeholder="请输入你的收货地址（写字楼、小区、街道、学校）"/>
             <button
               @click.prevent="handleSearchPlace"
               class="search-button">
                 搜索
             </button>
-          </form>
+          </div>
           <div class="address-detail-container" v-if="addressDetail.length">
             <ul class="address-detail-list" v-if="detailAddressList.length">
               <li

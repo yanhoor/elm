@@ -76,7 +76,7 @@ export let mutations = {
   },
   updateCount(state, payload){
     for(let item of state.cartList){
-      if (item.restaurant_id === payload.rest.id) {
+      if (item.restaurant_id === payload.rest_id) {
         for( let i of item.orderList){
           if (i.food_id === payload.food_id) {
             //console.log('updateCount cartList', state.cartList);
@@ -90,7 +90,7 @@ export let mutations = {
   },
   removeFromCart(state, payload){
     for(let item of state.cartList){
-      if (item.restaurant_id === payload.rest.id) {
+      if (item.restaurant_id === payload.rest_id) {
         for(let i of item.orderList){
           if (i.food_id === payload.food_id) {
             i.order_count = 0;
