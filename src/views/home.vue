@@ -139,18 +139,6 @@
         this.detailAddressList = [];
         searchAddress(this.citySelected.id, this.addressDetail, 'search').then( res => {
           this.detailAddressList = [...res];
-        }).catch(error => {
-          console.log(error);
-          console.log('Can not get address info, use default');
-          let address = {
-            "name":"六乡镇",
-            "address":"广东省珠海市斗门区月坑村北区19号楼(月前路北)",
-            "latitude":22.30497,
-            "longitude":113.28123,
-            "geohash":"22.30497,113.28123"
-          };
-          this.$store.commit('changeAddress', address);
-          this.$router.push('/list');
         });
       },
       handleSelectAddress(address){
@@ -165,23 +153,6 @@
         this.citySelected = res;
         this.cityGuess = res;
         this.$store.commit('saveCity', res);
-      }).catch(error => {
-        console.log(error);
-        console.log('Can not get city info, use default');
-        let city = {
-          "pinyin":"zhuhai",
-          "is_map":true,
-          "longitude":113.576683,
-          "latitude":22.270729,
-          "sort":2000,
-          "area_code":"0756",
-          "abbr":"ZH",
-          "name":"珠海",
-          "id":26
-        };
-        this.citySelected = city;
-        this.cityGuess = city;
-        this.$store.commit('saveCity', city);
       });
       groupCities().then( res => {
         let object = {};
