@@ -69,7 +69,10 @@
             收货地址 <a>添加新地址</a>
           </h2>
           <ul>
-            <li v-for="address in addressList" class="checkout-section-address" @click="handleClickAddress(address)">
+            <li
+              v-for="address in addressToShow"
+              :class="{'checkout-section-address': true, 'active': address.id === selectedAddress.id}"
+              @click="handleClickAddress(address)">
               <Icon type="ios-location-outline" size="40" class="address-icon"></Icon>
               <div class="address-info">
                 <p>{{ address.name + ['', '先生', '女士'][address.sex] + address.phone }}</p>
@@ -80,8 +83,8 @@
                 <a>×</a>
               </div>
             </li>
-            <a @click="showMoreAddress = true" v-show="!showMoreAddress && addressList.length > 1">显示更多地址<Icon type="chevron-down"></Icon></a>
-            <a @click="showMoreAddress = false" v-show="showMoreAddress && addressList.length > 1">收起<Icon type="chevron-up"></Icon></a>
+            <a @click="handleShowMoreAddress(true)" v-show="!showMoreAddress && addressList.length > 1">显示更多地址<Icon type="chevron-down"></Icon></a>
+            <a @click="handleShowMoreAddress(false)" v-show="showMoreAddress && addressList.length > 1">收起<Icon type="chevron-up"></Icon></a>
           </ul>
         </div>
         <div class="checkout-section">
@@ -151,6 +154,7 @@
         user: null,
         cartList: null,
         addressList: [], //已有收货地址列表
+        addressToShow: [], //用于展示的地址列表
         addressAvailable: [], //配送范围内地址列表
         addressDisable: [], //超出配送范围的地址
         showMoreAddress:false, //是否显示更多收货地址
@@ -232,6 +236,20 @@
           this.$router.push('/profile/order');
         });
       },
+      handleShowMoreAddress(showMore){
+        this.showMoreAddress = showMore;
+        if (this.addressList.length === 0) return;
+        if (showMore) {
+          this.addressToShow = [...this.addressList];
+          return;
+        }
+        this.addressToShow = [];
+        if (this.selectedAddress) {
+          this.addressToShow.push(this.selectedAddress);
+          return;
+        }
+        this.addressToShow.push(this.addressList[0]);
+      },
       handleClickAddress(address){
         this.selectedAddress = address;
       },
@@ -258,6 +276,7 @@
       getRestaurantInfo(this.restaurantId).then( res => this.restaurant = res);
       getReceivedAddresses(this.user.user_id).then( res => {
         this.addressList = res;
+        if(res.length) this.addressToShow.push(res[0]);
       });
       this.updateData();
     },
@@ -507,12 +526,19 @@
             }
             .address-edit{
               position: absolute;
+              display: none;
               top: 10px;
               right: 10px;
             }
           }
           .checkout-section-address:hover{
             background: #f9f9f9;
+          }
+          .checkout-section-address:hover .address-edit{
+            display: block;
+          }
+          .checkout-section-address.active{
+            border-color: #0089dc;
           }
           >a{
             display: inline-block;

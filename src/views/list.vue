@@ -179,6 +179,12 @@
 		    let list = [...this.$store.state.cartList];
 		    if (list.length === 0) return null;
 		    let list1 = list.map( item => {
+		      if (!item.orderList.length) {
+            this.$store.commit('removeFromCart', {
+              rest_id: item.restaurant_id,
+              food_id: 0
+            });
+          }
           return {
             orderList: item.orderList,
             restaurant_id: item.restaurant_id

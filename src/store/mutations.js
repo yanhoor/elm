@@ -35,6 +35,7 @@ export let mutations = {
     saveToStorage('address', address);
   },
   addToCart(state, payload){
+    if (!payload.rest || !payload.food) return;
     //console.log('addToCart');
     let food = payload.food;
     let currentItem = null; //购物车内含有对应餐馆的那一项

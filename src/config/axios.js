@@ -34,8 +34,7 @@ export let axios1 = async(url = '', data = {}, type = 'get') => {
 	}
 
 	try{
-		const response = await ajax(config);
-		return response;
+		return await ajax(config);
 	}catch(error){
 		throw new Error(error);
 	}

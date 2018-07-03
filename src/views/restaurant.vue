@@ -88,8 +88,7 @@
 					class="search-input"
 					placeholder="搜索美食"
           icon="ios-search-strong"
-					size="large">
-				</Input>
+					size="large"/>
 			</div>
 		</div>
 		<div class="content-container">

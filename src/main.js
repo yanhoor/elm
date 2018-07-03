@@ -36,6 +36,7 @@ new Vue({
     store.state.user = getFromStorage('user');
     store.state.cartList = getFromStorage('cartlist');
     store.state.city = getFromStorage('city');
+    //默认城市和地址
     if(!store.state.city){
       let city = {
         "pinyin":"zhuhai",
