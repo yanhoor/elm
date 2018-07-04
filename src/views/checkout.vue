@@ -66,7 +66,7 @@
       <div class="right-content-container">
         <div class="checkout-section">
           <h2>
-            收货地址 <a>添加新地址</a>
+            收货地址 <a @click="handleAddAddress">添加新地址</a>
           </h2>
           <ul>
             <li
@@ -79,8 +79,8 @@
                 <p>{{ address.address + address.address_detail }}</p>
               </div>
               <div class="address-edit">
-                <a>修改</a>
-                <a>×</a>
+                <a @click="handleModifyAddress(address)">修改</a>
+                <a @click="handleDeleteAddress(address)">   ×</a>
               </div>
             </li>
             <a @click="handleShowMoreAddress(true)" v-show="!showMoreAddress && addressList.length > 1">显示更多地址<Icon type="chevron-down"></Icon></a>
@@ -139,13 +139,23 @@
         <button @click="handleClickOrder">确认下单</button>
       </div>
     </div>
+    <AddressEdit :address="addressToEdit" :show="showModal" :edit-type="editType"></AddressEdit>
   </div>
 </template>
 <script>
+  import AddressEdit from '../components/common/addressEdit';
   import { handleClickDropbox, updateCount } from '../components/common/mixin.js';
-  import { getReceivedAddresses,addToCart, postOrder,getRestaurantInfo } from '../service/getData.js';
+  import {
+    getReceivedAddresses,
+    deleteAddress,
+    addToCart,
+    postOrder,
+    getRestaurantInfo } from '../service/getData.js';
 
   export default {
+    components: {
+      AddressEdit,
+    },
     data(){
       return {
         restaurant: null, //根据id重新获取的餐馆信息
@@ -163,6 +173,9 @@
         showFloatCommit: true, //显示浮动下单按钮
         orderDescription: '', //下单备注
         selectedAddress: null, //选中的收货地址
+        addressToEdit: null, //点击修改的地址
+        showModal: false, //显示地址编辑框
+        editType: '', //修改或添加地址
       }
     },
     computed: {
@@ -253,6 +266,33 @@
       handleClickAddress(address){
         this.selectedAddress = address;
       },
+      handleModifyAddress(address){
+        this.addressToEdit = address;
+        this.showModal = true;
+        this.editType = 'modify';
+      },
+      handleDeleteAddress(address){
+        deleteAddress(address.user_id, address.id).then( res => {
+          this.$Message.warning({
+            content: '删除地址成功！',
+            duration: 2,
+          });
+          this.updateAddressList();
+          //console.log('delete result ', res);
+        });
+        this.updateAddressList();
+      },
+      handleAddAddress(){
+        this.showModal = true;
+        this.editType = 'add';
+      },
+      async updateAddressList(){
+        await getReceivedAddresses(this.user.user_id).then( res => {
+          this.addressList = res;
+          this.addressToShow = res;
+          return res;
+        });
+      },
       scroll(){
         if (!this.$refs.commitButton) return;
         if (this.$refs.commitButton.getBoundingClientRect().top >= window.innerHeight) {
@@ -274,11 +314,17 @@
       this.address = this.$store.state.address;
       this.user = this.$store.state.user;
       getRestaurantInfo(this.restaurantId).then( res => this.restaurant = res);
-      getReceivedAddresses(this.user.user_id).then( res => {
-        this.addressList = res;
-        if(res.length) this.addressToShow.push(res[0]);
+      this.updateAddressList().then( res => {
+        console.log(res);
+        if(this.addressToShow.length) this.addressToShow = this.addressToShow.slice(0, 1);
       });
       this.updateData();
+      this.$bus.on('changeShowModal', value => {
+        this.showModal = value;
+      });
+      this.$bus.on('updateAddress', () => {
+        this.updateAddressList();
+      });
     },
     mounted(){
       this.bindEvent();
@@ -529,6 +575,9 @@
               display: none;
               top: 10px;
               right: 10px;
+              >a{
+                margin-left: 10px;
+              }
             }
           }
           .checkout-section-address:hover{
@@ -539,6 +588,7 @@
           }
           .checkout-section-address.active{
             border-color: #0089dc;
+            border-width: 2px;
           }
           >a{
             display: inline-block;
