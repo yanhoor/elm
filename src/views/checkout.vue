@@ -233,9 +233,19 @@
             stock: item.stock,
           });
         }
+        let _this = this;
         addToCart( this.restaurantId, this.geohash, [entities] ).then( res => {
+          if (res.status === 0) {
+            this.$Message.error({
+              content: res.message,
+              duration: 3,
+              onClose(){
+                _this.$router.push('/list');
+              },
+            });
+            return;
+          }
           this.checkoutData = res;
-          //console.log('checkoutData ', res);
         });
       },
       handleClickOrder(){
@@ -272,15 +282,20 @@
         this.editType = 'modify';
       },
       handleDeleteAddress(address){
-        deleteAddress(address.user_id, address.id).then( res => {
-          this.$Message.warning({
-            content: '删除地址成功！',
-            duration: 2,
-          });
-          this.updateAddressList();
-          //console.log('delete result ', res);
+        this.$modal.confirm({
+          content: '确认删除该地址吗？',
+          onOk(){
+            deleteAddress(address.user_id, address.id).then( res => {
+              this.$Message.warning({
+                content: '删除地址成功！',
+                duration: 2,
+              });
+              this.updateAddressList();
+              //console.log('delete result ', res);
+            });
+            this.updateAddressList();
+          },
         });
-        this.updateAddressList();
       },
       handleAddAddress(){
         this.showModal = true;

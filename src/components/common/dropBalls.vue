@@ -3,7 +3,7 @@
 	    <div class="ball" v-for="(item, index) in balls" :key="index" v-show="item.show">
 	      <div class="inner inner-hook"></div>
 	    </div>
-	  </transition-group>
+  </transition-group>
 </template>
 <script type="text/javascript">
 	export default {

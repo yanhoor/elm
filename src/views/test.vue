@@ -26,17 +26,42 @@
 	    <div class="big-box" ref="bigBox"></div>
 	    <button @click.prevent="handleClickToImg">返回上面图像位置</button>
     <h1 v-time="1519930777777"></h1>
+    <Test v-bind.sync="doc" @title="changeTitle($event)"></Test>
+    <h3>{{ doc.title }}</h3>
 	</div>
 </template>
 <script type="text/javascript">
   import time from '../components/directives/time';
+  import Test from '../components/common/test.vue';
 
 	export default {
+	  components: {
+	    Test,
+    },
+    data(){
+	    return {
+	      doc: {
+	        title: 'parent title',
+        },
+      };
+    },
+    watch: {
+	    doc: {
+	      handler(newVal, oldVal){
+	        console.log('newVal of doc ', newVal);
+        },
+        deep: true,
+      },
+    },
 		methods: {
 			handleClickToImg(){
 				let imgY = this.$refs.img.getBoundingClientRect().top + document.documentElement.scrollTop;
 				window.scrollTo(0, imgY);
-			}
+			},
+      changeTitle(event){
+			  this.doc.title = event;
+			  console.log('event', event);
+      },
 		},
     directives: {
       time,
