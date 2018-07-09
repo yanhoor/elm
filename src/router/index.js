@@ -59,6 +59,13 @@ export default new Router({
       component: (resolve) => require(['../views/test.vue'], resolve)
     },
     {
+      path: '/scf',
+      meta: {
+        title: 'scf'
+      },
+      component: (resolve) => require(['../views/scf.vue'], resolve)
+    },
+    {
     	path: '*',
     	redirect: '/list'
     }
