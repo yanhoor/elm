@@ -199,6 +199,7 @@
     float: right;
   }
   .address-container{
+    display: flex;
     width: 1180px;
     position: relative;
     top: 20%;

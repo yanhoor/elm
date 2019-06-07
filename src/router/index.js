@@ -18,7 +18,7 @@ export default new Router({
       path: '/list',
       meta: {
       	title: 'list',
-        keepAlive: true,
+        // keepAlive: true,
       },
       component: (resolve) => require(['../views/list.vue'], resolve)
     },

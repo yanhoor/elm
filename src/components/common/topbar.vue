@@ -1,6 +1,6 @@
 <template>
 	<div class="header-container">
-	  <header>
+	  <header style="height: 100%; background-color: #1e89e0">
 	    <div class="header">
 	      <router-link :to="homePage" class="topbar-item">首页</router-link>
 	      <a class="topbar-item" @click="handleClickTopbar('order')">我的订单</a>
